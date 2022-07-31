@@ -1,0 +1,43 @@
+:root {
+  --foreground: #4e4e4e;
+  --background: #f7f7f7;
+  --backdrop: #e1e1e1;
+  --first: #2e007d;
+  --second: #753aff;
+}
+
+body {
+  margin: 0;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Roboto", "Oxygen",
+    "Ubuntu", "Cantarell", "Fira Sans", "Droid Sans", "Helvetica Neue",
+    sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+code {
+  font-family: source-code-pro, Menlo, Monaco, Consolas, "Courier New",
+    monospace;
+}
+
+input {
+  border-radius: 5px;
+  border: 1px solid black;
+  padding: 5px 5px;
+  color: var(--foreground)
+}
+
+
+body {
+  background-color: var(--background);
+  color: var(--foreground)
+}
+
+button {
+  background-color: transparent;
+  border-radius: 5px;
+  padding: 5px 10px;
+  border: 0px;
+  background-color: var(--foreground);
+  color: var(--background)
+}
