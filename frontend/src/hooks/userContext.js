@@ -5,9 +5,13 @@ const userContext = createContext();
 export default function UserAuthProvider({ children }) {
   const [user, setUser] = useState();
 
-  function login() {}
+  function login() {
 
-  function register() {}
+  }
+
+  function register() {
+    
+  }
 
   return <userContext.Provider value={user}>{children}</userContext.Provider>;
 }

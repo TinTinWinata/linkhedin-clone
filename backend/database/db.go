@@ -1,24 +1,23 @@
 package database
 
-// Database Single
-
 import (
-	"database/sql"
-
-	"github.com/uptrace/bun"
-	"github.com/uptrace/bun/dialect/pgdialect"
-	"github.com/uptrace/bun/driver/pgdriver"
+	"gorm.io/driver/postgres"
+	"gorm.io/gorm"
 )
 
 var (
-	db *bun.DB
+	db *gorm.DB
 )
 
-func getDb() *bun.DB {
+func GetDB() *gorm.DB {
 	if db == nil {
-		dsn := "postgres://postgres:asd@localHost:5432/postgres?sslmode=disable"
-		sqldb := sql.OpenDB(pgdriver.NewConnector(pgdriver.WithDSN(dsn)))
-		db = bun.NewDB(sqldb, pgdialect.New())
+		dsn := "host=localhost user=postgres password=asd dbname=postgres port=5432 sslmode=disable TimeZone=Asia/Bangkok"
+		new_db, err := gorm.Open(postgres.Open(dsn), &gorm.Config{})
+
+		if err != nil {
+			panic(err)
+		}
+		db = new_db
 	}
 	return db
 }

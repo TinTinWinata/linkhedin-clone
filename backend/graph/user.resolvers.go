@@ -6,9 +6,20 @@ package graph
 import (
 	"context"
 
+	my_auth "github.com/TinTinWinata/gqlgen/auth"
 	"github.com/TinTinWinata/gqlgen/graph/generated"
 	"github.com/TinTinWinata/gqlgen/graph/model"
 )
+
+// Login is the resolver for the login field.
+func (r *mutationResolver) Login(ctx context.Context, email string, password string) (interface{}, error) {
+	return my_auth.UserLogin(ctx, email, password)
+}
+
+// Register is the resolver for the register field.
+func (r *mutationResolver) Register(ctx context.Context, input model.NewUser) (interface{}, error) {
+	return my_auth.UserRegister(ctx, input)
+}
 
 // CreateUser is the resolver for the createUser field.
 func (r *mutationResolver) CreateUser(ctx context.Context, input model.NewUser) (*model.User, error) {
@@ -48,8 +59,8 @@ func (r *mutationResolver) DeleteUser(ctx context.Context, id string) (*model.Us
 
 // User is the resolver for the user field.
 func (r *queryResolver) User(ctx context.Context, id string) (*model.User, error) {
-	var model *model.User
-	return model, r.DB.First(model, "id = ?", id).Error
+	var user *model.User
+	return user, r.DB.First(&user, "id = ?", id).Error
 }
 
 // Users is the resolver for the Users field.

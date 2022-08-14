@@ -7,37 +7,41 @@ import (
 
 	"github.com/99designs/gqlgen/graphql/handler"
 	"github.com/99designs/gqlgen/graphql/playground"
+	"github.com/TinTinWinata/gqlgen/database"
 	"github.com/TinTinWinata/gqlgen/graph"
+	directives "github.com/TinTinWinata/gqlgen/graph/directive"
 	"github.com/TinTinWinata/gqlgen/graph/generated"
-	"github.com/TinTinWinata/gqlgen/graph/model"
-	"gorm.io/driver/postgres"
-	"gorm.io/gorm"
+	middleware "github.com/TinTinWinata/gqlgen/middlewares"
+	"github.com/gorilla/mux"
 )
 
 const defaultPort = "8080"
 
 func main() {
+
 	port := os.Getenv("PORT")
 	if port == "" {
 		port = defaultPort
 	}
 
-	// postgres://postgres:asd@localHost:5432/postgres?sslmode=disable
-	dsn := "host=localhost user=postgres password=asd dbname=postgres port=5432 sslmode=disable TimeZone=Asia/Bangkok"
-	db, err := gorm.Open(postgres.Open(dsn), &gorm.Config{})
+	db := database.GetDB()
+	database.MigrateTable()
 
-	if err != nil {
-		panic(err)
-	}
+	router := mux.NewRouter()
+	router.Use(middleware.AuthMiddleware)
 
-	db.AutoMigrate(&model.User{})
-
-	srv := handler.NewDefaultServer(generated.NewExecutableSchema(generated.Config{Resolvers: &graph.Resolver{
+	config := generated.Config{Resolvers: &graph.Resolver{
 		DB: db,
-	}}))
+	}}
+	config.Directives.Auth = directives.Auth
 
-	http.Handle("/", playground.Handler("GraphQL playground", "/query"))
-	http.Handle("/query", srv)
+	srv := handler.NewDefaultServer(generated.NewExecutableSchema(config))
+
+	router.Handle("/", playground.Handler("GraphQL playground", "/query"))
+	router.Handle("/query", srv)
+
+	// http.Handle("/query", srv)
+
 	log.Printf("connect to http://localhost:%s/ for GraphQL playground", port)
-	log.Fatal(http.ListenAndServe(":"+port, nil))
+	log.Fatal(http.ListenAndServe(":"+port, router))
 }

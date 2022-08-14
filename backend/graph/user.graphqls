@@ -1,6 +1,11 @@
 # GraphQL schema example
 #
 # https://gqlgen.com/getting-started/
+
+directive @auth on FIELD_DEFINITION
+
+scalar Any
+
 type User {
   id: ID!
   name: String!
@@ -8,8 +13,8 @@ type User {
 }
 
 type Query {
-  user(id: ID!): User!
-  users: [User!]!
+  user(id: ID!): User! @auth
+  users: [User!]! @auth
 }
 
 input NewUser {
@@ -18,13 +23,10 @@ input NewUser {
   email: String!
 }
 
-type AuthOps {
-  login(email: String!, password: String!): Any!
-  register(input: NewUser): Any!
-}
-
 type Mutation {
-  # auth: AuthOps!
+  login(email: String!, password: String!): Any!
+  register(input: NewUser!): Any!
+
   createUser(input: NewUser!): User!
   updateUser(id: ID!, input: NewUser!): User!
   deleteUser(id: ID!): User!
