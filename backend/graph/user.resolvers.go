@@ -5,43 +5,57 @@ package graph
 
 import (
 	"context"
-	"fmt"
 
 	"github.com/TinTinWinata/gqlgen/graph/generated"
 	"github.com/TinTinWinata/gqlgen/graph/model"
-	"github.com/google/uuid"
 )
 
 // CreateUser is the resolver for the createUser field.
 func (r *mutationResolver) CreateUser(ctx context.Context, input model.NewUser) (*model.User, error) {
 	model := &model.User{
-		ID:       uuid.NewString(),
 		Name:     input.Name,
 		Email:    input.Email,
 		Password: input.Password,
 	}
-	r.UsersArray = append(r.UsersArray, model)
-	return model, nil
+
+	err := r.DB.Create(model).Error
+	return model, err
 }
 
 // UpdateUser is the resolver for the updateUser field.
 func (r *mutationResolver) UpdateUser(ctx context.Context, id string, input model.NewUser) (*model.User, error) {
-	panic(fmt.Errorf("not implemented"))
+	var model *model.User
+
+	if err := r.DB.First(model, "id = ?", id).Error; err != nil {
+		return nil, err
+	}
+
+	model.Email = input.Email
+	model.Password = input.Password
+	model.Name = input.Name
+	return model, r.DB.Save(model).Error
 }
 
 // DeleteUser is the resolver for the deleteUser field.
 func (r *mutationResolver) DeleteUser(ctx context.Context, id string) (*model.User, error) {
-	panic(fmt.Errorf("not implemented"))
+	var model *model.User
+
+	if err := r.DB.First(model, "id = ?", id).Error; err != nil {
+		return nil, err
+	}
+	return model, r.DB.Delete(model).Error
 }
 
 // User is the resolver for the user field.
 func (r *queryResolver) User(ctx context.Context, id string) (*model.User, error) {
-	panic(fmt.Errorf("not implemented"))
+	var model *model.User
+	return model, r.DB.First(model, "id = ?", id).Error
 }
 
 // Users is the resolver for the Users field.
 func (r *queryResolver) Users(ctx context.Context) ([]*model.User, error) {
-	return r.UsersArray, nil
+	var models []*model.User
+	return models, r.DB.Find(&models).Error
 }
 
 // Mutation returns generated.MutationResolver implementation.

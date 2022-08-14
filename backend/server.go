@@ -23,16 +23,17 @@ func main() {
 	}
 
 	// postgres://postgres:asd@localHost:5432/postgres?sslmode=disable
-	dsn := "host=localhost user=postgres password=asd dbname=PostgreSQL port=5432 sslmode=disable TimeZone=Asia/Bangkok"
+	dsn := "host=localhost user=postgres password=asd dbname=postgres port=5432 sslmode=disable TimeZone=Asia/Bangkok"
 	db, err := gorm.Open(postgres.Open(dsn), &gorm.Config{})
 
 	if err != nil {
 		panic(err)
 	}
 
+	db.AutoMigrate(&model.User{})
+
 	srv := handler.NewDefaultServer(generated.NewExecutableSchema(generated.Config{Resolvers: &graph.Resolver{
-		UsersArray: make([]*model.User, 0),
-		DB:         db,
+		DB: db,
 	}}))
 
 	http.Handle("/", playground.Handler("GraphQL playground", "/query"))
