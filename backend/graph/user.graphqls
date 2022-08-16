@@ -15,6 +15,7 @@ type User {
 type Query {
   user(id: ID!): User! @auth
   users: [User!]! @auth
+  whoisme: User! @auth
 }
 
 input NewUser {
@@ -24,6 +25,9 @@ input NewUser {
 }
 
 type Mutation {
+  follow(id: ID!): String! @auth
+  validateUser(id: ID!): String!
+  validateUserWithEmail(email: String!): String!
   login(email: String!, password: String!): Any!
   register(input: NewUser!): Any!
 

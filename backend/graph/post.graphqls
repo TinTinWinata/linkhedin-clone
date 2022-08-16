@@ -1,0 +1,17 @@
+input NewPost {
+  text: String!
+  user_id: String!
+}
+
+type Post {
+  id: ID!
+  text: String!
+}
+
+extend type Query {
+  posts: [Post!]!
+}
+
+extend type Mutation {
+  createPost(input: NewPost!): String!
+}

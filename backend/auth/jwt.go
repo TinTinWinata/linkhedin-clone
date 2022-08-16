@@ -6,6 +6,8 @@ import (
 	"os"
 	"time"
 
+	"github.com/TinTinWinata/gqlgen/database"
+	"github.com/TinTinWinata/gqlgen/graph/model"
 	"github.com/dgrijalva/jwt-go"
 )
 
@@ -38,6 +40,20 @@ func GenerateJWT(ctx context.Context, userID string) (string, error) {
 		return "", err
 	}
 	return token, nil
+}
+
+func GetUserFromJWT(tokenString string) model.User {
+	claims := jwt.MapClaims{}
+	_, err := jwt.ParseWithClaims(tokenString, claims, nil)
+
+	if err != nil {
+		fmt.Println("Failed to parsing jwt key")
+	}
+
+	db := database.GetDB()
+	var user model.User
+	db.First(&user, "id = ?", claims["id"])
+	return user
 }
 
 func ValidateJWT(ctx context.Context, token string) (*jwt.Token, error) {

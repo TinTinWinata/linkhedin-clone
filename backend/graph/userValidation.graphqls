@@ -1,0 +1,8 @@
+input NewLink {
+  link: String!
+  user_id: String!
+}
+
+extend type Mutation {
+  createUserValidation(input: NewLink!): String!
+}

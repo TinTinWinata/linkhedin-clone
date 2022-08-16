@@ -9,7 +9,58 @@ import (
 	my_auth "github.com/TinTinWinata/gqlgen/auth"
 	"github.com/TinTinWinata/gqlgen/graph/generated"
 	"github.com/TinTinWinata/gqlgen/graph/model"
+	"github.com/TinTinWinata/gqlgen/helper"
+	middleware "github.com/TinTinWinata/gqlgen/middlewares"
 )
+
+// Follow is the resolver for the follow field.
+func (r *mutationResolver) Follow(ctx context.Context, id string) (string, error) {
+	val := *middleware.CtxValue(ctx)
+	var user *model.User
+	err := r.DB.First(&user, "id = ?", val.ID).Error
+	if err != nil {
+		return "Not Found", err
+	}
+
+	var getUser *model.User
+	err = r.DB.First(&getUser, "id = ?", id).Error
+	if err != nil {
+		return "Not Found", err
+	}
+
+	for i, val := range user.FollowedUser {
+		if val == getUser.ID {
+			// Found
+			user.FollowedUser = helper.RemoveArrayByIndex(user.FollowedUser, i)
+			return "Removed", r.DB.Save(user).Error
+		}
+	}
+	// Not Found
+	user.FollowedUser = append(user.FollowedUser, getUser.ID)
+	return "Added", r.DB.Save(user).Error
+}
+
+// ValidateUser is the resolver for the validateUser field.
+func (r *mutationResolver) ValidateUser(ctx context.Context, id string) (string, error) {
+	var user *model.User
+	if err := r.DB.First(&user, "id = ?", id).Error; err != nil {
+		return "Not Found", err
+	}
+
+	user.Validate = true
+	return "Success Validating User!", r.DB.Save(user).Error
+}
+
+// ValidateUserWithEmail is the resolver for the validateUserWithEmail field.
+func (r *mutationResolver) ValidateUserWithEmail(ctx context.Context, email string) (string, error) {
+	var user *model.User
+	if err := r.DB.First(&user, "email = ?", email).Error; err != nil {
+		return "Not Found", err
+	}
+
+	user.Validate = true
+	return "Success Validating User!", r.DB.Save(user).Error
+}
 
 // Login is the resolver for the login field.
 func (r *mutationResolver) Login(ctx context.Context, email string, password string) (interface{}, error) {
@@ -67,6 +118,13 @@ func (r *queryResolver) User(ctx context.Context, id string) (*model.User, error
 func (r *queryResolver) Users(ctx context.Context) ([]*model.User, error) {
 	var models []*model.User
 	return models, r.DB.Find(&models).Error
+}
+
+// Whoisme is the resolver for the whoisme field.
+func (r *queryResolver) Whoisme(ctx context.Context) (*model.User, error) {
+	val := *middleware.CtxValue(ctx)
+	var user *model.User
+	return user, r.DB.First(&user, "id = ?", val.ID).Error
 }
 
 // Mutation returns generated.MutationResolver implementation.

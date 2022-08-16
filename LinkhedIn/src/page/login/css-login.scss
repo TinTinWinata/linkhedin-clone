@@ -1,0 +1,43 @@
+.login-container {
+  width: 100vw;
+  height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  // background-image:url('./login-bg.jpg');
+  background-size: cover;
+}
+
+.login-container form {
+  display: flex;
+  flex-direction: column;
+  border: 1px solid black;
+  border-radius: 15px;
+  padding: 20px;
+}
+.login-container button{
+  margin-top: 20px;
+}
+.login-container label  {
+  margin-top: 10px;
+}
+.register{
+  position: fixed;
+  right: 0px;
+  bottom: 10px;
+  padding: 15px 10px;
+
+}
+
+.register b{
+  cursor: pointer;
+}
+
+.register b:hover{
+    text-decoration: underline;
+
+}
+
+.register p {
+  margin : 0px;
+}

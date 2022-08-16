@@ -2,6 +2,7 @@ package my_auth
 
 import (
 	"context"
+	"errors"
 
 	"github.com/TinTinWinata/gqlgen/graph/model"
 	"github.com/vektah/gqlparser/v2/gqlerror"
@@ -27,8 +28,26 @@ func UserRegister(ctx context.Context, newUser model.NewUser) (interface{}, erro
 	if err != nil {
 		return nil, err
 	}
+
+	// verification := &model.UserValidation{
+	// 	ID:     uuid.New().String(),
+	// 	Link:   uuid.New().String(),
+	// 	UserID: createdUser.ID,
+	// }
+
+	// db := database.GetDB()
+	// err = db.Create(verification).Error
+
+	if err != nil {
+		return nil, err
+	}
+
+	// mail.SendVerification(verification.Link)
+
 	return map[string]interface{}{
 		"token": token,
+		"name":  createdUser.Name,
+		"email": createdUser.Email,
 	}, nil
 }
 
@@ -43,6 +62,10 @@ func UserLogin(ctx context.Context, email string, password string) (interface{},
 		return nil, err
 	}
 
+	if user.Validate == false {
+		return nil, errors.New("Your account is not authenticated!")
+	}
+
 	if err := ComparePassword(user.Password, password); err != nil {
 		return nil, err
 	}
@@ -53,6 +76,10 @@ func UserLogin(ctx context.Context, email string, password string) (interface{},
 	}
 
 	return map[string]interface{}{
-		"token": token,
+		"id":            user.ID,
+		"token":         token,
+		"followed_user": user.FollowedUser,
+		"name":          user.Name,
+		"email":         user.Email,
 	}, nil
 }

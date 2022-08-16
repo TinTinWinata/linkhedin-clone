@@ -1,5 +1,6 @@
 :root {
   --foreground: #4e4e4e;
+  --moreForeground: #252525;
   --background: #f7f7f7;
   --backdrop: #e1e1e1;
   --first: #2e007d;
@@ -33,8 +34,12 @@ body {
   color: var(--foreground)
 }
 
+button:hover{
+  background-color: var(--moreForeground);
+}
+
 button {
-  background-color: transparent;
+  cursor: pointer;
   border-radius: 5px;
   padding: 5px 10px;
   border: 0px;

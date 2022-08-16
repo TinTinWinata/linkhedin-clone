@@ -1,0 +1,13 @@
+.home{
+  display:flex;
+  justify-content: center;
+  .home-center{
+    width: 50%;
+    text-align: center;
+    .start-btn{
+      height: 40px;
+      width: 50%;
+    }
+  }
+}
+

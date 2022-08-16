@@ -1,0 +1,167 @@
+:root {
+  --light-fg: #4e4e4e;
+  --light-more-fg: #252525;
+  --light-bg: #f7f7f7;
+  --light-bd: #e1e1e1;
+  --light-first: #0056ab;
+  --light-second: #004283;
+
+  --dark-fg: #ffffff;
+  --dark-more-fg: #e2e2e2;
+  --dark-bg: #323232;
+  --dark-bd: #0f0f0f;
+  --dark-first: #8138ff;
+  --dark-second: #b899ff;
+}
+
+
+.center{
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+.flex{
+  display: flex;
+}
+
+
+.flex-row{
+  flex-direction: row;
+}
+
+.flex-col{
+  flex-direction: column;
+}
+
+body {
+  margin: 0;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Roboto", "Oxygen",
+    "Ubuntu", "Cantarell", "Fira Sans", "Droid Sans", "Helvetica Neue",
+    sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+code {
+  font-family: source-code-pro, Menlo, Monaco, Consolas, "Courier New",
+    monospace;
+}
+
+.popup{
+  background-color: rgba(0, 0, 0, 0.6);
+  width: 100%;
+  height: 100%;
+  top:50%;
+  left: 50%;
+  position: fixed;
+  transform: translate(-50%, -50%);
+}
+
+.popup-container{
+  position: fixed;
+  transform: translate(-50%, -50%);
+  top: 50%;
+  left: 50%;
+}
+
+.dark{  
+  background-color: var(--dark-bg);
+  a{
+    text-decoration: none;
+    color: var(--dark-fg)
+  }
+  .svg{
+    color: var(--dark-fg);
+  }
+  .register{
+    background-color: var(--dark-fg);
+    color: var(--dark-bg);
+  }
+  .register-image{
+    background-color: var(--dark-bd);
+  }  
+  
+  .register-to-login{
+    background-color: var(--dark-fg)
+  }
+
+
+  input {
+    border-radius: 5px;
+    border: 1px solid black;
+    padding: 5px 5px;
+    color: var(--dark-fg)
+  }
+  
+  
+  body {
+    background-color: var(--dark-bg);
+    color: var(--dark-fg)
+  }
+  
+  button:hover{
+    background-color: var(--dark-second);
+  }
+
+
+  button {
+    cursor: pointer;
+    border-radius: 5px;
+    padding: 5px 10px;
+    border: 0px;
+    background-color: var(--dark-first);
+    color: var(--dark-bg)
+  }
+  
+}
+
+.light{
+  a{
+    text-decoration: none;
+    color: var(--light-fg)
+  }
+
+  .svg{
+    color: var(--light-fg);
+  }
+  .register{
+    background-color: var(--light-fg);
+    color: var(--light-bg);
+  }
+
+  .register-image{
+    background-color: var(--light-bd);
+  }  
+  
+  .register-to-login{
+    background-color: var(--light-fg)
+  }
+
+  input {
+    border-radius: 5px;
+    border: 1px solid black;
+    padding: 5px 5px;
+    color: var(--light-fg)
+  }
+  
+  
+  body {
+    background-color: var(--light-bg);
+    color: var(--light-fg)  
+  }
+  
+  button:hover{
+    background-color: var(--light-second);
+  }
+  
+  button {
+    cursor: pointer;
+    border-radius: 5px;
+    padding: 5px 10px;
+    border: 0px;
+    background-color: var(--light-first);
+    color: var(--light-bg)
+  }
+  
+}
+
