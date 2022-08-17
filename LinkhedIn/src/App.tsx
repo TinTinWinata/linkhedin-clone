@@ -13,13 +13,18 @@ import { Shortcut } from "./script/shortcut";
 import ThemeProvider, { useTheme } from "./hooks/themeContext";
 import Verification from "./page/verification/verification";
 import Profile from "./page/profile/profile";
+
 import {
   ApolloClient,
   ApolloLink,
   ApolloProvider,
+  createHttpLink,
   HttpLink,
   InMemoryCache,
 } from "@apollo/client";
+import { createUploadLink } from "apollo-upload-client";
+import Network from "./page/network/network";
+import RefetchProvider from "./hooks/refetchContext";
 
 function App() {
   const { loading } = useLoading();
@@ -38,7 +43,9 @@ function App() {
     return forward(operation);
   });
 
-  const httpLink = new HttpLink({ uri: url });
+  const httpLink = createHttpLink({
+    uri: url,
+  });
 
   const client = new ApolloClient({
     link: authLink.concat(httpLink),
@@ -50,19 +57,21 @@ function App() {
       <BrowserRouter>
         <ApolloProvider client={client}>
           <ToastContainer></ToastContainer>
+          <RefetchProvider>
+            <Shortcut>
+              {loading ? <Loading></Loading> : ""}
+              <Routes>
+                <Route
+                  path="/verification/:id"
+                  element={<Verification />}
+                ></Route>
 
-          <Shortcut>
-            {loading ? <Loading></Loading> : ""}
-            <Routes>
-              <Route
-                path="/verification/:id"
-                element={<Verification />}
-              ></Route>
-              <Route path="/login" element={<Login />}></Route>
-              <Route path="/register" element={<Register />}></Route>
-              <Route path="/*" element={<MiddlewareRoutes />}></Route>
-            </Routes>
-          </Shortcut>
+                <Route path="/login" element={<Login />}></Route>
+                <Route path="/register" element={<Register />}></Route>
+                <Route path="/*" element={<MiddlewareRoutes />}></Route>
+              </Routes>
+            </Shortcut>
+          </RefetchProvider>
         </ApolloProvider>
       </BrowserRouter>
     </div>

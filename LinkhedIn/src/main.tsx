@@ -7,16 +7,12 @@ import ThemeProvider from "./hooks/themeContext";
 import UserAuthProvider from "./hooks/userContext";
 import "./style.scss";
 
-
-
 ReactDOM.createRoot(document.getElementById("root") as HTMLElement).render(
-
-    <LoadingContextProvider>
-      <UserAuthProvider>
-        <ThemeProvider>
-          <App />
-        </ThemeProvider>
-      </UserAuthProvider>
-    </LoadingContextProvider>
-
+  <LoadingContextProvider>
+    <UserAuthProvider>
+      <ThemeProvider>
+        <App />
+      </ThemeProvider>
+    </UserAuthProvider>
+  </LoadingContextProvider>
 );

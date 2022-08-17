@@ -7,4 +7,5 @@ func MigrateTable() {
 	db.AutoMigrate(&model.User{})
 	db.AutoMigrate(&model.UserValidation{})
 	db.AutoMigrate(&model.Post{})
+	db.AutoMigrate(&model.ConnectRequest{})
 }

@@ -1,4 +1,11 @@
 .create-post{
+  .img-preview{
+    max-width: 300px;
+    max-height: 300px;
+    margin: 0 auto;
+    margin-top: 20px;
+  }
+
   .popup-container{
     background-color: white;
     height: fit-content;
@@ -8,8 +15,30 @@
   .post-btn{
     border-radius: 30px; 
     margin-top: 100px;
+    width: 100px;
     margin-bottom: 10px;
+    margin-right: 20px;
   }
+  .bottom{
+    display: flex;
+    justify-content:space-between ;
+    align-items: baseline;  
+    input{
+      display: none;
+    }
+  }
+  .svg{
+     margin-left: 10px;
+      width: 20px;
+      height: 20px;
+      cursor: pointer;
+
+
+    
+  }
+
+
+
   .x-icon{
     width: 20px;
     height: 20px;

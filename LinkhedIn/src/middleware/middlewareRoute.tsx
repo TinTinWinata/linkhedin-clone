@@ -3,7 +3,9 @@ import { Route, Routes, useNavigate } from "react-router-dom";
 import Navbar from "../component/Navbar/navbar";
 import { useUserAuth } from "../hooks/userContext";
 import Home from "../page/home/home";
+import Network from "../page/network/network";
 import Profile from "../page/profile/profile";
+import Search from "../page/search/search";
 
 export default function MiddlewareRoutes() {
   const { getUser } = useUserAuth();
@@ -28,6 +30,8 @@ export default function MiddlewareRoutes() {
       <Navbar></Navbar>
       <Routes>
         <Route path="/" element={<Home />}></Route>
+        <Route path="/network" element={<Network />}></Route>
+        <Route path="/search/:query" element={<Search />}></Route>
         <Route path="/home" element={<Home />}></Route>
         <Route path="/profile/:id" element={<Profile />}></Route>
       </Routes>

@@ -1,12 +1,13 @@
 .home{
+  margin-top: 30px;
   display:flex;
   justify-content: center;
   .home-center{
-    width: 50%;
+    width: 33%;
     text-align: center;
     .start-btn{
       height: 40px;
-      width: 50%;
+      width: 100%;
     }
   }
 }

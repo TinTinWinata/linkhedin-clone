@@ -2,7 +2,7 @@ package model
 
 import "time"
 
-type Educatiion struct {
+type Education struct {
 	ID             string    `json:"id" gorm:"primaryKey"`
 	UserID         string    `json:"user_id"`
 	Title          string    `json:"title"`

@@ -10,6 +10,12 @@ export default function Navbar() {
   const { user } = useUserAuth();
   const navigate = useNavigate();
 
+  function onSearch(e: any) {
+    e.preventDefault();
+    const search = e.target.search.value;
+    navigate("/search/" + search);
+  }
+
   return (
     <div className="navbar">
       <div className="container">
@@ -23,7 +29,9 @@ export default function Navbar() {
               alt="Logo"
             />
           </div>
-          <input type="text" />
+          <form onSubmit={onSearch}>
+            <input type="text" name="search" />
+          </form>
           <div className="center logout">
             <LogoutButton>Logout</LogoutButton>
           </div>

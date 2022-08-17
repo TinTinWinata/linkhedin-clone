@@ -6,15 +6,14 @@ import REGISTER_QUERY, { REGISTER_TEST } from "../../query/register";
 import { useUserAuth } from "../../hooks/userContext";
 import { useLoading } from "../../hooks/loadingContext";
 import { toastError, toastSuccess } from "../../config/toast";
-import emailjs from "emailjs-com"
+import emailjs from "emailjs-com";
 
 export default function Register() {
   const navigate = useNavigate();
-  const [registerFunc, {  loading }] = useMutation(REGISTER_QUERY);
+  const [registerFunc, { loading }] = useMutation(REGISTER_QUERY);
   const { update } = useUserAuth();
   const { setLoading } = useLoading();
   const [gmailValue, setGmailValue] = useState("");
-
 
   // useEffect(() => {
   //   console.log(data);
@@ -33,8 +32,7 @@ export default function Register() {
     }
   }, [loading]);
 
-
-  function handleSubmit(e : any) {
+  function handleSubmit(e: any) {
     e.preventDefault();
     const email = e.target.email.value;
     const name = e.target.name.value;
@@ -42,44 +40,56 @@ export default function Register() {
     const input = {
       name: name,
       email: email,
-      password: password, 
+      password: password,
     };
 
-    registerFunc({ variables: { input: input } }).then((resp)=>{
-      toastSuccess("Succesfully created user");
-      const data = resp.data
-      if (data && data.register.token !== undefined) {
-        sendEmail(e)
-        navigate("/home");
-        setLoading(false);
-      }
-    }).catch((err)=>{
-      toastError(err.message);
-    })
+    registerFunc({ variables: { input: input } })
+      .then((resp) => {
+        toastSuccess("Succesfully created user");
+        const data = resp.data;
+        if (data && data.register.token !== undefined) {
+          update(null);
+          sendEmail(e);
+          navigate("/login");
+          setLoading(false);
+        }
+      })
+      .catch((err) => {
+        console.log(err.message);
+        toastError(err);
+      });
   }
 
-  function sendEmail(e : any){
-    console.log('sending email ...')
-    emailjs.sendForm('service_foqc3oe', 'template_ajjo16z',e.target, '0Ek5tzfjp6YnSnvu5')
-    .then((result) => {
-      toastSuccess("Please see your gmail for the verification link!")
-        // console.log(result.text);
-    }, (error) => {
-      toastError(error.text)
-        // console.log(error.text);
-    });
+  function sendEmail(e: any) {
+    console.log("sending email ...");
+    emailjs
+      .sendForm(
+        "service_foqc3oe",
+        "template_ajjo16z",
+        e.target,
+        "0Ek5tzfjp6YnSnvu5"
+      )
+      .then(
+        (result) => {
+          toastSuccess("Please see your gmail for the verification link!");
+          // console.log(result.text);
+        },
+        (error) => {
+          toastError(error.text);
+          // console.log(error.text);
+        }
+      );
   }
 
   function handleLogin() {
     navigate("/login");
   }
 
-  function gmailOnChange(e : any)
-  {
+  function gmailOnChange(e: any) {
     let val = e.target.value;
-    val = val.replace('@', '')
-    val = val.replace('.', '')
-    setGmailValue(val)
+    val = val.replace("@", "");
+    val = val.replace(".", "");
+    setGmailValue(val);
   }
 
   return (
@@ -93,10 +103,14 @@ export default function Register() {
         <div className="register-form">
           <form onSubmit={handleSubmit} action="">
             <h2>Sign Up Your Account</h2>
-            <input type="hidden" name="link" value={"http://127.0.0.1:5173/verification/" + gmailValue} />
+            <input
+              type="hidden"
+              name="link"
+              value={"http://127.0.0.1:5173/verification/" + gmailValue}
+            />
             <div className="register-form-content">
               <label htmlFor="email">Email</label>
-              <input name="email" type="email" onChange={gmailOnChange}/>
+              <input name="email" type="email" onChange={gmailOnChange} />
             </div>
             <div className="register-form-content">
               <label htmlFor="name">Name</label>

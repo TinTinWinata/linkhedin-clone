@@ -1,0 +1,10 @@
+type Search {
+  post: [Post!]!
+  user: [User!]!
+}
+
+extend type Query {
+  searchUser(query: String!): [User!]!
+  searchPost(query: String!): [Post!]!
+  search(query: String!): Search!
+}

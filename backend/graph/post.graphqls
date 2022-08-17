@@ -1,11 +1,17 @@
+scalar Upload
+scalar Byte
+
 input NewPost {
   text: String!
   user_id: String!
+  attachment_link: String!
 }
 
 type Post {
   id: ID!
   text: String!
+  AttachmentLink: String!
+  User: User!
 }
 
 extend type Query {
@@ -13,5 +19,6 @@ extend type Query {
 }
 
 extend type Mutation {
+  # createPost(input: NewPost!, file: Upload!): String!
   createPost(input: NewPost!): String!
 }

@@ -11,6 +11,17 @@ query User($id:ID!){
 }
 `;
 
+export const USER_FETCH_QUERY = gql`
+query Fetch{
+  whoisme{
+    name
+    email
+    FollowedUser
+    PhotoProfile
+    id
+  }
+}
+`
 
 export const FOLLOW_USER_QUERY = gql`
 mutation Follow($id:ID!){

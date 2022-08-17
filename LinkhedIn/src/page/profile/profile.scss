@@ -2,13 +2,25 @@
 
   box-shadow: 10px;
   .profile-container{
-    margin: 20px;
-    border-radius: 50px;
     
+    width: fit-content;
+    height: fit-content;
+
+    margin: 20px;
+    border-radius: 10px;
+    padding: 20px;
+    
+    button + button {
+      margin-left: 10px;
+    }
+
     img{
       border-radius: 50%;
-      width: 5%;
+      width: 30%;
+      cursor: pointer;
+    }
+    input{
+      display: none;
     }
   }
-  
 }

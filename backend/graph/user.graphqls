@@ -10,11 +10,15 @@ type User {
   id: ID!
   name: String!
   email: String!
+  FollowedUser: [String!]!
+  PhotoProfile: String!
+  ConnectedUser: [String!]!
+  RequestConnect: [String!]!
 }
 
 type Query {
   user(id: ID!): User! @auth
-  users: [User!]! @auth
+  users: [User!]!
   whoisme: User! @auth
 }
 

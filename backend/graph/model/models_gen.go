@@ -8,12 +8,18 @@ type NewLink struct {
 }
 
 type NewPost struct {
-	Text   string `json:"text"`
-	UserID string `json:"user_id"`
+	Text           string `json:"text"`
+	UserID         string `json:"user_id"`
+	AttachmentLink string `json:"attachment_link"`
 }
 
 type NewUser struct {
 	Name     string `json:"name"`
 	Password string `json:"password"`
 	Email    string `json:"email"`
+}
+
+type Search struct {
+	Post []*Post `json:"post"`
+	User []*User `json:"user"`
 }

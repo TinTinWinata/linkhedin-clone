@@ -5,6 +5,7 @@ package graph
 
 import (
 	"context"
+	"fmt"
 
 	my_auth "github.com/TinTinWinata/gqlgen/auth"
 	"github.com/TinTinWinata/gqlgen/graph/generated"
@@ -127,11 +128,30 @@ func (r *queryResolver) Whoisme(ctx context.Context) (*model.User, error) {
 	return user, r.DB.First(&user, "id = ?", val.ID).Error
 }
 
+// FollowedUser is the resolver for the FollowedUser field.
+func (r *userResolver) FollowedUser(ctx context.Context, obj *model.User) ([]string, error) {
+	panic(fmt.Errorf("not implemented"))
+}
+
+// ConnectedUser is the resolver for the ConnectedUser field.
+func (r *userResolver) ConnectedUser(ctx context.Context, obj *model.User) ([]string, error) {
+	panic(fmt.Errorf("not implemented"))
+}
+
+// RequestConnect is the resolver for the RequestConnect field.
+func (r *userResolver) RequestConnect(ctx context.Context, obj *model.User) ([]string, error) {
+	panic(fmt.Errorf("not implemented"))
+}
+
 // Mutation returns generated.MutationResolver implementation.
 func (r *Resolver) Mutation() generated.MutationResolver { return &mutationResolver{r} }
 
 // Query returns generated.QueryResolver implementation.
 func (r *Resolver) Query() generated.QueryResolver { return &queryResolver{r} }
 
+// User returns generated.UserResolver implementation.
+func (r *Resolver) User() generated.UserResolver { return &userResolver{r} }
+
 type mutationResolver struct{ *Resolver }
 type queryResolver struct{ *Resolver }
+type userResolver struct{ *Resolver }

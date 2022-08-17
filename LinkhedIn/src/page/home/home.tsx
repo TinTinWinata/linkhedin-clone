@@ -6,6 +6,7 @@ import CreatePost from "../../component/Popup/CreatePost/createPost";
 import { useUserAuth } from "../../hooks/userContext";
 import { SEARCH_POST_QUERY } from "../../query/post";
 import "./css-home.scss";
+import PostCard from "./post-card/post-card";
 
 export default function Home() {
   const { user } = useUserAuth();
@@ -21,7 +22,9 @@ export default function Home() {
     <>
       <div className="home">
         <div className="home-center">
-          <button className="start-btn" onClick={handlePopup}>Start a Post</button>
+          <button className="start-btn" onClick={handlePopup}>
+            Start a Post
+          </button>
           {handleCreate ? (
             <CreatePost setHandle={setHandleCreate}></CreatePost>
           ) : (
@@ -30,10 +33,11 @@ export default function Home() {
           {data
             ? data.posts.map((post: any, idx: any) => {
                 return (
-                  <div
+                  <PostCard
                     key={idx}
-                    dangerouslySetInnerHTML={{ __html: post.text }}
-                  ></div>
+                    text={post.text}
+                    link={post.AttachmentLink}
+                  ></PostCard>
                 );
               })
             : ""}

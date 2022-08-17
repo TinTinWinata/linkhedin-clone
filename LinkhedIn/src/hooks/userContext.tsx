@@ -1,4 +1,6 @@
-import { createContext, useContext, useState } from "react";
+import { useQuery } from "@apollo/client";
+import { createContext, useContext, useEffect, useState } from "react";
+import { USER_FETCH_QUERY } from "../query/user";
 
 const userContext = createContext({} as any);
 const STORAGE_KEY = "FB911E970F29E146D493A4EEE52943B2";
@@ -8,6 +10,7 @@ export default function UserAuthProvider({ children }: { children: any }) {
 
   function getLocalStorage() {
     const temp = localStorage.getItem(STORAGE_KEY) || "";
+    if (temp === "") return false;
     const userStorage = JSON.parse(temp);
     if (userStorage === undefined || userStorage === null) {
       return false;
