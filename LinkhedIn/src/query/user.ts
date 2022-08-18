@@ -13,12 +13,14 @@ query User($id:ID!){
 
 export const USER_FETCH_QUERY = gql`
 query Fetch{
-  whoisme{
-    name
-    email
-    FollowedUser
-    PhotoProfile
+ 	 whoisme{
     id
+    name,
+    email,
+    FollowedUser,
+    PhotoProfile,
+    ConnectedUser,
+    RequestConnect
   }
 }
 `

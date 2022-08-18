@@ -1,0 +1,19 @@
+input Message {
+  userId: ID!
+  message: String!
+}
+
+type Chat {
+  ID: String!
+  ChatID: String!
+  User: User!
+  Message: String!
+}
+
+extend type Query {
+  getAllMessage(chatId: String!): [Chat!]!
+}
+
+extend type Mutation {
+  message(input: Message!): String!
+}

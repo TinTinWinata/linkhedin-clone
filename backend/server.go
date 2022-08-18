@@ -42,8 +42,8 @@ func main() {
 	database.MigrateTable()
 
 	router := mux.NewRouter()
-	router.Use(middleware.AuthMiddleware)
 	router.Use(MyCors)
+	router.Use(middleware.AuthMiddleware)
 
 	config := generated.Config{Resolvers: &graph.Resolver{
 		DB: db,

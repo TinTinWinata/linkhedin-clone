@@ -2,11 +2,26 @@
 
 .network-request{
   width: 30%;
+  margin: 20px;
+  padding: 20px;
   .container{
     width: 100%;
   }
 }
 
 .network{
-  margin-top: 10px;
+}
+
+
+.request-people{
+  padding: 20px;
+  .name{
+    margin-bottom: 3px;
+  }
+  .btn{
+    margin-top: 3px;
+  }
+  button + button {
+    margin-left: 10px;
+  }
 }

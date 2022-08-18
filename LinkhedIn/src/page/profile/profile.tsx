@@ -63,8 +63,8 @@ export default function Profile() {
           ) : (
             ""
           )}
-
           <p>{data ? data.user.name : ""}</p>
+          <p>{data ? data.user.email : ""}</p>
         </div>
       </div>
     </div>

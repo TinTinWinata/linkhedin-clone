@@ -5,14 +5,57 @@ package graph
 
 import (
 	"context"
-	"fmt"
 
 	my_auth "github.com/TinTinWinata/gqlgen/auth"
 	"github.com/TinTinWinata/gqlgen/graph/generated"
 	"github.com/TinTinWinata/gqlgen/graph/model"
 	"github.com/TinTinWinata/gqlgen/helper"
 	middleware "github.com/TinTinWinata/gqlgen/middlewares"
+	"github.com/google/uuid"
 )
+
+// RequestChangePassword is the resolver for the requestChangePassword field.
+func (r *mutationResolver) RequestChangePassword(ctx context.Context) (string, error) {
+	val := *middleware.CtxValue(ctx)
+	var user *model.User
+	err := r.DB.First(&user, "id = ?", val.ID).Error
+	if err != nil {
+		return "Error", err
+	}
+
+	passwordRequest := &model.ChangePasswordRequest{
+		ID:    uuid.NewString(),
+		Email: user.Email,
+	}
+	err = r.DB.Create(passwordRequest).Error
+	if err != nil {
+		return "Error", err
+	}
+
+	return passwordRequest.ID, nil
+}
+
+// ChangePassword is the resolver for the changePassword field.
+func (r *mutationResolver) ChangePassword(ctx context.Context, password string, id string) (string, error) {
+	var request *model.ChangePasswordRequest
+	err := r.DB.First(&request, "id = ?", id).Error
+	if err != nil {
+		return "Code Not Valid", err
+	}
+
+	var user *model.User
+	err = r.DB.First(&user, "email = ?", request.Email).Error
+	if err != nil {
+		return "User not found", err
+	}
+
+	user.Password = my_auth.HashPassword(password)
+	err = r.DB.Save(user).Error
+	if err != nil {
+		return "Failed to update user", err
+	}
+	return "Change Password Succed!", nil
+}
 
 // Follow is the resolver for the follow field.
 func (r *mutationResolver) Follow(ctx context.Context, id string) (string, error) {
@@ -125,22 +168,26 @@ func (r *queryResolver) Users(ctx context.Context) ([]*model.User, error) {
 func (r *queryResolver) Whoisme(ctx context.Context) (*model.User, error) {
 	val := *middleware.CtxValue(ctx)
 	var user *model.User
-	return user, r.DB.First(&user, "id = ?", val.ID).Error
+	err := r.DB.First(&user, "id = ?", val.ID).Error
+	if err != nil {
+		return nil, err
+	}
+	return user, nil
 }
 
 // FollowedUser is the resolver for the FollowedUser field.
 func (r *userResolver) FollowedUser(ctx context.Context, obj *model.User) ([]string, error) {
-	panic(fmt.Errorf("not implemented"))
+	return obj.FollowedUser, nil
 }
 
 // ConnectedUser is the resolver for the ConnectedUser field.
 func (r *userResolver) ConnectedUser(ctx context.Context, obj *model.User) ([]string, error) {
-	panic(fmt.Errorf("not implemented"))
+	return obj.ConnectedUser, nil
 }
 
 // RequestConnect is the resolver for the RequestConnect field.
 func (r *userResolver) RequestConnect(ctx context.Context, obj *model.User) ([]string, error) {
-	panic(fmt.Errorf("not implemented"))
+	return obj.RequestConnect, nil
 }
 
 // Mutation returns generated.MutationResolver implementation.

@@ -36,13 +36,14 @@ export default function Verification() {
       .then((resp) => {
         console.log("resp :", resp);
         setLoading(false);
-        navigate("/login");
+        // navigate("/login");
       })
       .catch((err) => {
         setLoading(false);
+        console.log(err);
         toastError(err.messsage);
         // console.log(err.message)
-        navigate("/");
+        // navigate("/");
       });
   }
 

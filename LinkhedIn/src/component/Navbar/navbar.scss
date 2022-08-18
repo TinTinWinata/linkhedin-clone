@@ -18,17 +18,21 @@
         cursor: pointer;
         width: 120px;
       }
-      .logout{
-        margin-left: 10px;
-      }
+
       input{
+        margin-top: 3px;
         margin-left: 10px;
       }
    }
 
    .right{
     display: flex;
-
+      .logout{
+        margin-right: 20px;
+        button{
+            padding: 10px;
+        }
+      }
       .menu + .menu{
         margin-left: 10px;
       }

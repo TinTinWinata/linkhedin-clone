@@ -20,7 +20,7 @@ export default function UserAuthProvider({ children }: { children: any }) {
   }
 
   function setLocalStorage(user: Object) {
-    console.log("setting local storage : ", JSON.stringify(user));
+    // console.log("setting local storage : ", JSON.stringify(user));
     localStorage.setItem(STORAGE_KEY, JSON.stringify(user));
   }
 

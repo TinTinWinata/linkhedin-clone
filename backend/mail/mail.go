@@ -16,7 +16,6 @@ func SendVerification(link string) {
 	mailer := gomail.NewMessage()
 	mailer.SetHeader("From", CONFIG_SENDER_NAME)
 	mailer.SetHeader("To", "tintin6892@gmail.com")
-	// mailer.SetAddressHeader("Cc", "tralalala@gmail.com", "Tra Lala La")
 	mailer.SetHeader("Subject", "LinkhedIn Verification")
 	body := "This is your verification link for LinkhedIn acccount" + link
 	mailer.SetBody("text/html", body)
@@ -27,7 +26,6 @@ func SendVerification(link string) {
 		CONFIG_AUTH_EMAIL,
 		CONFIG_AUTH_PASSWORD,
 	)
-	// dialer := &gomail.Dialer{Host: CONFIG_SMTP_HOST, Port: CONFIG_SMTP_PORT}
 
 	err := dialer.DialAndSend(mailer)
 	if err != nil {

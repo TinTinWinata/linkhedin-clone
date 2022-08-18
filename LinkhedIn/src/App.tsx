@@ -25,6 +25,7 @@ import {
 import { createUploadLink } from "apollo-upload-client";
 import Network from "./page/network/network";
 import RefetchProvider from "./hooks/refetchContext";
+import Forgetpassword from "./page/forget-password/forgetpassword";
 
 function App() {
   const { loading } = useLoading();
@@ -34,12 +35,14 @@ function App() {
   const main_url = "http://localhost:8080";
   const url = main_url + "/query";
 
-  const authLink = new ApolloLink((operation, forward) => {
-    operation.setContext({
-      headers: {
-        authorization: user ? `Bearer ${user.token}` : "",
-      },
-    });
+  const authLink = new ApolloLink((operation: any, forward: any) => {
+    if (user && user.token !== undefined) {
+      operation.setContext({
+        headers: {
+          authorization: `Bearer ${user.token}`,
+        },
+      });
+    }
     return forward(operation);
   });
 
@@ -49,7 +52,7 @@ function App() {
 
   const client = new ApolloClient({
     link: authLink.concat(httpLink),
-    cache: new InMemoryCache(),
+    cache: new InMemoryCache({}),
   });
 
   return (
@@ -66,6 +69,10 @@ function App() {
                   element={<Verification />}
                 ></Route>
 
+                <Route
+                  path="/forget-password"
+                  element={<Forgetpassword />}
+                ></Route>
                 <Route path="/login" element={<Login />}></Route>
                 <Route path="/register" element={<Register />}></Route>
                 <Route path="/*" element={<MiddlewareRoutes />}></Route>

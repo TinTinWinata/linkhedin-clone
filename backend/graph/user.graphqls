@@ -10,8 +10,8 @@ type User {
   id: ID!
   name: String!
   email: String!
-  FollowedUser: [String!]!
   PhotoProfile: String!
+  FollowedUser: [String!]!
   ConnectedUser: [String!]!
   RequestConnect: [String!]!
 }
@@ -29,12 +29,13 @@ input NewUser {
 }
 
 type Mutation {
+  requestChangePassword: String!
+  changePassword(password: String!, id: ID!): String!
   follow(id: ID!): String! @auth
   validateUser(id: ID!): String!
   validateUserWithEmail(email: String!): String!
   login(email: String!, password: String!): Any!
   register(input: NewUser!): Any!
-
   createUser(input: NewUser!): User!
   updateUser(id: ID!, input: NewUser!): User!
   deleteUser(id: ID!): User!

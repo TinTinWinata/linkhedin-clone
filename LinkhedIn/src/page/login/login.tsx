@@ -16,9 +16,9 @@ export default function Login() {
   const { setLoading } = useLoading();
   const [loginFunc, { data, loading, error }] = useMutation(LOGIN_QUERY);
 
-  useEffect(() => { 
+  useEffect(() => {
     const user = getUser();
-    console.log('user : ', user);
+    console.log("user : ", user);
     if (user.token !== undefined) {
       navigate("/");
     }
@@ -46,7 +46,7 @@ export default function Login() {
     }
   }, [error]);
 
-  function handleSubmit(e : any) {
+  function handleSubmit(e: any) {
     e.preventDefault();
     const email = e.target.email.value;
     const password = e.target.password.value;

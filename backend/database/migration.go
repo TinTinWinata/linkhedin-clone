@@ -8,4 +8,5 @@ func MigrateTable() {
 	db.AutoMigrate(&model.UserValidation{})
 	db.AutoMigrate(&model.Post{})
 	db.AutoMigrate(&model.ConnectRequest{})
+	db.AutoMigrate(&model.Chat{})
 }

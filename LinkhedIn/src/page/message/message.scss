@@ -1,0 +1,45 @@
+
+
+.message-container{
+  display: flex;
+  justify-content: center;
+  .message{
+    width: 30%;
+    h2{
+      margin-left: 20px;
+      padding-top: 20px;
+      display: flex;
+
+    }
+  }
+  display: flex;
+  .message-user{
+    padding: 20px;
+    border: 1px solid rgba(56, 56, 56, 0.204);
+    &:hover{
+      cursor: pointer;
+      background-color: rgba(211, 211, 211, 0.463);
+    }
+  }
+  .chat{
+    padding-left: 10px;
+    padding-bottom: 10px;
+    width: 60%;
+    margin-left: 30px;
+    input{
+      width: 80%;
+    }
+    button{
+      margin-left: 10px;
+      height: 35px;
+    }
+
+    .chat-container{
+      padding: 20px;
+      overflow-y: scroll;
+      height: 800px;
+    }
+  }
+  
+}
+

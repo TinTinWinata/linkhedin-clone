@@ -2,6 +2,11 @@
 
 package model
 
+type Message struct {
+	UserID  string `json:"userId"`
+	Message string `json:"message"`
+}
+
 type NewLink struct {
 	Link   string `json:"link"`
 	UserID string `json:"user_id"`

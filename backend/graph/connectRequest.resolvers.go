@@ -26,8 +26,7 @@ func (r *mutationResolver) CreateRequest(ctx context.Context, userID string) (st
 		return "Error", err
 	}
 	getUser.RequestConnect = append(getUser.RequestConnect, user.ID)
-
-	return "Ok", nil
+	return "Ok", r.DB.Save(getUser).Error
 }
 
 // AcceptRequest is the resolver for the acceptRequest field.
@@ -59,6 +58,16 @@ func (r *mutationResolver) AcceptRequest(ctx context.Context, id string) (string
 	user.ConnectedUser = append(user.ConnectedUser, getUser.ID)
 	getUser.ConnectedUser = append(getUser.ConnectedUser, user.ID)
 
+	err = r.DB.Save(getUser).Error
+	if err != nil {
+		return "Error", err
+	}
+
+	err = r.DB.Save(user).Error
+	if err != nil {
+		return "Error", err
+	}
+
 	return "Ok", nil
 }
 
@@ -86,5 +95,16 @@ func (r *mutationResolver) DeclineRequest(ctx context.Context, id string) (strin
 			user.RequestConnect = helper.RemoveArrayByIndex(user.RequestConnect, i)
 		}
 	}
+
+	err = r.DB.Save(getUser).Error
+	if err != nil {
+		return "Error", err
+	}
+
+	err = r.DB.Save(user).Error
+	if err != nil {
+		return "Error", err
+	}
+
 	return "Ok", nil
 }

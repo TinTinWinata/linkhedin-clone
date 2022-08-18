@@ -32,11 +32,11 @@ export default function Navbar() {
           <form onSubmit={onSearch}>
             <input type="text" name="search" />
           </form>
+        </div>
+        <div className="right">
           <div className="center logout">
             <LogoutButton>Logout</LogoutButton>
           </div>
-        </div>
-        <div className="right">
           <Menu text="Home" link="/home" icon="asd"></Menu>
           <Menu text="Network" link="/network" icon="asd"></Menu>
           <Menu text="Job" link="/job" icon="asd"></Menu>

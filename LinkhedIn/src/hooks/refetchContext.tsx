@@ -1,22 +1,28 @@
 import { useQuery } from "@apollo/client";
 import { createContext, useContext, useEffect, useState } from "react";
+import { toastError } from "../config/toast";
 import { USER_FETCH_QUERY } from "../query/user";
 import { useUserAuth } from "./userContext";
 
 const refetchContext = createContext({} as any);
 
 export default function RefetchProvider({ children }: { children: any }) {
-  const { update } = useUserAuth();
-  const { data, refetch } = useQuery(USER_FETCH_QUERY);
+  const { update, user } = useUserAuth();
+  const { refetch } = useQuery(USER_FETCH_QUERY);
 
-  useEffect(() => {
-    console.log("test ", data);
-    if (data) {
-      console.log(data);
-    }
-  }, [data]);
+  function refetchUser() {
+    refetch()
+      .then((resp) => {
+        const newUser = { ...resp.data.whoisme, token: user.token };
+        console.log("new user : ", newUser);
+        update(newUser);
+      })
+      .catch((err) => {
+        toastError(err.message);
+      });
+  }
 
-  const value = { refetch };
+  const value = { refetchUser };
 
   return (
     <refetchContext.Provider value={value}>{children}</refetchContext.Provider>
