@@ -1,0 +1,10 @@
+input GoogleInput {
+  googleId: String!
+  googleKey: String!
+  email: String!
+  name: String!
+}
+
+extend type Mutation {
+  google(input: GoogleInput!): Any!
+}

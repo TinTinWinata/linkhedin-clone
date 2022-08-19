@@ -12,12 +12,33 @@ const CONFIG_SENDER_NAME = "LinkhedIn <bluejackslc221@gmail.com>"
 const CONFIG_AUTH_EMAIL = "tintin6892@gmail.com"
 const CONFIG_AUTH_PASSWORD = "hymswknyomqamnys"
 
-func SendVerification(link string) {
+func SendVerification(link string, to string) {
 	mailer := gomail.NewMessage()
 	mailer.SetHeader("From", CONFIG_SENDER_NAME)
-	mailer.SetHeader("To", "tintin6892@gmail.com")
+	mailer.SetHeader("To", to)
 	mailer.SetHeader("Subject", "LinkhedIn Verification")
-	body := "This is your verification link for LinkhedIn acccount" + link
+	body := "This is your verification link for LinkhedIn account " + link
+	mailer.SetBody("text/html", body)
+
+	dialer := gomail.NewDialer(
+		CONFIG_SMTP_HOST,
+		CONFIG_SMTP_PORT,
+		CONFIG_AUTH_EMAIL,
+		CONFIG_AUTH_PASSWORD,
+	)
+	err := dialer.DialAndSend(mailer)
+	if err != nil {
+		log.Fatal(err.Error())
+	}
+	log.Println("Mail sent!")
+}
+
+func SendPasswordRequest(link string, to string) {
+	mailer := gomail.NewMessage()
+	mailer.SetHeader("From", CONFIG_SENDER_NAME)
+	mailer.SetHeader("To", to)
+	mailer.SetHeader("Subject", "LinkhedIn Verification")
+	body := "This is change password request link for LinkhedIn acccount " + link
 	mailer.SetBody("text/html", body)
 
 	dialer := gomail.NewDialer(

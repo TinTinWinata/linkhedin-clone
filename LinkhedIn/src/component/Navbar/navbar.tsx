@@ -1,4 +1,11 @@
 import React from "react";
+import {
+  FaBookOpen,
+  FaHome,
+  FaNetworkWired,
+  FaSnapchat,
+  FaTelegram,
+} from "react-icons/fa";
 import { Link, useNavigate } from "react-router-dom";
 import { useUserAuth } from "../../hooks/userContext";
 import LogoutButton from "../LogoutButton/logout";
@@ -37,12 +44,33 @@ export default function Navbar() {
           <div className="center logout">
             <LogoutButton>Logout</LogoutButton>
           </div>
-          <Menu text="Home" link="/home" icon="asd"></Menu>
-          <Menu text="Network" link="/network" icon="asd"></Menu>
-          <Menu text="Job" link="/job" icon="asd"></Menu>
-          <Menu text="Notification" link="/notification" icon="asd"></Menu>
-          <Menu text="Message" link="/message" icon="asd"></Menu>
-          <Profile text="Me" link={"/profile/" + user.id} icon="asd"></Profile>
+
+          <Menu
+            text="Home"
+            link="/home"
+            icon={<FaHome className="svg" />}
+          ></Menu>
+          <Menu
+            text="Network"
+            link="/network"
+            icon={<FaNetworkWired className="svg" />}
+          ></Menu>
+          <Menu
+            text="Job"
+            link="/job"
+            icon={<FaBookOpen className="svg"></FaBookOpen>}
+          ></Menu>
+          <Menu
+            text="Notification"
+            link="/notification"
+            icon={<FaSnapchat className="svg"></FaSnapchat>}
+          ></Menu>
+          <Menu
+            text="Message"
+            link="/message"
+            icon={<FaTelegram className="svg"></FaTelegram>}
+          ></Menu>
+          <Profile text="Me" link={"/profile/" + user.id} icon=""></Profile>
         </div>
       </div>
     </div>

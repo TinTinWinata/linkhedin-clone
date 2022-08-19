@@ -1,5 +1,6 @@
 import React, { useEffect } from "react";
 import { Route, Routes, useNavigate } from "react-router-dom";
+import Footer from "../component/Footer/footer";
 import Navbar from "../component/Navbar/navbar";
 import { useUserAuth } from "../hooks/userContext";
 import Home from "../page/home/home";
@@ -29,18 +30,19 @@ export default function MiddlewareRoutes() {
   return (
     <>
       <Navbar></Navbar>
-      <div className="inside-bg">
-        <div className="inside-container">
-          <Routes>
-            <Route path="/" element={<Home />}></Route>
-            <Route path="/network" element={<Network />}></Route>
-            <Route path="/message" element={<Message />}></Route>
-            <Route path="/search/:query" element={<Search />}></Route>
-            <Route path="/home" element={<Home />}></Route>
-            <Route path="/profile/:id" element={<Profile />}></Route>
-          </Routes>
-        </div>
+      {/* <div className="inside-bg">
+        <div className="inside-container"> */}
+      <Routes>
+        <Route path="/" element={<Home />}></Route>
+        <Route path="/network" element={<Network />}></Route>
+        <Route path="/message" element={<Message />}></Route>
+        <Route path="/search/:query" element={<Search />}></Route>
+        <Route path="/home" element={<Home />}></Route>
+        <Route path="/profile/:id" element={<Profile />}></Route>
+      </Routes>
+      {/* </div>
       </div>
+      <Footer></Footer> */}
     </>
   );
 }

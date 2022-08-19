@@ -1,0 +1,48 @@
+type Education {
+  ID: String!
+  User: User!
+  School: String!
+  Degree: String!
+  Field: String!
+  Grade: Float!
+  Activities: String!
+  Description: String!
+  StartYear: String!
+  EndYear: String!
+}
+
+input NewEducation {
+  UserID: ID!
+  School: String!
+  Degree: String!
+  Field: String!
+  Grade: Float!
+  Activities: String!
+  Description: String!
+  StartYear: String!
+  EndYear: String!
+}
+
+input UpdateEducation {
+  ID: ID!
+  UserID: ID!
+  School: String!
+  Degree: String!
+  Field: String!
+  Grade: Float!
+  Activities: String!
+  Description: String!
+  StartYear: String!
+  EndYear: String!
+}
+
+extend type Query {
+  userEducation(userId: ID!): [Education!]! @auth
+  myEducation: [Education!]! @auth
+}
+
+extend type Mutation {
+  createEducation(input: NewEducation!): String!
+  updateEducation(id: String!, input: NewEducation!): String!
+  deleteEducation(id: String!): String!
+}

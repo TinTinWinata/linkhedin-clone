@@ -1,6 +1,6 @@
 import React from "react";
 import "./css-login.scss";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
 import { useMutation } from "@apollo/client";
 import { useUserAuth } from "../../hooks/userContext";
@@ -8,6 +8,8 @@ import LOGIN_QUERY from "../../query/login";
 import { useEffect } from "react";
 import { toastError, toastSuccess } from "../../config/toast";
 import { useLoading } from "../../hooks/loadingContext";
+import GoogleLogin from "react-google-login";
+import MyGoogleLogin from "../../component/GoogleLogin/googleLogin";
 
 export default function Login() {
   const navigate = useNavigate();
@@ -27,6 +29,7 @@ export default function Login() {
   useEffect(() => {
     if (data && data.login.token !== "undefined") {
       const user = data.login;
+      console.log(data.login);
       update(user);
       navigate("/home");
     }
@@ -55,24 +58,35 @@ export default function Login() {
     e.target.password.value = "";
   }
 
-  function handleRegister() {
-    navigate("/register");
+  function handleForgotPassword() {
+    navigate("/forget-password");
   }
 
   return (
     <>
-      <div className="login-container">
-        <form onSubmit={handleSubmit} action="">
-          <label htmlFor="email">Email</label>
-          <input name="email" type="email" />
-          <label htmlFor="password">Password</label>
-          <input name="password" type="password" />
-          <button type="submit">Login</button>
+      <div className="flex flex-col login-container">
+        <form onSubmit={handleSubmit} action="" className="shadow">
+          <h1>Sign In</h1>
+          <p>Stay updated on your professional world</p>
+          <input name="email" placeholder="Email" type="email" />
+          <input name="password" placeholder="Password" type="password" />
+          <h3 onClick={handleForgotPassword} className="color-first">
+            Forgot Password ?
+          </h3>
+          <button type="submit">Sign In</button>
+          <div className="or-txt flex">
+            <div className="my-border"></div>
+            <p>or</p>
+            <div className="my-border"></div>
+          </div>
+          <MyGoogleLogin></MyGoogleLogin>
         </form>
-      </div>
-      <div className="register">
-        <p>Doesn't have any account yet ? </p>
-        <b onClick={handleRegister}>Register</b>
+        <div className="text flex">
+          <p>New to LinkhedIn ?</p>
+          <Link className="color-first register-txt" to="/register">
+            Join Now
+          </Link>
+        </div>
       </div>
     </>
   );

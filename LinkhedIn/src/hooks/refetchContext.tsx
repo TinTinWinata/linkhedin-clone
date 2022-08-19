@@ -15,6 +15,7 @@ export default function RefetchProvider({ children }: { children: any }) {
       .then((resp) => {
         const newUser = { ...resp.data.whoisme, token: user.token };
         console.log("new user : ", newUser);
+
         update(newUser);
       })
       .catch((err) => {

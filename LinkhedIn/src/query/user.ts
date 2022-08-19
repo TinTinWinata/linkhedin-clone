@@ -6,7 +6,9 @@ query User($id:ID!){
   user(id:$id){
     id,
     name,
-    email
+    email,
+    BgPhotoProfile,
+    PhotoProfile
   }
 }
 `;
@@ -20,7 +22,8 @@ query Fetch{
     FollowedUser,
     PhotoProfile,
     ConnectedUser,
-    RequestConnect
+    RequestConnect,
+    BgPhotoProfile
   }
 }
 `
@@ -30,6 +33,17 @@ mutation Follow($id:ID!){
   follow(id:$id)
 }
 `;
+
+
+export const UPDATE_USER_QUERY = gql`
+mutation UpdateUser($id:ID!, $input:UpdateUser!){
+  updateUser(id:$id, input:$input){
+    name
+    id
+  }
+}
+`
+
 
 
 

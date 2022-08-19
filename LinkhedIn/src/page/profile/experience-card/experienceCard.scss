@@ -1,0 +1,32 @@
+.experience-card{
+  display: flex;
+  margin: 20px 0px;
+  img{
+    margin: 0px;
+    border-radius: 0px;
+    width: 50px;
+    height: 50px;
+  }
+  .desc{
+    margin-left: 10px;
+    .trash-icon{
+      cursor: pointer;
+      margin-top: 2px;
+      margin-left: 3px;
+    }
+    .header-text{
+      font-weight: 500;
+    }
+    .experience-flex{
+      display: flex;
+    }
+    .date{
+      margin-left: 10px;
+      color: rgba(92, 92, 92, 0.53);
+    }
+  }
+}
+
+.experience-card-border{
+  border-top: 1px solid rgb(198, 198, 198);
+}

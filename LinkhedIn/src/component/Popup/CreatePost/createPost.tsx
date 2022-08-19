@@ -57,6 +57,19 @@ export default function CreatePost(props: any) {
           toastError(err.message);
           setLoading(false);
         });
+    } else {
+      createFunc({
+        variables: { userId: user.id, text: value, attachment: "" },
+      })
+        .then((resp) => {
+          toastSuccess("Sucessfully created a post!");
+          setLoading(false);
+          setHandle(false);
+        })
+        .catch((err) => {
+          toastError(err.message);
+          setLoading(false);
+        });
     }
   }
 

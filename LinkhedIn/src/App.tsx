@@ -26,6 +26,8 @@ import { createUploadLink } from "apollo-upload-client";
 import Network from "./page/network/network";
 import RefetchProvider from "./hooks/refetchContext";
 import Forgetpassword from "./page/forget-password/forgetpassword";
+import ChangePassword from "./page/change-password/changepassword";
+import Footer from "./component/Footer/footer";
 
 function App() {
   const { loading } = useLoading();
@@ -63,20 +65,28 @@ function App() {
           <RefetchProvider>
             <Shortcut>
               {loading ? <Loading></Loading> : ""}
-              <Routes>
-                <Route
-                  path="/verification/:id"
-                  element={<Verification />}
-                ></Route>
-
-                <Route
-                  path="/forget-password"
-                  element={<Forgetpassword />}
-                ></Route>
-                <Route path="/login" element={<Login />}></Route>
-                <Route path="/register" element={<Register />}></Route>
-                <Route path="/*" element={<MiddlewareRoutes />}></Route>
-              </Routes>
+              <div className="inside-bg">
+                <div className="inside-container">
+                  <Routes>
+                    <Route
+                      path="/verification/:id"
+                      element={<Verification />}
+                    ></Route>
+                    <Route
+                      path="/forget-password"
+                      element={<Forgetpassword />}
+                    ></Route>
+                    <Route path="/login" element={<Login />}></Route>
+                    <Route path="/register" element={<Register />}></Route>
+                    <Route
+                      path="/change-password/:id"
+                      element={<ChangePassword />}
+                    ></Route>
+                    <Route path="/*" element={<MiddlewareRoutes />}></Route>
+                  </Routes>
+                </div>
+              </div>
+              <Footer></Footer>
             </Shortcut>
           </RefetchProvider>
         </ApolloProvider>

@@ -1,5 +1,6 @@
 scalar Upload
 scalar Byte
+scalar Time
 
 input NewPost {
   text: String!
@@ -12,13 +13,19 @@ type Post {
   text: String!
   AttachmentLink: String!
   User: User!
+  likes: Int!
+  sends: Int!
+  comments: Int!
+  createdAt: Time!
 }
 
 extend type Query {
   posts: [Post!]!
+  postInfinity(limit: Int!, offset: Int!): [Post!]!
 }
 
 extend type Mutation {
+  likePost(id: String!): String!
   # createPost(input: NewPost!, file: Upload!): String!
   createPost(input: NewPost!): String!
 }

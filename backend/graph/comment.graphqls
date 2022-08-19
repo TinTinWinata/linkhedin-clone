@@ -1,0 +1,38 @@
+type ReplyComment {
+  ID: String!
+  User: User!
+  Text: String!
+  Likes: Int!
+  CommentId: String!
+}
+
+type Comment {
+  PostID: String!
+  ID: String!
+  User: User!
+  Text: String!
+  Likes: Int!
+  Replies: [ReplyComment!]!
+}
+
+input newComment {
+  UserId: String!
+  Text: String!
+  PostId: String!
+}
+
+input newRepliesComment {
+  CommendId: String!
+  Text: String!
+  UserId: String!
+}
+
+extend type Mutation {
+  createComment(input: newComment!): String!
+  repliesComment(input: newRepliesComment!): String!
+  likeComment(commentId: String!): String!
+}
+
+extend type Query {
+  seeCommentOnPost(postId: String!): [Comment!]!
+}

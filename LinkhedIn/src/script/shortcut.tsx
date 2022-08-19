@@ -2,12 +2,12 @@ import React, { ReactFragment, useCallback, useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useTheme } from "../hooks/themeContext";
 
-export function Shortcut({ children } : {children:any}) {
+export function Shortcut({ children }: { children: any }) {
   const navigate = useNavigate();
   const [open, setOpen] = useState(false);
-  const {changeTheme} = useTheme();
+  const { changeTheme } = useTheme();
 
-  const handleKey = useCallback((event : any) => {
+  const handleKey = useCallback((event: any) => {
     if (event.altKey === true) {
       if (event.key == "w") {
         changeTheme();
@@ -23,9 +23,5 @@ export function Shortcut({ children } : {children:any}) {
     };
   }, [handleKey]);
 
-  return (
-      <>
-      {children}  
-      </>
-  );
+  return <>{children}</>;
 }

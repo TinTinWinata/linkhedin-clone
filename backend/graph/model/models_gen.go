@@ -2,9 +2,41 @@
 
 package model
 
+type GoogleInput struct {
+	GoogleID  string `json:"googleId"`
+	GoogleKey string `json:"googleKey"`
+	Email     string `json:"email"`
+	Name      string `json:"name"`
+}
+
 type Message struct {
 	UserID  string `json:"userId"`
 	Message string `json:"message"`
+}
+
+type NewEducation struct {
+	UserID      string  `json:"UserID"`
+	School      string  `json:"School"`
+	Degree      string  `json:"Degree"`
+	Field       string  `json:"Field"`
+	Grade       float64 `json:"Grade"`
+	Activities  string  `json:"Activities"`
+	Description string  `json:"Description"`
+	StartYear   string  `json:"StartYear"`
+	EndYear     string  `json:"EndYear"`
+}
+
+type NewExperience struct {
+	UserID         string `json:"UserID"`
+	Title          string `json:"Title"`
+	EmploymentType string `json:"EmploymentType"`
+	CompanyName    string `json:"CompanyName"`
+	Location       string `json:"Location"`
+	IsActive       string `json:"IsActive"`
+	StartYear      string `json:"StartYear"`
+	EndYear        string `json:"EndYear"`
+	Industry       string `json:"Industry"`
+	Headline       string `json:"Headline"`
 }
 
 type NewLink struct {
@@ -27,4 +59,50 @@ type NewUser struct {
 type Search struct {
 	Post []*Post `json:"post"`
 	User []*User `json:"user"`
+}
+
+type UpdateEducation struct {
+	ID          string  `json:"ID"`
+	UserID      string  `json:"UserID"`
+	School      string  `json:"School"`
+	Degree      string  `json:"Degree"`
+	Field       string  `json:"Field"`
+	Grade       float64 `json:"Grade"`
+	Activities  string  `json:"Activities"`
+	Description string  `json:"Description"`
+	StartYear   string  `json:"StartYear"`
+	EndYear     string  `json:"EndYear"`
+}
+
+type UpdateExperience struct {
+	ID             string `json:"ID"`
+	Title          string `json:"Title"`
+	EmploymentType string `json:"EmploymentType"`
+	CompanyName    string `json:"CompanyName"`
+	Location       string `json:"Location"`
+	IsActive       string `json:"IsActive"`
+	StartYear      string `json:"StartYear"`
+	EndYear        string `json:"EndYear"`
+	Industry       string `json:"Industry"`
+	Headline       string `json:"Headline"`
+}
+
+type UpdateUser struct {
+	Name           string `json:"Name"`
+	Email          string `json:"Email"`
+	PhotoProfile   string `json:"PhotoProfile"`
+	Headline       string `json:"Headline"`
+	BgPhotoProfile string `json:"BgPhotoProfile"`
+}
+
+type NewComment struct {
+	UserID string `json:"UserId"`
+	Text   string `json:"Text"`
+	PostID string `json:"PostId"`
+}
+
+type NewRepliesComment struct {
+	CommendID string `json:"CommendId"`
+	Text      string `json:"Text"`
+	UserID    string `json:"UserId"`
 }

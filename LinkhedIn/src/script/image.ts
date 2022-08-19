@@ -8,7 +8,7 @@ import { toastError } from "../config/toast";
 export function sendImage(img :any)
 {
   const imageRef = ref(storage, `images/${img?.name}-${uuidv4()}`);
-  uploadBytes(imageRef, img)
+  return uploadBytes(imageRef, img)
     .then((resp) => {
       return getDownloadURL(imageRef)
     })

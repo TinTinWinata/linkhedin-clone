@@ -1,12 +1,14 @@
 .register-container{
-  width: 100vw;
-  height: 100vh;
+  width: 100%;
+  height: 100vmin;
   display: flex;
 }
 
 .register-image{
   width:60%;
   height: 100%;
+  background-image:url('./register.jpg');
+  background-size: cover;
 }
 
 .register-to-login{
@@ -28,10 +30,51 @@
   text-decoration: underline;
 }
 
+.register-container{
+  input{
+    border: 1px solid black;
+  }
+  h2{
+    font-size: 30px;
+  }
+  button{
+    min-height: 50px;
+  }
+  .center{
+    text-align: center;
+    p{
+      width: 70%;
+      font-size: 13px;
+      margin-top: 10px;
+    }
+  }
 
+  .my-border{
+    margin-top: 12px;
+    width: 50%;
+    margin-left: 10px;
+    margin-right: 10px;
+    border-top: 1px solid rgba(186, 186, 186, 0.87);
+  }
+  .or-txt{
+    margin-top: 20px;
+    margin-bottom: 10px;
+  }
+
+  .color-first{
+    margin-left:10px; 
+    cursor: pointer;
+  }
+  .signin-center{
+    margin-top: 10px;
+    justify-content: center;
+    text-align: center;
+    width: 100%;
+  }
+}
 
 .register-form{
-  padding: 0px 10px;
+  padding: 20px 10px;
   margin: 0 auto;
   display: flex;
   justify-content: center;
@@ -51,7 +94,7 @@
   flex-direction: column;
 }
 
-@media screen and (max-width: 700px) {
+@media screen and (max-width: 1500px) {
   .register-image{
     display: none;
   }

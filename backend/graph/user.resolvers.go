@@ -5,34 +5,42 @@ package graph
 
 import (
 	"context"
+	"errors"
+	"fmt"
 
 	my_auth "github.com/TinTinWinata/gqlgen/auth"
 	"github.com/TinTinWinata/gqlgen/graph/generated"
 	"github.com/TinTinWinata/gqlgen/graph/model"
 	"github.com/TinTinWinata/gqlgen/helper"
+	"github.com/TinTinWinata/gqlgen/mail"
 	middleware "github.com/TinTinWinata/gqlgen/middlewares"
 	"github.com/google/uuid"
 )
 
+// ProfileSeen is the resolver for the profileSeen field.
+func (r *mutationResolver) ProfileSeen(ctx context.Context, id string) (string, error) {
+	panic(fmt.Errorf("not implemented"))
+}
+
 // RequestChangePassword is the resolver for the requestChangePassword field.
-func (r *mutationResolver) RequestChangePassword(ctx context.Context) (string, error) {
-	val := *middleware.CtxValue(ctx)
+func (r *mutationResolver) RequestChangePassword(ctx context.Context, email string) (string, error) {
 	var user *model.User
-	err := r.DB.First(&user, "id = ?", val.ID).Error
+	err := r.DB.First(&user, "email = ?", email).Error
 	if err != nil {
 		return "Error", err
 	}
-
 	passwordRequest := &model.ChangePasswordRequest{
-		ID:    uuid.NewString(),
-		Email: user.Email,
+		ID:     uuid.NewString(),
+		Email:  user.Email,
+		IsUsed: false,
 	}
 	err = r.DB.Create(passwordRequest).Error
 	if err != nil {
 		return "Error", err
 	}
-
-	return passwordRequest.ID, nil
+	link := "http://localhost:5173/change-password/" + passwordRequest.ID
+	mail.SendPasswordRequest(link, passwordRequest.Email)
+	return "Ok", nil
 }
 
 // ChangePassword is the resolver for the changePassword field.
@@ -41,6 +49,10 @@ func (r *mutationResolver) ChangePassword(ctx context.Context, password string, 
 	err := r.DB.First(&request, "id = ?", id).Error
 	if err != nil {
 		return "Code Not Valid", err
+	}
+
+	if request.IsUsed {
+		return "Error", errors.New("You already change the password")
 	}
 
 	var user *model.User
@@ -54,6 +66,13 @@ func (r *mutationResolver) ChangePassword(ctx context.Context, password string, 
 	if err != nil {
 		return "Failed to update user", err
 	}
+
+	request.IsUsed = true
+	err = r.DB.Save(request).Error
+	if err != nil {
+		return "Failed to   request", err
+	}
+
 	return "Change Password Succed!", nil
 }
 
@@ -86,8 +105,15 @@ func (r *mutationResolver) Follow(ctx context.Context, id string) (string, error
 
 // ValidateUser is the resolver for the validateUser field.
 func (r *mutationResolver) ValidateUser(ctx context.Context, id string) (string, error) {
+	var validation *model.UserValidation
+
+	if err := r.DB.First(&validation, "id = ?", id).Error; err != nil {
+		return "Not Found", err
+	}
+
 	var user *model.User
-	if err := r.DB.First(&user, "id = ?", id).Error; err != nil {
+
+	if err := r.DB.First(&user, "id = ?", validation.UserID).Error; err != nil {
 		return "Not Found", err
 	}
 
@@ -129,16 +155,31 @@ func (r *mutationResolver) CreateUser(ctx context.Context, input model.NewUser) 
 }
 
 // UpdateUser is the resolver for the updateUser field.
-func (r *mutationResolver) UpdateUser(ctx context.Context, id string, input model.NewUser) (*model.User, error) {
+func (r *mutationResolver) UpdateUser(ctx context.Context, id string, input model.UpdateUser) (*model.User, error) {
 	var model *model.User
 
-	if err := r.DB.First(model, "id = ?", id).Error; err != nil {
+	if err := r.DB.First(&model, "id = ?", id).Error; err != nil {
 		return nil, err
 	}
 
-	model.Email = input.Email
-	model.Password = input.Password
-	model.Name = input.Name
+	if input.BgPhotoProfile != "" {
+		model.BgPhotoProfile = input.BgPhotoProfile
+	}
+
+	if input.Email != "" {
+		model.Email = input.Email
+	}
+
+	if input.Headline != "" {
+		model.Headline = input.Headline
+	}
+	if input.Name != "" {
+		model.Name = input.Name
+	}
+	if input.PhotoProfile != "" {
+		model.PhotoProfile = input.PhotoProfile
+	}
+
 	return model, r.DB.Save(model).Error
 }
 
@@ -146,7 +187,7 @@ func (r *mutationResolver) UpdateUser(ctx context.Context, id string, input mode
 func (r *mutationResolver) DeleteUser(ctx context.Context, id string) (*model.User, error) {
 	var model *model.User
 
-	if err := r.DB.First(model, "id = ?", id).Error; err != nil {
+	if err := r.DB.First(&model, "id = ?", id).Error; err != nil {
 		return nil, err
 	}
 	return model, r.DB.Delete(model).Error

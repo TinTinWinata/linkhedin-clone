@@ -7,6 +7,7 @@ import { useUserAuth } from "../../hooks/userContext";
 import { useLoading } from "../../hooks/loadingContext";
 import { toastError, toastSuccess } from "../../config/toast";
 import emailjs from "emailjs-com";
+import MyGoogleLogin from "../../component/GoogleLogin/googleLogin";
 
 export default function Register() {
   const navigate = useNavigate();
@@ -49,7 +50,6 @@ export default function Register() {
         const data = resp.data;
         if (data && data.register.token !== undefined) {
           update(null);
-          sendEmail(e);
           navigate("/login");
           setLoading(false);
         }
@@ -58,27 +58,6 @@ export default function Register() {
         console.log(err.message);
         toastError(err);
       });
-  }
-
-  function sendEmail(e: any) {
-    console.log("sending email ...");
-    emailjs
-      .sendForm(
-        "service_foqc3oe",
-        "template_ajjo16z",
-        e.target,
-        "0Ek5tzfjp6YnSnvu5"
-      )
-      .then(
-        (result) => {
-          toastSuccess("Please see your gmail for the verification link!");
-          // console.log(result.text);
-        },
-        (error) => {
-          toastError(error.text);
-          // console.log(error.text);
-        }
-      );
   }
 
   function handleLogin() {
@@ -95,14 +74,16 @@ export default function Register() {
   return (
     <>
       <div className="register-container">
-        <div className="register-to-login">
-          <p>Doesn't have any account yet ? </p>
-          <b onClick={handleLogin}>Login</b>
-        </div>
         <div className="register-image"></div>
         <div className="register-form">
           <form onSubmit={handleSubmit} action="">
             <h2>Sign Up Your Account</h2>
+            <MyGoogleLogin></MyGoogleLogin>
+            <div className="color-fg or-txt flex">
+              <div className="my-border"></div>
+              <p>or</p>
+              <div className="my-border"></div>
+            </div>
             <input
               type="hidden"
               name="link"
@@ -120,7 +101,21 @@ export default function Register() {
               <label htmlFor="password">Password</label>
               <input name="password" type="password" />
             </div>
-            <button>Submit</button>
+            <div className="center">
+              <p>
+                By clicking Agree & Join, you agree to the LinkedIn User
+                Agreement, Privacy Policy, and Cookie Policy.
+              </p>
+            </div>
+            <button>Agree & Join</button>
+            <div className="">
+              <div className="flex signin-center">
+                <p id="signin">Already on LinkedIn?</p>
+                <p onClick={handleLogin} className="color-first">
+                  Sign in
+                </p>
+              </div>
+            </div>
           </form>
         </div>
       </div>

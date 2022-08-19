@@ -3,8 +3,12 @@ package my_auth
 import (
 	"context"
 	"errors"
+	"fmt"
 
+	"github.com/TinTinWinata/gqlgen/database"
 	"github.com/TinTinWinata/gqlgen/graph/model"
+	"github.com/TinTinWinata/gqlgen/mail"
+	"github.com/google/uuid"
 	"github.com/vektah/gqlparser/v2/gqlerror"
 	"gorm.io/gorm"
 )
@@ -29,29 +33,69 @@ func UserRegister(ctx context.Context, newUser model.NewUser) (interface{}, erro
 		return nil, err
 	}
 
-	// verification := &model.UserValidation{
-	// 	ID:     uuid.New().String(),
-	// 	Link:   uuid.New().String(),
-	// 	UserID: createdUser.ID,
-	// }
+	newId := uuid.New().String()
 
-	// db := database.GetDB()
-	// err = db.Create(verification).Error
+	verification := &model.UserValidation{
+		ID:     newId,
+		Link:   "http://localhost:5173/verification/" + newId,
+		UserID: createdUser.ID,
+	}
+
+	db := database.GetDB()
+	err = db.Create(verification).Error
 
 	if err != nil {
 		return nil, err
 	}
 
-	// mail.SendVerification(verification.Link)
+	mail.SendVerification(verification.Link, createdUser.Email)
 
 	return map[string]interface{}{
-		"token": token,
-		"name":  createdUser.Name,
-		"email": createdUser.Email,
+		"id":             createdUser.ID,
+		"token":          token,
+		"name":           createdUser.Name,
+		"email":          createdUser.Email,
+		"PhotoProfile":   createdUser.PhotoProfile,
+		"FollowedUser":   createdUser.FollowedUser,
+		"RequestConnect": createdUser.RequestConnect,
+		"BgPhotoProfile": createdUser.BgPhotoProfile,
 	}, nil
 }
 
 func UserLogin(ctx context.Context, email string, password string) (interface{}, error) {
+	user, err := UserGetByEmail(ctx, email)
+	if err != nil {
+		if err == gorm.ErrRecordNotFound {
+			return nil, &gqlerror.Error{
+				Message: "Email Not Found",
+			}
+		}
+		return nil, err
+	}
+	if user.Validate == false {
+		return nil, errors.New("Your account is not authenticated!")
+	}
+	if err := ComparePassword(user.Password, password); err != nil {
+		return nil, err
+	}
+	token, err := GenerateJWT(ctx, user.ID)
+	if err != nil {
+		return nil, err
+	}
+	fmt.Println(user.BgPhotoProfile)
+	return map[string]interface{}{
+		"id":             user.ID,
+		"token":          token,
+		"name":           user.Name,
+		"email":          user.Email,
+		"PhotoProfile":   user.PhotoProfile,
+		"FollowedUser":   user.FollowedUser,
+		"RequestConnect": user.RequestConnect,
+		"BgPhotoProfile": user.BgPhotoProfile,
+	}, nil
+}
+
+func UserLoginWithoutPassword(ctx context.Context, email string) (interface{}, error) {
 	user, err := UserGetByEmail(ctx, email)
 	if err != nil {
 		if err == gorm.ErrRecordNotFound {
@@ -66,20 +110,21 @@ func UserLogin(ctx context.Context, email string, password string) (interface{},
 		return nil, errors.New("Your account is not authenticated!")
 	}
 
-	if err := ComparePassword(user.Password, password); err != nil {
-		return nil, err
-	}
-
 	token, err := GenerateJWT(ctx, user.ID)
 	if err != nil {
 		return nil, err
 	}
 
 	return map[string]interface{}{
-		"id":            user.ID,
-		"token":         token,
-		"followed_user": user.FollowedUser,
-		"name":          user.Name,
-		"email":         user.Email,
+		"id":             user.ID,
+		"token":          token,
+		"name":           user.Name,
+		"email":          user.Email,
+		"PhotoProfile":   user.PhotoProfile,
+		"FollowedUser":   user.FollowedUser,
+		"RequestConnect": user.RequestConnect,
+		"Headline":       user.Headline,
+		"ProfileViews":   user.ProfileViews,
+		"BgPhotoProfile": user.BgPhotoProfile,
 	}, nil
 }

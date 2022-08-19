@@ -4,19 +4,25 @@ import React, { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { toastError, toastSuccess } from "../../config/toast";
 import { useLoading } from "../../hooks/loadingContext";
+import { useRefetch } from "../../hooks/refetchContext";
 import { useUserAuth } from "../../hooks/userContext";
 import { CONNECT_REQUEST_QUERY } from "../../query/connect";
-import { FIND_USER_QUERY, FOLLOW_USER_QUERY } from "../../query/user";
+import {
+  FIND_USER_QUERY,
+  FOLLOW_USER_QUERY,
+  UPDATE_USER_QUERY,
+} from "../../query/user";
+import { sendImage } from "../../script/image";
+import Education from "./education/education";
+import Experience from "./experience/experience";
 import "./profile.scss";
 
 export default function Profile() {
   const { id } = useParams();
   const { user } = useUserAuth();
-
   const { setLoading } = useLoading();
-  // const [profile, setProfile] = useState({
-  //   name: "",
-  // });
+  const { refetchUser } = useRefetch();
+
   const navigate = useNavigate();
 
   const { data } = useQuery(FIND_USER_QUERY, {
@@ -25,6 +31,7 @@ export default function Profile() {
 
   const [connectFunc] = useMutation(CONNECT_REQUEST_QUERY);
   const [followFunc] = useMutation(FOLLOW_USER_QUERY);
+  const [updateFunc] = useMutation(UPDATE_USER_QUERY);
 
   function handleFollow() {
     followFunc({ variables: { id: id } })
@@ -46,25 +53,152 @@ export default function Profile() {
       });
   }
 
-  return (
-    <div className="center">
-      <div className="profile">
-        <div className="profile-container shadow">
-          <label htmlFor="input-file">
-            <img src="https://picsum.photos/id/237/200/300" alt="" />
-          </label>
-          <input id="input-file" type="file" />
+  function imageOnChange(e: any) {
+    setLoading(true);
+    const img = e.target.files[0];
+    sendImage(img)
+      .then((url) => {
+        const input = {
+          Name: "",
+          Email: "",
+          PhotoProfile: url,
+          Headline: "",
+          BgPhotoProfile: "",
+        };
 
-          {data && user.id !== data.user.id ? (
-            <>
-              <button onClick={handleFollow}>Follow</button>
-              <button onClick={handleConnect}>Connect</button>
-            </>
-          ) : (
-            ""
-          )}
-          <p>{data ? data.user.name : ""}</p>
-          <p>{data ? data.user.email : ""}</p>
+        updateFunc({
+          variables: {
+            id: user.id,
+            input: input,
+          },
+        })
+          .then(() => {
+            refetchUser();
+            toastSuccess("Succesfully change image");
+            setLoading(false);
+          })
+          .catch((err) => {
+            setLoading(false);
+            toastError(err.message);
+          });
+      })
+      .catch((err) => {
+        setLoading(false);
+        toastError(err.message);
+      });
+  }
+
+  function handleChangeBgImage(e: any) {
+    setLoading(true);
+    const img = e.target.files[0];
+    sendImage(img)
+      .then((url) => {
+        const input = {
+          Name: "",
+          Email: "",
+          PhotoProfile: "",
+          Headline: "",
+          BgPhotoProfile: url,
+        };
+
+        updateFunc({
+          variables: {
+            id: user.id,
+            input: input,
+          },
+        })
+          .then(() => {
+            refetchUser();
+            toastSuccess("Succesfully change image");
+            setLoading(false);
+          })
+          .catch((err) => {
+            setLoading(false);
+            toastError(err.message);
+          });
+      })
+      .catch((err) => {
+        setLoading(false);
+        toastError(err.message);
+      });
+  }
+
+  return (
+    <div className="center flex-col">
+      <div className="profile-center-container">
+        <div className="profile-container shadow">
+          <div className="description">
+            <label htmlFor="input-file">
+              <img
+                id="img-photo-profile"
+                src={data ? data.user.PhotoProfile : ""}
+                alt=""
+              />
+            </label>
+            <input
+              onChange={imageOnChange}
+              className="none"
+              id="input-file"
+              type="file"
+            />
+            {data && user.id !== data.user.id ? (
+              <>
+                <button onClick={handleFollow}>Follow</button>
+                <button onClick={handleConnect}>Connect</button>
+              </>
+            ) : (
+              ""
+            )}
+            <h1 className="name">{data ? data.user.name : ""}</h1>
+            <p className="email">{data ? data.user.email : ""}</p>
+          </div>
+
+          <div
+            style={{
+              backgroundImage: `url('${data ? data.user.BgPhotoProfile : ""}')`,
+            }}
+            className="profile-container-image"
+          >
+            <div className="change-camera">
+              {data && user.id === data.user.id ? (
+                <label htmlFor="bg-image">
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    className="camera-svg"
+                    viewBox="0 0 20 20"
+                    fill="currentColor"
+                  >
+                    <path
+                      fillRule="evenodd"
+                      d="M4 5a2 2 0 00-2 2v8a2 2 0 002 2h12a2 2 0 002-2V7a2 2 0 00-2-2h-1.586a1 1 0 01-.707-.293l-1.121-1.121A2 2 0 0011.172 3H8.828a2 2 0 00-1.414.586L6.293 4.707A1 1 0 015.586 5H4zm6 9a3 3 0 100-6 3 3 0 000 6z"
+                      clipRule="evenodd"
+                    />
+                  </svg>
+                </label>
+              ) : (
+                ""
+              )}
+
+              <input
+                onChange={handleChangeBgImage}
+                className="none"
+                type="file"
+                id="bg-image"
+                accept="image/*"
+              />
+            </div>
+          </div>
+        </div>
+
+        <div className="profile-container shadow experience">
+          <div className="container">
+            <Experience id={id}></Experience>
+          </div>
+        </div>
+        <div className="profile-container shadow experience">
+          <div className="container">
+            <Education id={id} />
+          </div>
         </div>
       </div>
     </div>
