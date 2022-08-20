@@ -51,14 +51,7 @@ func UserRegister(ctx context.Context, newUser model.NewUser) (interface{}, erro
 	mail.SendVerification(verification.Link, createdUser.Email)
 
 	return map[string]interface{}{
-		"id":             createdUser.ID,
-		"token":          token,
-		"name":           createdUser.Name,
-		"email":          createdUser.Email,
-		"PhotoProfile":   createdUser.PhotoProfile,
-		"FollowedUser":   createdUser.FollowedUser,
-		"RequestConnect": createdUser.RequestConnect,
-		"BgPhotoProfile": createdUser.BgPhotoProfile,
+		"token": token,
 	}, nil
 }
 
@@ -84,14 +77,20 @@ func UserLogin(ctx context.Context, email string, password string) (interface{},
 	}
 	fmt.Println(user.BgPhotoProfile)
 	return map[string]interface{}{
-		"id":             user.ID,
-		"token":          token,
-		"name":           user.Name,
-		"email":          user.Email,
-		"PhotoProfile":   user.PhotoProfile,
-		"FollowedUser":   user.FollowedUser,
-		"RequestConnect": user.RequestConnect,
-		"BgPhotoProfile": user.BgPhotoProfile,
+		"id":                user.ID,
+		"token":             token,
+		"name":              user.Name,
+		"email":             user.Email,
+		"PhotoProfile":      user.PhotoProfile,
+		"FollowedUser":      user.FollowedUser,
+		"RequestConnect":    user.RequestConnect,
+		"BgPhotoProfile":    user.BgPhotoProfile,
+		"RequestConnectTxt": user.RequestConnectTxt,
+		"Headline":          user.Headline,
+		"FirstName":         user.FirstName,
+		"LastName":          user.LastName,
+		"AdditionalName":    user.AdditionalName,
+		"Gender":            user.Gender,
 	}, nil
 }
 
@@ -116,15 +115,20 @@ func UserLoginWithoutPassword(ctx context.Context, email string) (interface{}, e
 	}
 
 	return map[string]interface{}{
-		"id":             user.ID,
-		"token":          token,
-		"name":           user.Name,
-		"email":          user.Email,
-		"PhotoProfile":   user.PhotoProfile,
-		"FollowedUser":   user.FollowedUser,
-		"RequestConnect": user.RequestConnect,
-		"Headline":       user.Headline,
-		"ProfileViews":   user.ProfileViews,
-		"BgPhotoProfile": user.BgPhotoProfile,
+		"id":                user.ID,
+		"token":             token,
+		"name":              user.Name,
+		"email":             user.Email,
+		"PhotoProfile":      user.PhotoProfile,
+		"FollowedUser":      user.FollowedUser,
+		"RequestConnect":    user.RequestConnect,
+		"Headline":          user.Headline,
+		"ProfileViews":      user.ProfileViews,
+		"BgPhotoProfile":    user.BgPhotoProfile,
+		"RequestConnectTxt": user.RequestConnectTxt,
+		"FirstName":         user.FirstName,
+		"LastName":          user.LastName,
+		"AdditionalName":    user.AdditionalName,
+		"Gender":            user.Gender,
 	}, nil
 }

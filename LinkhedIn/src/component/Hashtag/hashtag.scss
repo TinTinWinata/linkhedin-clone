@@ -1,0 +1,11 @@
+.hashtag-component {
+  text-align: left;
+  color: rgb(1, 115, 203);
+  cursor: pointer;
+  a {
+    color: rgb(1, 115, 203);
+  }
+  &:hover {
+    text-decoration: underline;
+  }
+}

@@ -1,13 +1,14 @@
-.home{
-  display:flex;
+.home {
+  display: flex;
   justify-content: center;
-  .home-center{
+  .home-center {
+    margin-top: 50px;
     width: 33%;
     text-align: center;
-    .start-btn{
+    .start-btn {
+      font-weight: 600;
       height: 40px;
       width: 100%;
     }
   }
 }
-

@@ -1,0 +1,34 @@
+.job-container {
+  margin-top: 20px;
+  width: 40%;
+  height: fit-content;
+  border-radius: 10px;
+  #create-job-btn {
+    height: 30px;
+    margin-top: 2px;
+    margin-left: 10px;
+  }
+  .job-header-text {
+    margin-left: 10px;
+    margin-top: 10px;
+  }
+
+  .job-card {
+    border-top: 1px solid rgba(181, 181, 181, 0.426);
+    padding: 10px;
+    .title {
+      font-weight: 500;
+      font-size: 20px;
+    }
+    img {
+      width: 50px;
+      height: 50px;
+    }
+    .company-name {
+      font-weight: 400;
+    }
+    .location {
+      font-weight: 300;
+    }
+  }
+}

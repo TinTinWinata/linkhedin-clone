@@ -9,6 +9,10 @@ import { INFINITY_QUERY, SEARCH_POST_QUERY } from "../../query/post";
 import "./css-home.scss";
 import PostCard from "./post-card/post-card";
 import ReactLoading from "react-loading";
+import {
+  removeDuplicates,
+  removeDuplicatesObjectId,
+} from "../../script/helper";
 
 export default function Home() {
   const { user } = useUserAuth();
@@ -53,7 +57,11 @@ export default function Home() {
       if (data.postInfinity.length < limit) {
         setHasMore(false);
       }
-      setPost((prev: any) => [...prev, ...data.postInfinity]);
+      setPost((prev: any) => {
+        const newArr = [...prev, ...data.postInfinity];
+        const filteredArr = removeDuplicatesObjectId(newArr);
+        return filteredArr;
+      });
     }
   }, [data]);
 
@@ -70,7 +78,7 @@ export default function Home() {
 
   return (
     <>
-      <div className="home">
+      <div className="home h-min-max">
         <div className="home-center">
           <button className="start-btn" onClick={handlePopup}>
             Start a Post
@@ -86,7 +94,6 @@ export default function Home() {
                   return (
                     <div ref={lastRef} key={idx}>
                       <PostCard
-                        refetch={refetch}
                         data={data}
                         key={idx}
                         text={data.text}
@@ -98,7 +105,6 @@ export default function Home() {
                   return (
                     <PostCard
                       ref={lastRef}
-                      refetch={refetch}
                       data={data}
                       key={idx}
                       text={data.text}

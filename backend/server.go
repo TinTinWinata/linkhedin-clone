@@ -12,6 +12,7 @@ import (
 	directives "github.com/TinTinWinata/gqlgen/graph/directive"
 	"github.com/TinTinWinata/gqlgen/graph/generated"
 	middleware "github.com/TinTinWinata/gqlgen/middlewares"
+	"github.com/TinTinWinata/gqlgen/websocket"
 	"github.com/gorilla/mux"
 )
 
@@ -41,6 +42,8 @@ func main() {
 	db := database.GetDB()
 	database.MigrateTable()
 
+	websocket.AllRooms.Init()
+
 	router := mux.NewRouter()
 	router.Use(MyCors)
 	router.Use(middleware.AuthMiddleware)
@@ -48,11 +51,15 @@ func main() {
 	config := generated.Config{Resolvers: &graph.Resolver{
 		DB: db,
 	}}
+
 	config.Directives.Auth = directives.Auth
 	srv := handler.NewDefaultServer(generated.NewExecutableSchema(config))
 
 	router.Handle("/", playground.Handler("GraphQL playground", "/query"))
 	router.Handle("/query", srv)
+
+	router.HandleFunc("/server/create", websocket.CreateRoomRequestHandler)
+	router.HandleFunc("/server/join", websocket.JoinRoomRequestHandler)
 
 	// http.Handle("/query", srv)
 

@@ -1,98 +1,100 @@
-.post-card{
+.post-card {
   padding: 10px;
   width: 100%;
   box-shadow: rgba(99, 99, 99, 0.2) 0px 2px 8px 0px;
   width: 100%;
   height: fit-content;
 
-
-  .post-extras{
+  .text {
+    margin-top: 10px;
+    margin-bottom: 10px;
+    margin-left: 10px;
+    text-align: left;
+  }
+  .post-extras {
     margin-top: 10px;
     display: flex;
     justify-content: space-between;
     font-size: 13px;
 
-
-    .love{
+    .love {
       margin-top: 3px;
       height: 10px;
       color: rgb(255, 61, 84);
     }
-    .sends{
+    .sends {
       margin-left: 10px;
     }
+  }
 
-    }
-
-  .header{  
-    img{
+  .header {
+    img {
       width: 30px;
       height: 30px;
       border-radius: 50%;
     }
-    .header-desc{
+    .header-desc {
       margin-left: 10px;
     }
     display: flex;
   }
-  img{
+  img {
     width: 500px;
   }
-  .post-width{
+  .post-width {
     margin: 0 auto;
-    .post-icon{
+    .post-icon {
       cursor: pointer;
     }
-    .icon{
+    .icon {
       margin-right: 10px;
-      
     }
   }
-  .my-border{
+  .my-border {
     width: 100%;
-    margin:10px 0px;
+    margin: 10px 0px;
     border-bottom: 1px solid rgba(156, 156, 156, 0.365);
   }
-  .my-comment{
+  .my-comment {
     margin-top: 20px;
     max-height: 40px;
     margin-bottom: 10px;
-    img{
+    img {
       width: 40px;
       height: 40px;
       border-radius: 50%;
     }
-    input{
+    input {
       margin-left: 10px;
       width: 100%;
       border-radius: 50px;
       background-color: transparent;
     }
   }
-  .comment-container{
-    text-align:left;
-    .user-comment{
+  .comment-container {
+    text-align: left;
+    .user-comment {
       margin-top: 10px;
-      #comment-text{
+      #comment-text {
         border-radius: 10px;
         margin-left: 10px;
         padding: 8px;
       }
-      img{
+      img {
         width: 30px;
         height: 30px;
         border-radius: 50%;
       }
-      #comment-value{
+      #comment-value {
         font-weight: 400;
       }
     }
-    #comment-text{
+    #comment-text {
       font-size: 13px;
       font-weight: 500;
     }
   }
 }
-.post-card-margin{
+.post-card-margin {
   margin-top: 20px;
 }

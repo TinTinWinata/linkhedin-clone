@@ -2,9 +2,8 @@ import { gql } from "@apollo/client";
 
 
 export const CREATE_POST_QUERY = gql`
-
-mutation CreatePost($text: String!, $userId: String!, $attachment:String!) {
-  createPost(input: {text: $text, user_id: $userId,attachment_link:$attachment})
+mutation CreatePost($hashtag:[String!]!, $text: String!, $userId: String!, $attachment:String!) {
+  createPost(input: {text: $text, user_id: $userId,attachment_link:$attachment, hashtag:$hashtag})
 }
 `;
 
@@ -12,6 +11,34 @@ mutation CreatePost($text: String!, $userId: String!, $attachment:String!) {
 export const LIKE_POST_QUERY = gql`
 mutation LikePost($id:String!){
  	 likePost(id:$id)
+}
+`
+
+export const FIND_POST_QUERY = gql`
+query FindPost($id:String!){
+  post(id:$id){
+    id
+    text
+    AttachmentLink
+    User{
+      id
+      name
+      email
+      PhotoProfile
+      FollowedUser
+      ConnectedUser
+      RequestConnect
+      RequestConnectTxt
+      Headline
+      ProfileViews
+      BgPhotoProfile
+    }
+    likes
+    sends
+    comments
+    createdAt
+    hashtag
+  }
 }
 `
 
@@ -34,6 +61,7 @@ query Infinity($limit:Int!, $offset:Int!){
       ProfileViews
       BgPhotoProfile
     }
+    hashtag
     likes
     sends
     comments

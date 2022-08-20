@@ -4,8 +4,10 @@ import "./network.scss";
 
 export default function Network() {
   return (
-    <div className="network">
-      <Request></Request>
+    <div className="network h-min-max">
+      <div className="center">
+        <Request></Request>
+      </div>
     </div>
   );
 }

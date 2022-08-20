@@ -2,11 +2,34 @@
 
 package model
 
+type AllUpdateUser struct {
+	Headline       string `json:"Headline"`
+	FirstName      string `json:"FirstName"`
+	LastName       string `json:"LastName"`
+	AdditionalName string `json:"AdditionalName"`
+	Gender         string `json:"Gender"`
+}
+
 type GoogleInput struct {
 	GoogleID  string `json:"googleId"`
 	GoogleKey string `json:"googleKey"`
 	Email     string `json:"email"`
 	Name      string `json:"name"`
+}
+
+type InputNotification struct {
+	UserID         string `json:"userId"`
+	Text           string `json:"text"`
+	SenderName     string `json:"senderName"`
+	SenderPhotoURL string `json:"senderPhotoUrl"`
+	Link           string `json:"link"`
+}
+
+type JobInput struct {
+	Title        string `json:"title"`
+	CompanyName  string `json:"companyName"`
+	Location     string `json:"location"`
+	PhotoProfile string `json:"photoProfile"`
 }
 
 type Message struct {
@@ -45,9 +68,10 @@ type NewLink struct {
 }
 
 type NewPost struct {
-	Text           string `json:"text"`
-	UserID         string `json:"user_id"`
-	AttachmentLink string `json:"attachment_link"`
+	Text           string   `json:"text"`
+	UserID         string   `json:"user_id"`
+	AttachmentLink string   `json:"attachment_link"`
+	Hashtag        []string `json:"hashtag"`
 }
 
 type NewUser struct {

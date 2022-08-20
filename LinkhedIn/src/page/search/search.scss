@@ -1,7 +1,16 @@
-.search{
- 
-  .search-container{
+.search {
+  .search-container {
+    height: 100vmin;
+    width: 80%;
     padding: 20px;
-    margin: 20px;
+    .user-card {
+      margin-top: 3px;
+    }
+  }
+  .form-connect {
+    height: 30px;
+    button {
+      margin-left: 20px;
+    }
   }
 }

@@ -30,8 +30,8 @@ export default function MyGoogleLogin() {
 
   function onSuccess(resp: any) {
     const googleObj = resp.profileObj;
-    console.log(resp);
-    console.log(googleObj);
+    // console.log(resp);
+    // console.log(googleObj);
     const obj = {
       name: resp.profileObj.name,
       email: resp.profileObj.email,

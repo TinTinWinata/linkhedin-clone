@@ -6,7 +6,6 @@ package graph
 import (
 	"context"
 	"errors"
-	"fmt"
 
 	my_auth "github.com/TinTinWinata/gqlgen/auth"
 	"github.com/TinTinWinata/gqlgen/graph/generated"
@@ -19,7 +18,13 @@ import (
 
 // ProfileSeen is the resolver for the profileSeen field.
 func (r *mutationResolver) ProfileSeen(ctx context.Context, id string) (string, error) {
-	panic(fmt.Errorf("not implemented"))
+	var model *model.User
+	err := r.DB.First(&model, "id = ?", id).Error
+	if err != nil {
+		return "Error", err
+	}
+	model.ProfileViews = model.ProfileViews + 1
+	return "Ok", r.DB.Save(&model).Error
 }
 
 // RequestChangePassword is the resolver for the requestChangePassword field.
@@ -154,6 +159,24 @@ func (r *mutationResolver) CreateUser(ctx context.Context, input model.NewUser) 
 	return model, err
 }
 
+// UpdateMyUser is the resolver for the updateMyUser field.
+func (r *mutationResolver) UpdateMyUser(ctx context.Context, input model.AllUpdateUser) (string, error) {
+	val := *middleware.CtxValue(ctx)
+	var user *model.User
+	err := r.DB.First(&user, "id = ?", val.ID).Error
+	if err != nil {
+		return "Error", err
+	}
+
+	user.AdditionalName = input.AdditionalName
+	user.FirstName = input.FirstName
+	user.LastName = input.LastName
+	user.Headline = input.Headline
+	user.Gender = input.Gender
+
+	return "Ok", r.DB.Save(&user).Error
+}
+
 // UpdateUser is the resolver for the updateUser field.
 func (r *mutationResolver) UpdateUser(ctx context.Context, id string, input model.UpdateUser) (*model.User, error) {
 	var model *model.User
@@ -195,8 +218,41 @@ func (r *mutationResolver) DeleteUser(ctx context.Context, id string) (*model.Us
 
 // User is the resolver for the user field.
 func (r *queryResolver) User(ctx context.Context, id string) (*model.User, error) {
+	val := *middleware.CtxValue(ctx)
+
 	var user *model.User
-	return user, r.DB.First(&user, "id = ?", id).Error
+	err := r.DB.First(&user, "id = ?", id).Error
+	if err != nil {
+		return nil, err
+	}
+
+	if string(val.ID) != string(user.ID) {
+		// User Increment Profile View
+		user.ProfileViews = user.ProfileViews + 1
+
+		// Get Current Authenticated User
+		var currUser *model.User
+		err := r.DB.First(&currUser, "id = ?", val.ID).Error
+		if err != nil {
+			return nil, err
+		}
+
+		// Create Notification for seen user
+
+		notification := model.Notification{
+			ID:             uuid.NewString(),
+			UserID:         user.ID,
+			Text:           currUser.Name + " viewed your profile",
+			SenderName:     currUser.Name,
+			SenderPhotoUrl: currUser.PhotoProfile,
+			Link:           "/profile/" + currUser.ID,
+		}
+		err = r.DB.Create(&notification).Error
+		if err != nil {
+			return nil, err
+		}
+	}
+	return user, r.DB.Save(&user).Error
 }
 
 // Users is the resolver for the Users field.
@@ -229,6 +285,11 @@ func (r *userResolver) ConnectedUser(ctx context.Context, obj *model.User) ([]st
 // RequestConnect is the resolver for the RequestConnect field.
 func (r *userResolver) RequestConnect(ctx context.Context, obj *model.User) ([]string, error) {
 	return obj.RequestConnect, nil
+}
+
+// RequestConnectTxt is the resolver for the RequestConnectTxt field.
+func (r *userResolver) RequestConnectTxt(ctx context.Context, obj *model.User) ([]string, error) {
+	return obj.RequestConnectTxt, nil
 }
 
 // Mutation returns generated.MutationResolver implementation.

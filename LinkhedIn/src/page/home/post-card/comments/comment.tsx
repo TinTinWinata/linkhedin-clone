@@ -6,6 +6,7 @@ import CreateComment from "../create-comment/create-comment";
 import "../css-post-card.scss";
 
 export default function Comment(props: any) {
+  const postRefetch = props.refetch;
   const post = props.post;
   const { user } = useUserAuth();
   const { data, refetch } = useQuery(SEE_COMMENT_QUERY, {
@@ -16,7 +17,12 @@ export default function Comment(props: any) {
 
   return (
     <>
-      <CreateComment refetch={refetch} post={post} user={user}></CreateComment>
+      <CreateComment
+        postRefetch={postRefetch}
+        refetch={refetch}
+        post={post}
+        user={user}
+      ></CreateComment>
       <div className="comment-container">
         <p id="my-10 comment-text">Comments</p>
         {data &&

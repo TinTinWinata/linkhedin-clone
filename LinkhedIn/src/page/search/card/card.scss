@@ -1,12 +1,14 @@
-.user-card{
-  margin: 5px;
+.user-card {
+  width: 100%;
+  padding: 10px;
   cursor: pointer;
 
-  img{
+  img {
     width: 50px;
     border-radius: 50%;
-  } 
-  .text{
+  }
+  .text {
     margin-left: 10px;
+    margin-top: 3px;
   }
 }

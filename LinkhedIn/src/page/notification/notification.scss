@@ -1,0 +1,39 @@
+.notification-container {
+  margin-top: 20px;
+  padding: 10px;
+  height: fit-content;
+  border-radius: 10px;
+  min-width: 500px;
+  .nothaveany {
+    padding-bottom: 5px;
+  }
+  .header {
+    margin-bottom: 13px;
+  }
+  .notification-card {
+    margin-top: 10px;
+    border-top: 0.5px solid rgba(168, 168, 168, 0.545);
+    padding: 5px 0px;
+    img {
+      width: 50px;
+      height: 50px;
+      border-radius: 50%;
+    }
+    .txt {
+      margin-left: 5px;
+      display: flex;
+      flex-direction: column;
+    }
+  }
+  .second-button {
+    margin-left: 10px;
+    min-width: 30px;
+  }
+  .link {
+    margin-left: 10px;
+    &:hover {
+      cursor: pointer;
+      background-color: red;
+    }
+  }
+}

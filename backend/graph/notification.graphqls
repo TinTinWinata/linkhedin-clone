@@ -1,0 +1,25 @@
+type Notification {
+  id: String!
+  user: User!
+  text: String!
+  senderName: String!
+  senderPhotoUrl: String!
+  link: String!
+}
+
+input InputNotification {
+  userId: String!
+  text: String!
+  senderName: String!
+  senderPhotoUrl: String!
+  link: String!
+}
+
+extend type Mutation {
+  createNotification(input: InputNotification!): String!
+  deleteNotification(id: String!): String!
+}
+
+extend type Query {
+  myNotification: [Notification!]! @auth
+}

@@ -6,6 +6,7 @@ input NewPost {
   text: String!
   user_id: String!
   attachment_link: String!
+  hashtag: [String!]!
 }
 
 type Post {
@@ -17,11 +18,14 @@ type Post {
   sends: Int!
   comments: Int!
   createdAt: Time!
+  hashtag: [String!]!
 }
 
 extend type Query {
+  post(id: String!): Post!
   posts: [Post!]!
   postInfinity(limit: Int!, offset: Int!): [Post!]!
+  getAllHashtag: [String!]!
 }
 
 extend type Mutation {

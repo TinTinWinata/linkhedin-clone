@@ -14,9 +14,14 @@ type User {
   FollowedUser: [String!]!
   ConnectedUser: [String!]!
   RequestConnect: [String!]!
+  RequestConnectTxt: [String!]!
   Headline: String!
   ProfileViews: Int!
   BgPhotoProfile: String!
+  FirstName: String!
+  LastName: String!
+  AdditionalName: String!
+  Gender: String!
 }
 
 type Query {
@@ -39,6 +44,14 @@ input UpdateUser {
   BgPhotoProfile: String!
 }
 
+input AllUpdateUser {
+  Headline: String!
+  FirstName: String!
+  LastName: String!
+  AdditionalName: String!
+  Gender: String!
+}
+
 type Mutation {
   profileSeen(id: ID!): String!
   requestChangePassword(email: String!): String!
@@ -49,6 +62,7 @@ type Mutation {
   login(email: String!, password: String!): Any!
   register(input: NewUser!): Any!
   createUser(input: NewUser!): User!
+  updateMyUser(input: AllUpdateUser!): String! @auth
   updateUser(id: ID!, input: UpdateUser!): User!
   deleteUser(id: ID!): User!
 }

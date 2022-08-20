@@ -1,5 +1,5 @@
 extend type Mutation {
-  createRequest(user_id: String!): String!
+  createRequest(user_id: String!, text: String!): String!
   acceptRequest(id: String!): String!
   declineRequest(id: String!): String!
 }

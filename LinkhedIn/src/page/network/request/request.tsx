@@ -16,12 +16,22 @@ export default function Request() {
 
   return (
     <div className="network-request">
-      <h2>Request List</h2>
       <div className="shadow container">
+        <h2 className="color-first header">Request List</h2>
+        {user.RequestConnect && user.RequestConnect.length == 0 ? (
+          <p className="no-have-request">You don't have any request yet</p>
+        ) : (
+          ""
+        )}
         {user.RequestConnect
-          ? user.RequestConnect.map((req: any) => {
-              console.log(req);
-              return <RequestPeople key={req} id={req}></RequestPeople>;
+          ? user.RequestConnect.map((req: any, idx: any) => {
+              return (
+                <RequestPeople
+                  key={req}
+                  id={req}
+                  text={user.RequestConnectTxt[idx]}
+                ></RequestPeople>
+              );
             })
           : ""}
       </div>

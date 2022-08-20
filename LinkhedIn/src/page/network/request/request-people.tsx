@@ -11,6 +11,7 @@ import { FIND_USER_QUERY } from "../../../query/user";
 import "../network.scss";
 
 export default function RequestPeople(props: any) {
+  const text = props.text;
   const { data } = useQuery(FIND_USER_QUERY, { variables: { id: props.id } });
   const { refetchUser } = useRefetch();
 
@@ -42,6 +43,7 @@ export default function RequestPeople(props: any) {
   return (
     <div className="request-people">
       <div className="name">{data ? data.user.name : ""}</div>
+      <div className="text">{text ? text : ""}</div>
       <div className="btn flex">
         <button onClick={handleAccept}>Accept</button>
         <button onClick={handleIgnore}>Ignore</button>

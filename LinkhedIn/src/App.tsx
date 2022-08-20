@@ -28,6 +28,7 @@ import RefetchProvider from "./hooks/refetchContext";
 import Forgetpassword from "./page/forget-password/forgetpassword";
 import ChangePassword from "./page/change-password/changepassword";
 import Footer from "./component/Footer/footer";
+import CreateJob from "./page/create-job/createJob";
 
 function App() {
   const { loading } = useLoading();
@@ -72,6 +73,7 @@ function App() {
                       path="/verification/:id"
                       element={<Verification />}
                     ></Route>
+
                     <Route
                       path="/forget-password"
                       element={<Forgetpassword />}

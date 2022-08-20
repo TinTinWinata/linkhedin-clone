@@ -7,6 +7,7 @@ export default function CreateComment(props: any) {
   const user = props.user;
   const post = props.post;
   const refetch = props.refetch;
+  const postRefetch = props.postRefetch;
 
   const [createFunc] = useMutation(CREATE_COMMENT_QUERY);
 
@@ -23,6 +24,7 @@ export default function CreateComment(props: any) {
     })
       .then((resp) => {
         refetch();
+        postRefetch();
         e.target.comment.value = "";
       })
       .catch((err) => {

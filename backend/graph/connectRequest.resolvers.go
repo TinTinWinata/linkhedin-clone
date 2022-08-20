@@ -12,7 +12,7 @@ import (
 )
 
 // CreateRequest is the resolver for the createRequest field.
-func (r *mutationResolver) CreateRequest(ctx context.Context, userID string) (string, error) {
+func (r *mutationResolver) CreateRequest(ctx context.Context, userID string, text string) (string, error) {
 	val := *middleware.CtxValue(ctx)
 	var user *model.User
 	err := r.DB.First(&user, "id = ?", val.ID).Error
@@ -26,6 +26,7 @@ func (r *mutationResolver) CreateRequest(ctx context.Context, userID string) (st
 		return "Error", err
 	}
 	getUser.RequestConnect = append(getUser.RequestConnect, user.ID)
+	getUser.RequestConnectTxt = append(getUser.RequestConnectTxt, text)
 	return "Ok", r.DB.Save(getUser).Error
 }
 
@@ -51,6 +52,7 @@ func (r *mutationResolver) AcceptRequest(ctx context.Context, id string) (string
 	for i, val := range user.RequestConnect {
 		if val == getUser.ID {
 			user.RequestConnect = helper.RemoveArrayByIndex(user.RequestConnect, i)
+			user.RequestConnectTxt = helper.RemoveArrayByIndex(user.RequestConnectTxt, i)
 		}
 	}
 
@@ -93,6 +95,7 @@ func (r *mutationResolver) DeclineRequest(ctx context.Context, id string) (strin
 	for i, val := range user.RequestConnect {
 		if val == getUser.ID {
 			user.RequestConnect = helper.RemoveArrayByIndex(user.RequestConnect, i)
+			user.RequestConnectTxt = helper.RemoveArrayByIndex(user.RequestConnectTxt, i)
 		}
 	}
 
