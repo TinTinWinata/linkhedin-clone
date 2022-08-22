@@ -7,9 +7,13 @@ import Pusher from "pusher-js";
 import { useMutation, useQuery } from "@apollo/client";
 import { GET_MESSAGE_QUERY, MESSAGE_QUERY } from "../../query/message";
 import { toastError } from "../../config/toast";
+import { FaImage, FaPhone } from "react-icons/fa";
+import { useNavigate } from "react-router-dom";
+import { sendImage } from "../../script/image";
 
 export default function Message() {
   const { user } = useUserAuth();
+  const navigate = useNavigate();
 
   const [messageFunc] = useMutation(MESSAGE_QUERY);
 
@@ -19,7 +23,6 @@ export default function Message() {
   });
   const [messages, setMessages] = useState<any>([]);
   const [message, setMessage] = useState("");
-  let allMessages: any = [];
 
   const pusher = new Pusher("9e320ff2624435fef743", {
     cluster: "ap1",
@@ -57,10 +60,14 @@ export default function Message() {
       toastError("Please select any user before send");
       return;
     }
+    sendMessage(message);
+  }
+
+  function sendMessage(msg: any) {
     messageFunc({
       variables: {
         userId: selectedUser.id,
-        message: message,
+        message: msg,
       },
     })
       .then((resp) => {
@@ -80,12 +87,26 @@ export default function Message() {
     }
   }
 
+  function handleChangeImage(e: any) {
+    const img = e.target.files[0];
+    sendImage(img).then((url) => {
+      sendMessage(url);
+    });
+  }
+
+  function handlePhone() {
+    navigate("/room-create");
+  }
+
   return (
-    <div className="message-container">
+    <div className="message-container h-min-max">
       <div className="message shadow">
         <h2>Message</h2>
         {user && user.ConnectedUser !== undefined
           ? user.ConnectedUser.map((id: any) => {
+              if (user.BlockedUser.includes(id)) {
+                return <></>;
+              }
               return (
                 <MessageList
                   bind={bindChannel}
@@ -99,26 +120,40 @@ export default function Message() {
       </div>
       <div className="chat shadow">
         <div className="hide-scroll chat-container">
-          <h2>{selectedUser.name}</h2>
+          <div className="flex space-between">
+            <h2>{selectedUser.name}</h2>
+            <div className="center">
+              <FaPhone onClick={handlePhone} className="phone-icon"></FaPhone>
+            </div>
+          </div>
           <hr className="black"></hr>
           {messages.map((msg: any, idx: any) => {
-            return (
-              <div key={idx}>
-                <h3>{msg.username}</h3>
-                <p>{msg.message}</p>
-              </div>
-            );
+            return <MessageUser key={idx} msg={msg}></MessageUser>;
           })}
         </div>
         <form onSubmit={handleSubmit}>
-          <input
-            type="text"
-            onChange={(e) => {
-              setMessage(e.target.value);
-            }}
-            value={message}
-          />
-          <button type="submit">Send</button>
+          <div className="flex">
+            <input
+              type="text"
+              onChange={(e) => {
+                setMessage(e.target.value);
+              }}
+              value={message}
+            />
+            <button type="submit">Send</button>
+            <div className="center">
+              <label htmlFor="input-image">
+                <FaImage className="image-icon"></FaImage>
+              </label>
+              <input
+                onChange={handleChangeImage}
+                className="none"
+                id="input-image"
+                type="file"
+                accept="image"
+              />
+            </div>
+          </div>
         </form>
       </div>
     </div>

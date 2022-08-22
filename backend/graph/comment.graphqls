@@ -30,9 +30,9 @@ input newRepliesComment {
 extend type Mutation {
   createComment(input: newComment!): String!
   repliesComment(input: newRepliesComment!): String!
-  likeComment(commentId: String!): String!
 }
 
 extend type Query {
-  seeCommentOnPost(postId: String!): [Comment!]!
+  seeCommentOnPost(postId: String!, limit: Int!, offset: Int!): [Comment!]!
+  comments: [Comment!]!
 }

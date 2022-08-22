@@ -10,10 +10,22 @@ mutation CreateComment($userId:String!, $text:String!, $postId:String!){
 }
   `
 
+export const LIKE_COMMENT_QUERY = gql`
+mutation LikeComment($commentId:String!){
+  newLikeComment(commentId:$commentId)
+}
+`
+
+export const REPLY_COMMENT_QUERY = gql`
+mutation RepliesComment($input:newRepliesComment!){
+  	repliesComment(input:$input)
+}
+`
 
 export const SEE_COMMENT_QUERY = gql`
-query SeeComment($postId:String!){
-  seeCommentOnPost(postId:$postId){
+query SeeComment($postId:String!, $limit:Int!, $offset:Int!){
+  seeCommentOnPost(postId:$postId,limit:$limit, offset: $offset){
+
     PostID
     ID
     User{

@@ -22,12 +22,15 @@ type User {
   LastName: String!
   AdditionalName: String!
   Gender: String!
+  BlockedUser: [String!]!
 }
 
 type Query {
-  user(id: ID!): User! @auth
+  searchConnected: [User!]! @auth
+  user(id: String!): User! @auth
   users: [User!]!
-  whoisme: User! @auth
+  whoisme: User! @auth  
+  userSuggestion: [User!]! @auth
 }
 
 input NewUser {
@@ -53,6 +56,7 @@ input AllUpdateUser {
 }
 
 type Mutation {
+  blockUser(id: ID!): String! @auth
   profileSeen(id: ID!): String!
   requestChangePassword(email: String!): String!
   changePassword(password: String!, id: ID!): String!

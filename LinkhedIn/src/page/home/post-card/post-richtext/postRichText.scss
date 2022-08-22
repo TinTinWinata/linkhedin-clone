@@ -1,0 +1,30 @@
+a {
+  margin: 0px;
+  width: fit-content;
+  color: rgb(0, 136, 255);
+}
+.richat {
+  color: rgb(0, 136, 255);
+  display: inline-block;
+  cursor: pointer;
+}
+
+.rich-hover-tag {
+  color: black;
+  position: absolute;
+  padding: 10px;
+  background-color: white;
+  right: -30px;
+  border-radius: 10px;
+  img {
+    width: 20px;
+    height: 20px;
+    border-radius: 20px;
+  }
+}
+
+.richhashtag {
+  color: rgb(52, 52, 52);
+  background-color: rgb(202, 202, 202);
+  display: inline-block;
+}

@@ -6,6 +6,7 @@ package graph
 import (
 	"context"
 	"errors"
+	"fmt"
 
 	my_auth "github.com/TinTinWinata/gqlgen/auth"
 	"github.com/TinTinWinata/gqlgen/graph/model"
@@ -21,16 +22,17 @@ func (r *mutationResolver) Google(ctx context.Context, input model.GoogleInput) 
 
 	// Checking on Google Database
 	var google *model.Google
-	r.DB.First(&google, "id = ?", input.GoogleID)
+	err := r.DB.First(&google, "id = ?", input.GoogleID).Error
 
-	if google != nil {
+	if err == nil {
 		return my_auth.UserLoginWithoutPassword(ctx, input.Email)
 	}
+	fmt.Println("sampai sini")
 
 	// Find Same Email
 	var user *model.User
-	r.DB.First(&user, "email = ?", input.Email)
-	if user != nil {
+	userErr := r.DB.First(&user, "email = ?", input.Email).Error
+	if userErr == nil {
 		newGoogle := &model.Google{
 			ID:       uuid.NewString(),
 			GoogleID: input.GoogleID,
@@ -50,8 +52,8 @@ func (r *mutationResolver) Google(ctx context.Context, input model.GoogleInput) 
 		GoogleID: input.GoogleID,
 		UserID:   user.ID,
 	}
-	err := r.DB.Create(newGoogle).Error
-	if err != nil {
+	errCreate := r.DB.Create(newGoogle).Error
+	if errCreate != nil {
 		return nil, err
 	}
 	newUser := model.NewUser{

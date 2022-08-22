@@ -4,6 +4,7 @@
   box-shadow: rgba(99, 99, 99, 0.2) 0px 2px 8px 0px;
   width: 100%;
   height: fit-content;
+  position: relative;
 
   .text {
     margin-top: 10px;
@@ -71,9 +72,56 @@
       background-color: transparent;
     }
   }
+
   .comment-container {
+    .load-more {
+      cursor: pointer;
+      &:hover {
+        text-decoration: underline;
+      }
+    }
+    .submit-reply {
+      margin-left: 30px;
+      padding: 5px;
+      border-radius: 10px;
+      input {
+        background-color: transparent;
+      }
+    }
     text-align: left;
+    .reply-icon {
+      cursor: pointer;
+      margin-left: 10px;
+    }
+    .comment-replies {
+      margin-top: 3px;
+      margin-left: 60px;
+      .the-comment-reply {
+        width: fit-content;
+        margin-top: 10px;
+        height: fit-content;
+        img {
+          border-radius: 50%;
+          width: 20px;
+          height: 20px;
+        }
+        font-size: 13px;
+        border-radius: 10px;
+        padding: 5px 7px;
+      }
+    }
+    .user-like {
+      cursor: pointer;
+    }
     .user-comment {
+      .likes-count {
+        font-size: 13px;
+      }
+      .icon-heart {
+        width: 10px;
+        height: 10px;
+        margin-right: 1px;
+      }
       margin-top: 10px;
       #comment-text {
         border-radius: 10px;

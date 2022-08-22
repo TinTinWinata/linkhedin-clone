@@ -17,6 +17,14 @@ func (r *commentResolver) User(ctx context.Context, obj *model.Comment) (*model.
 	return model, r.DB.First(&model, "id = ?", obj.UserID).Error
 }
 
+// Likes is the resolver for the Likes field.
+func (r *commentResolver) Likes(ctx context.Context, obj *model.Comment) (int, error) {
+	var model *model.CommentLike
+	var count int64
+	r.DB.First(&model, "comment_id = ? AND is_like = true", obj.ID).Count(&count)
+	return int(count), nil
+}
+
 // Replies is the resolver for the Replies field.
 func (r *commentResolver) Replies(ctx context.Context, obj *model.Comment) ([]*model.ReplyComment, error) {
 	var models []*model.ReplyComment
@@ -41,7 +49,6 @@ func (r *mutationResolver) CreateComment(ctx context.Context, input model.NewCom
 	model := &model.Comment{
 		ID:     uuid.NewString(),
 		Text:   input.Text,
-		Likes:  0,
 		UserID: input.UserID,
 		PostID: input.PostID,
 	}
@@ -60,20 +67,16 @@ func (r *mutationResolver) RepliesComment(ctx context.Context, input model.NewRe
 	return "Ok", r.DB.Create(model).Error
 }
 
-// LikeComment is the resolver for the likeComment field.
-func (r *mutationResolver) LikeComment(ctx context.Context, commentID string) (string, error) {
-	var model *model.Comment
-	if err := r.DB.First(&model, "id = ?", commentID).Error; err != nil {
-		return "Error", err
-	}
-	model.Likes = model.Likes + 1
-	return "Ok", r.DB.Save(model).Error
+// SeeCommentOnPost is the resolver for the seeCommentOnPost field.
+func (r *queryResolver) SeeCommentOnPost(ctx context.Context, postID string, limit int, offset int) ([]*model.Comment, error) {
+	var models []*model.Comment
+	return models, r.DB.Offset(offset).Limit(limit).Where("post_id = ?", postID).Find(&models).Error
 }
 
-// SeeCommentOnPost is the resolver for the seeCommentOnPost field.
-func (r *queryResolver) SeeCommentOnPost(ctx context.Context, postID string) ([]*model.Comment, error) {
-	var models []*model.Comment
-	return models, r.DB.Where("post_id = ?", postID).Find(&models).Error
+// Comments is the resolver for the comments field.
+func (r *queryResolver) Comments(ctx context.Context) ([]*model.Comment, error) {
+	var model []*model.Comment
+	return model, r.DB.Find(&model).Error
 }
 
 // User is the resolver for the User field.

@@ -2,7 +2,7 @@ import { gql } from "@apollo/client";
 
 
 export const FIND_USER_QUERY = gql`
-query User($id:ID!){
+query User($id:String!){
   user(id:$id){
     id
     name
@@ -14,11 +14,57 @@ query User($id:ID!){
     LastName
     FirstName
     AdditionalName
+    BlockedUser
     Headline
     Gender
   }
 }
 `;
+
+export const BLOCK_USER_QUERY = gql`
+  mutation BlockUser($id: ID!){
+    	blockUser(id:$id)
+  }
+`
+
+export const GET_CONNECTED_USER_QUERY = gql `
+query GetConnetedUser{
+  searchConnected{
+    name
+    email
+    PhotoProfile
+    FollowedUser
+    ConnectedUser
+    RequestConnect
+    RequestConnectTxt
+    Headline
+    ProfileViews
+    BgPhotoProfile
+    BlockedUser
+    FirstName
+    LastName
+    AdditionalName
+    Gender
+    id
+  }
+}
+`
+
+export const USER_SUGGESTION_QUERY = gql`
+query UserMightKnow{
+  userSuggestion{
+    id
+    name
+    email
+    PhotoProfile
+    FollowedUser
+    ConnectedUser
+    RequestConnect
+    RequestConnectTxt
+    Headline
+  }
+}
+`
 
 export const UPDATE_MY_PROFILE_QUERY = gql`
 mutation UpdateMyProfile($input:AllUpdateUser!){
@@ -37,6 +83,7 @@ query Fetch{
     ConnectedUser
     RequestConnect
     BgPhotoProfile
+    BlockedUser
     RequestConnectTxt
     LastName
     FirstName

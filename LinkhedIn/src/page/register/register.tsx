@@ -14,16 +14,6 @@ export default function Register() {
   const [registerFunc, { loading }] = useMutation(REGISTER_QUERY);
   const { update } = useUserAuth();
   const { setLoading } = useLoading();
-  const [gmailValue, setGmailValue] = useState("");
-
-  // useEffect(() => {
-  //   console.log(data);
-  //   if (data && data.register.token !== undefined) {
-  //     const user = data.register;
-  //     update(user);
-  //     navigate("/home");
-  //   }
-  // }, [data]);
 
   useEffect(() => {
     if (loading) {
@@ -64,13 +54,6 @@ export default function Register() {
     navigate("/login");
   }
 
-  function gmailOnChange(e: any) {
-    let val = e.target.value;
-    val = val.replace("@", "");
-    val = val.replace(".", "");
-    setGmailValue(val);
-  }
-
   return (
     <>
       <div className="register-container">
@@ -84,14 +67,9 @@ export default function Register() {
               <p>or</p>
               <div className="my-border"></div>
             </div>
-            <input
-              type="hidden"
-              name="link"
-              value={"http://127.0.0.1:5173/verification/" + gmailValue}
-            />
             <div className="register-form-content">
               <label htmlFor="email">Email</label>
-              <input name="email" type="email" onChange={gmailOnChange} />
+              <input name="email" type="email" />
             </div>
             <div className="register-form-content">
               <label htmlFor="name">Name</label>

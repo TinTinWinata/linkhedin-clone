@@ -29,6 +29,7 @@ extend type Query {
 }
 
 extend type Mutation {
+  sendPost(id: String!): String!
   likePost(id: String!): String!
   # createPost(input: NewPost!, file: Upload!): String!
   createPost(input: NewPost!): String!

@@ -6,6 +6,7 @@ package graph
 import (
 	"context"
 	"errors"
+	"fmt"
 
 	my_auth "github.com/TinTinWinata/gqlgen/auth"
 	"github.com/TinTinWinata/gqlgen/graph/generated"
@@ -15,6 +16,28 @@ import (
 	middleware "github.com/TinTinWinata/gqlgen/middlewares"
 	"github.com/google/uuid"
 )
+
+// BlockUser is the resolver for the blockUser field.
+func (r *mutationResolver) BlockUser(ctx context.Context, id string) (string, error) {
+	val := *middleware.CtxValue(ctx)
+	var user *model.User
+	err := r.DB.First(&user, "id = ?", val.ID).Error
+	if err != nil {
+		return "error", err
+	}
+
+	// Check already exists or no
+	for idx, el := range user.BlockedUser {
+		if string(el) == string(id) {
+			// Already Exists
+			user.BlockedUser = helper.RemoveArrayByIndex(user.BlockedUser, idx)
+			return "Succesfully unblock user", r.DB.Save(&user).Error
+		}
+	}
+
+	user.BlockedUser = append(user.BlockedUser, id)
+	return "Succesfully blocked user", r.DB.Save(&user).Error
+}
 
 // ProfileSeen is the resolver for the profileSeen field.
 func (r *mutationResolver) ProfileSeen(ctx context.Context, id string) (string, error) {
@@ -216,14 +239,30 @@ func (r *mutationResolver) DeleteUser(ctx context.Context, id string) (*model.Us
 	return model, r.DB.Delete(model).Error
 }
 
+// SearchConnected is the resolver for the searchConnected field.
+func (r *queryResolver) SearchConnected(ctx context.Context) ([]*model.User, error) {
+	val := *middleware.CtxValue(ctx)
+	var connectedUser []*model.User
+	r.DB.Raw("select * from users where cast(users.id as text) = any (select  unnest(u.connected_user) as connected from users u where u.id = ?)", val.ID).Scan(&connectedUser)
+	return connectedUser, nil
+}
+
 // User is the resolver for the user field.
 func (r *queryResolver) User(ctx context.Context, id string) (*model.User, error) {
 	val := *middleware.CtxValue(ctx)
 
 	var user *model.User
-	err := r.DB.First(&user, "id = ?", id).Error
-	if err != nil {
-		return nil, err
+
+	if helper.IsDigit(id) {
+		err := r.DB.First(&user, "id = ?", id).Error
+		if err != nil {
+			return nil, err
+		}
+	} else {
+		err := r.DB.First(&user, "name = ?", id).Error
+		if err != nil {
+			return nil, err
+		}
 	}
 
 	if string(val.ID) != string(user.ID) {
@@ -272,6 +311,19 @@ func (r *queryResolver) Whoisme(ctx context.Context) (*model.User, error) {
 	return user, nil
 }
 
+// UserSuggestion is the resolver for the userSuggestion field.
+func (r *queryResolver) UserSuggestion(ctx context.Context) ([]*model.User, error) {
+	val := *middleware.CtxValue(ctx)
+	var user *model.User
+	err := r.DB.First(&user, "id = ?", val.ID).Error
+	if err != nil {
+		return nil, err
+	}
+	var models []*model.User
+	r.DB.Raw("select * from users where cast(users.id as text) = any (select unnest(users.connected_user) from users where cast(users.id as text) = any (select unnest(u.connected_user) from users u where u.id = ?)) and users.id != ?", val.ID, val.ID).Scan(&models)
+	return models, nil
+}
+
 // FollowedUser is the resolver for the FollowedUser field.
 func (r *userResolver) FollowedUser(ctx context.Context, obj *model.User) ([]string, error) {
 	return obj.FollowedUser, nil
@@ -292,6 +344,11 @@ func (r *userResolver) RequestConnectTxt(ctx context.Context, obj *model.User) (
 	return obj.RequestConnectTxt, nil
 }
 
+// BlockedUser is the resolver for the BlockedUser field.
+func (r *userResolver) BlockedUser(ctx context.Context, obj *model.User) ([]string, error) {
+	return obj.BlockedUser, nil
+}
+
 // Mutation returns generated.MutationResolver implementation.
 func (r *Resolver) Mutation() generated.MutationResolver { return &mutationResolver{r} }
 
@@ -304,3 +361,16 @@ func (r *Resolver) User() generated.UserResolver { return &userResolver{r} }
 type mutationResolver struct{ *Resolver }
 type queryResolver struct{ *Resolver }
 type userResolver struct{ *Resolver }
+
+// !!! WARNING !!!
+// The code below was going to be deleted when updating resolvers. It has been copied here so you have
+// one last chance to move it out of harms way if you want. There are two reasons this happens:
+//  - When renaming or deleting a resolver the old code will be put in here. You can safely delete
+//    it when you're done.
+//  - You have helper methods in this file. Move them out to keep these resolver files clean.
+func (r *queryResolver) UserButValidatedBlocked(ctx context.Context, id string) (*model.User, error) {
+	panic(fmt.Errorf("not	 implemented: UserButValidatedBlocked - userButValidatedBlocked"))
+}
+func (r *mutationResolver) UnblockUser(ctx context.Context, id string) (string, error) {
+	panic(fmt.Errorf("not implemented: UnblockUser - unblockUser"))
+}

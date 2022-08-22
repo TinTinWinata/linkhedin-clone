@@ -13,6 +13,8 @@ import {
   removeDuplicates,
   removeDuplicatesObjectId,
 } from "../../script/helper";
+import { useRefetch } from "../../hooks/refetchContext";
+import SendPost from "../../component/Popup/SendPost/sendpost";
 
 export default function Home() {
   const { user } = useUserAuth();
@@ -24,6 +26,7 @@ export default function Home() {
   const [hasMore, setHasMore] = useState(true);
   const [posts, setPost] = useState<any>([]);
   const loadingTime = 2000;
+  const { refetchUser } = useRefetch();
 
   const { data, loading, refetch } = useQuery(INFINITY_QUERY, {
     variables: {
@@ -31,6 +34,10 @@ export default function Home() {
       offset: offset,
     },
   });
+
+  useEffect(() => {
+    refetchUser();
+  }, []);
 
   // Infinity Scroll
   const observer = useRef<any>();
@@ -94,6 +101,7 @@ export default function Home() {
                   return (
                     <div ref={lastRef} key={idx}>
                       <PostCard
+                        idx={idx}
                         data={data}
                         key={idx}
                         text={data.text}
@@ -104,7 +112,7 @@ export default function Home() {
                 } else {
                   return (
                     <PostCard
-                      ref={lastRef}
+                      idx={idx}
                       data={data}
                       key={idx}
                       text={data.text}

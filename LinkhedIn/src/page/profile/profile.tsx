@@ -11,6 +11,7 @@ import { useRefetch } from "../../hooks/refetchContext";
 import { useUserAuth } from "../../hooks/userContext";
 import { CONNECT_REQUEST_QUERY } from "../../query/connect";
 import {
+  BLOCK_USER_QUERY,
   FIND_USER_QUERY,
   FOLLOW_USER_QUERY,
   UPDATE_USER_QUERY,
@@ -20,6 +21,7 @@ import Education from "./education/education";
 import Experience from "./experience/experience";
 import "./profile.scss";
 import Pdf from "react-to-pdf";
+import SendMessageButton from "./sendmessage/sendMessageButton";
 
 export default function Profile() {
   const { id } = useParams();
@@ -31,12 +33,23 @@ export default function Profile() {
     variables: { id: id },
   });
 
+  const [blockFunc] = useMutation(BLOCK_USER_QUERY);
   const [connectFunc] = useMutation(CONNECT_REQUEST_QUERY);
   const [followFunc] = useMutation(FOLLOW_USER_QUERY);
   const [updateFunc] = useMutation(UPDATE_USER_QUERY);
 
   const [updateHandle, setUpdateHandle] = useState<boolean>();
   const renderPdf = useRef<any>();
+
+  if (!data) {
+    return <></>;
+  }
+
+  function handleBlock() {
+    blockFunc({ variables: { id: id } }).then((resp) => {
+      toastSuccess(resp.data.blockUser);
+    });
+  }
 
   function handleFollow() {
     followFunc({ variables: { id: id } })
@@ -147,107 +160,115 @@ export default function Profile() {
       ) : (
         ""
       )}
-
-      <div id="pdf-here" className="center flex-col">
-        <div ref={renderPdf} className="profile-center-container">
-          <div className="profile-container shadow">
-            <div className="description">
-              <label htmlFor="input-file">
-                <img
-                  id="img-photo-profile"
-                  src={data ? data.user.PhotoProfile : ""}
-                  alt=""
+      <div className="h-min-max">
+        <div id="pdf-here" className="center flex-col">
+          <div ref={renderPdf} className="profile-center-container">
+            <div className="profile-container shadow">
+              <div className="description">
+                <label htmlFor="input-file">
+                  <img
+                    id="img-photo-profile"
+                    src={data ? data.user.PhotoProfile : ""}
+                    alt=""
+                  />
+                </label>
+                <input
+                  onChange={imageOnChange}
+                  className="none"
+                  id="input-file"
+                  type="file"
                 />
-              </label>
-              <input
-                onChange={imageOnChange}
-                className="none"
-                id="input-file"
-                type="file"
-              />
-              {data && user.id === data.user.id ? (
-                <button onClick={handleOpenUpdate}>Update</button>
-              ) : (
-                ""
-              )}
-              <Pdf
-                targetRef={renderPdf}
-                filename={`${data ? data.user.name : "profile"}.pdf`}
-              >
-                {({ toPdf }: { toPdf: any }) => (
-                  <button onClick={toPdf}>Generate Pdf</button>
-                )}
-              </Pdf>
-              {/* <button onClick={handlePDF}>Save to PDF< /button> */}
-
-              {data && user.id !== data.user.id ? (
-                <>
-                  <button onClick={handleFollow}>Follow</button>
-                  <button onClick={handleConnect}>Connect</button>
-                </>
-              ) : (
-                ""
-              )}
-              <div className="flex space-between">
-                <h1 className="name">{data ? data.user.name : ""}</h1>
-                <div className="flex profile-view">
-                  <p className="">{data ? data.user.ProfileViews : ""}</p>
-                  <FaEye className="eye-icon"></FaEye>
+                <div className="flex space-between">
+                  <h1 className="name">{data ? data.user.name : ""}</h1>
+                  <div className="flex profile-view">
+                    <p className="">{data ? data.user.ProfileViews : ""}</p>
+                    <FaEye className="eye-icon"></FaEye>
+                  </div>
                 </div>
-              </div>
-              <p className="email">
-                {data ? data.user.Headline : ""} -{" "}
-                {data ? data.user.Gender : ""}
-              </p>
-            </div>
-
-            <div
-              style={{
-                backgroundImage: `url('${
-                  data ? data.user.BgPhotoProfile : ""
-                }')`,
-              }}
-              className="profile-container-image"
-            >
-              <div className="change-camera">
+                <p className="email mb-1">
+                  {data && data.user.Headline !== ""
+                    ? data.user.Headline + "  "
+                    : ""}
+                  {data ? data.user.Gender : ""}
+                </p>
                 {data && user.id === data.user.id ? (
-                  <label htmlFor="bg-image">
-                    <svg
-                      xmlns="http://www.w3.org/2000/svg"
-                      className="camera-svg"
-                      viewBox="0 0 20 20"
-                      fill="currentColor"
-                    >
-                      <path
-                        fillRule="evenodd"
-                        d="M4 5a2 2 0 00-2 2v8a2 2 0 002 2h12a2 2 0 002-2V7a2 2 0 00-2-2h-1.586a1 1 0 01-.707-.293l-1.121-1.121A2 2 0 0011.172 3H8.828a2 2 0 00-1.414.586L6.293 4.707A1 1 0 015.586 5H4zm6 9a3 3 0 100-6 3 3 0 000 6z"
-                        clipRule="evenodd"
-                      />
-                    </svg>
-                  </label>
+                  <button onClick={handleOpenUpdate}>Update</button>
+                ) : (
+                  <SendMessageButton
+                    className="ml-2"
+                    user={data.user}
+                  ></SendMessageButton>
+                )}
+                <button onClick={handleBlock}>Block</button>
+                <Pdf
+                  targetRef={renderPdf}
+                  filename={`${data ? data.user.name : "profile"}.pdf`}
+                >
+                  {({ toPdf }: { toPdf: any }) => (
+                    <button onClick={toPdf}>Generate Pdf</button>
+                  )}
+                </Pdf>
+
+                {/* <button onClick={handlePDF}>Save to PDF< /button> */}
+
+                {data && user.id !== data.user.id ? (
+                  <>
+                    <button onClick={handleFollow}>Follow</button>
+                    <button onClick={handleConnect}>Connect</button>
+                  </>
                 ) : (
                   ""
                 )}
+              </div>
 
-                <input
-                  onChange={handleChangeBgImage}
-                  className="none"
-                  type="file"
-                  id="bg-image"
-                  accept="image/*"
-                />
+              <div
+                style={{
+                  backgroundImage: `url('${
+                    data ? data.user.BgPhotoProfile : ""
+                  }')`,
+                }}
+                className="profile-container-image"
+              >
+                <div className="change-camera">
+                  {data && user.id === data.user.id ? (
+                    <label htmlFor="bg-image">
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        className="camera-svg"
+                        viewBox="0 0 20 20"
+                        fill="currentColor"
+                      >
+                        <path
+                          fillRule="evenodd"
+                          d="M4 5a2 2 0 00-2 2v8a2 2 0 002 2h12a2 2 0 002-2V7a2 2 0 00-2-2h-1.586a1 1 0 01-.707-.293l-1.121-1.121A2 2 0 0011.172 3H8.828a2 2 0 00-1.414.586L6.293 4.707A1 1 0 015.586 5H4zm6 9a3 3 0 100-6 3 3 0 000 6z"
+                          clipRule="evenodd"
+                        />
+                      </svg>
+                    </label>
+                  ) : (
+                    ""
+                  )}
+
+                  <input
+                    onChange={handleChangeBgImage}
+                    className="none"
+                    type="file"
+                    id="bg-image"
+                    accept="image/*"
+                  />
+                </div>
               </div>
             </div>
-          </div>
 
-          <div className="profile-container shadow experience">
-            <div className="container">
-              <Experience id={id}></Experience>
+            <div className="profile-container shadow experience">
+              <div className="container">
+                <Experience id={id}></Experience>
+              </div>
             </div>
-          </div>
-          <div className="profile-container shadow experience">
-            <div className="container">
-              <Education id={id} />
+            <div className="profile-container shadow experience">
+              <div className="container">
+                <Education id={id} />
+              </div>
             </div>
           </div>
         </div>

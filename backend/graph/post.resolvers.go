@@ -13,6 +13,19 @@ import (
 	"github.com/google/uuid"
 )
 
+// SendPost is the resolver for the sendPost field.
+func (r *mutationResolver) SendPost(ctx context.Context, id string) (string, error) {
+	var post *model.Post
+	err := r.DB.First(&post, "id = ?", id).Error
+
+	if err != nil {
+		return "Error", err
+	}
+
+	post.Sends = post.Sends + 1
+	return "Ok", r.DB.Save(post).Error
+}
+
 // LikePost is the resolver for the likePost field.
 func (r *mutationResolver) LikePost(ctx context.Context, id string) (string, error) {
 	var post *model.Post

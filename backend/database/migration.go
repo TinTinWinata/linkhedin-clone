@@ -16,5 +16,6 @@ func MigrateTable() {
 	db.AutoMigrate(&model.Comment{})
 	db.AutoMigrate(&model.ReplyComment{})
 	db.AutoMigrate(&model.Job{})
-	db.AutoMigrate(&model.Notification{}	)
+	db.AutoMigrate(&model.Notification{})
+	db.AutoMigrate(&model.CommentLike{})
 }

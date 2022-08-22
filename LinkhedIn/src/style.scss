@@ -18,9 +18,12 @@
   --dark-second: #520000;
 }
 .h-min-max {
-  height: 100vmin;
+  min-height: 100vmin;
 }
 
+.pre {
+  margin: 0px;
+}
 .center-x {
   display: flex;
   justify-content: center;
@@ -93,7 +96,11 @@ input {
 .hide-scroll::-webkit-scrollbar {
   display: none;
 }
-
+pre {
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Roboto", "Oxygen",
+    "Ubuntu", "Cantarell", "Fira Sans", "Droid Sans", "Helvetica Neue",
+    sans-serif;
+}
 body {
   -ms-overflow-style: none; /* IE and Edge */
   scrollbar-width: none; /* Firefox */
@@ -204,6 +211,7 @@ code {
   .color-fg {
     color: var(--dark-fg);
   }
+
   .bg-color-more-fg {
     background-color: var(--dark-more-fg);
   }
@@ -231,7 +239,6 @@ code {
   background-color: var(--dark-bg);
   a {
     text-decoration: none;
-    color: var(--dark-fg);
   }
   .svg {
     color: var(--dark-fg);
@@ -367,7 +374,6 @@ code {
 
   a {
     text-decoration: none;
-    color: var(--light-fg);
   }
 
   .svg {

@@ -25,7 +25,6 @@ export function removeDuplicates(arr : any) {
 
 export function removeDuplicatesObjectId(arr : any)
 {
-  console.log(arr)
   const temp = []
   for (let i =0;i<arr.length;i++)
   {
@@ -35,6 +34,26 @@ export function removeDuplicatesObjectId(arr : any)
     {
       const secObj = temp[j]
       if(obj.id === secObj.id)
+      {
+        isSame = true;
+      }
+    }
+    if(!isSame) temp.push(obj)
+  }
+  return temp;
+}
+
+export function removeDuplicatesObjectID(arr : any)
+{
+  const temp = []
+  for (let i =0;i<arr.length;i++)
+  {
+    let isSame = false;
+    const obj = arr[i];
+    for(let j = 0;j<temp.length;j++)
+    {
+      const secObj = temp[j]
+      if(obj.ID === secObj.ID)
       {
         isSame = true;
       }
@@ -54,6 +73,13 @@ export function findAtTags(searchText : string) {
   }
 }
 
+export function isAFirebaseImage(url: string){
+  console.log('url : ', url)
+  if(url.includes("https://firebasestorage"))
+  return true;
+  else return false;
+}
+
 export function sortAtMention(str: string){
   // removing first index
   if(str.charAt(2) === '@')
@@ -71,6 +97,55 @@ export function sortAtMention(str: string){
 export function replaceAt(str: any, index: any,length: any, replacement: any) {
   return str.substring(0, index) + replacement + str.substring(index + length);
 }
+
+export function addString(str: string, idx : number, add: string){
+ return str.slice(0, idx) + add + str.slice(idx);
+}
+
+export function appendDivString(str: string, idx : number,end:number, div: string, lastDiv : string){
+  const len = div.length;
+  str =  str.slice(0, idx) + div + str.slice(idx);
+  str = str.slice(0, len + end)  + lastDiv + str.slice(len + end);
+  return str;
+ }
+
+export function RichTextPost(str : string, idx : any){
+  const at = "@";
+  for(let i=0;i<str.length;i++){
+    if(str.charAt(i) === '@'){
+      let text = ""
+      for(let j=i;j<str.length;j++){
+        if(j != i)
+        text += str.charAt(j)
+        if(str.charAt(j) == ' ' || j == str.length - 1){
+          const div = `<a href="/profile/${text}" value="${text}" id="rich-tag${"-" + idx}" class='richat ri-class-${idx}'>`
+          const endDiv = '</a>'
+          const lenDiv = div.length + 1;
+          str = appendDivString(str, i, j, div , endDiv)
+          i += lenDiv;
+          break;
+        }
+      }
+    }
+    if(str.charAt(i) === '#'){
+      let text = ""
+      for(let j=i;j<str.length;j++){
+        if(j != i)
+        text += str.charAt(j)
+        if(str.charAt(j) == ' ' || j == str.length - 1){
+          const div = `<a href='/search/${text}' class='richhashtag'>`
+          const endDiv = '</a>'
+          const lenDiv = div.length + 1;
+          str = appendDivString(str, i, j, div , endDiv)
+          i += lenDiv;
+          break;
+        }
+      }
+    }
+  }
+  return str;
+}
+
 
 export function filteringAtMention(str : string){
   for(var i = 0; i < str.length;i++)

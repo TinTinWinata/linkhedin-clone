@@ -15,6 +15,18 @@ func RemoveArrayByIndex(slice []string, s int) []string {
 	return append(slice[:s], slice[s+1:]...)
 }
 
+func IsDigit(str string) bool {
+	digit := [10]string{"0", "1", "2", "3", "4", "5", "6", "7", "8", "9"}
+	for _, el := range str {
+		for _, elD := range digit {
+			if string(el) == elD {
+				return true
+			}
+		}
+	}
+	return false
+}
+
 func RandStringRunes(n int) string {
 	var letterRunes = []rune("abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890")
 	b := make([]rune, n)

@@ -1,45 +1,61 @@
-
-
-.message-container{
+.message-container {
   display: flex;
   justify-content: center;
-  .message{
+  
+  .message {
     width: 30%;
-    h2{
+    h2 {
       margin-left: 20px;
       padding-top: 20px;
       display: flex;
-
     }
   }
   display: flex;
-  .message-user{
+  .message-user {
     padding: 20px;
     border: 1px solid rgba(56, 56, 56, 0.204);
-    &:hover{
+    &:hover {
       cursor: pointer;
       background-color: rgba(211, 211, 211, 0.463);
     }
   }
-  .chat{
+  .chat {
     padding-left: 10px;
     padding-bottom: 10px;
-    width: 60%;
+    width: 80%;
     margin-left: 30px;
-    input{
+    .image-icon {
+      width: 40px;
+      height: 40px;
+      margin-left: 10px;
+      cursor: pointer;
+    }
+    input {
       width: 80%;
     }
-    button{
+    button {
+      margin-top: 3px;
       margin-left: 10px;
       height: 35px;
     }
 
-    .chat-container{
+    .chat-container {
+      .phone-icon {
+        margin-right: 20px;
+        width: 20px;
+        height: 20px;
+        cursor: pointer;
+      }
       padding: 20px;
       overflow-y: scroll;
       height: 800px;
     }
   }
-  
 }
 
+.msg-container {
+  img {
+    max-width: 500px;
+    max-height: 500px;
+  }
+}

@@ -5,6 +5,7 @@ import { useQuery } from "@apollo/client";
 import { useUserAuth } from "../../../hooks/userContext";
 import { useRefetch } from "../../../hooks/refetchContext";
 import RequestPeople from "./request-people";
+import UserMightKnow from "../../user-might-know/userMightKnow";
 
 export default function Request() {
   const { refetchUser } = useRefetch();
@@ -35,6 +36,7 @@ export default function Request() {
             })
           : ""}
       </div>
+      <UserMightKnow></UserMightKnow>
     </div>
   );
 }

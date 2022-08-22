@@ -14,6 +14,12 @@ mutation LikePost($id:String!){
 }
 `
 
+export const SEND_POST_QUERY = gql`
+mutation SendPost($postId:String!){
+	  sendPost(id:$postId)
+}
+`
+
 export const FIND_POST_QUERY = gql`
 query FindPost($id:String!){
   post(id:$id){

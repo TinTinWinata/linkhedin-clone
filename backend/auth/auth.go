@@ -91,6 +91,7 @@ func UserLogin(ctx context.Context, email string, password string) (interface{},
 		"LastName":          user.LastName,
 		"AdditionalName":    user.AdditionalName,
 		"Gender":            user.Gender,
+		"BlockedUser":       user.BlockedUser,
 	}, nil
 }
 
@@ -103,10 +104,6 @@ func UserLoginWithoutPassword(ctx context.Context, email string) (interface{}, e
 			}
 		}
 		return nil, err
-	}
-
-	if user.Validate == false {
-		return nil, errors.New("Your account is not authenticated!")
 	}
 
 	token, err := GenerateJWT(ctx, user.ID)
@@ -130,5 +127,6 @@ func UserLoginWithoutPassword(ctx context.Context, email string) (interface{}, e
 		"LastName":          user.LastName,
 		"AdditionalName":    user.AdditionalName,
 		"Gender":            user.Gender,
+		"BlockedUser":       user.BlockedUser,
 	}, nil
 }

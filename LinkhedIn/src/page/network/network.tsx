@@ -7,6 +7,7 @@ export default function Network() {
     <div className="network h-min-max">
       <div className="center">
         <Request></Request>
+        
       </div>
     </div>
   );
