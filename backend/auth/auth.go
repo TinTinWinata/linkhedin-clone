@@ -16,11 +16,18 @@ import (
 func UserRegister(ctx context.Context, newUser model.NewUser) (interface{}, error) {
 
 	_, err := UserGetByEmail(ctx, newUser.Email)
+	// Register
 
 	if err == nil {
 		if err != gorm.ErrRecordNotFound {
-			return nil, err
+			return nil, errors.New("Email has been used by another user")
 		}
+	}
+
+	var exists = CheckNameAlreadyExists(ctx, newUser.Name)
+
+	if exists {
+		return nil, errors.New("Name has been used by another user")
 	}
 
 	createdUser, err := UserCreate(ctx, newUser)

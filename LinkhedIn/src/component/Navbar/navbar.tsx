@@ -25,7 +25,7 @@ export default function Navbar() {
   }
 
   return (
-    <div className="navbar shadow">
+    <div className="navbar shadow center-x">
       <div className="container">
         <div className="left">
           <div className="center">

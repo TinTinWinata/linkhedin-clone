@@ -129,13 +129,13 @@ export default function Message() {
       ) : (
         ""
       )}
-
-      <div className="message-container h-min-max">
-        <div className="message shadow">
-          <div className="flex flex-between mb-3">
-            <h2>Message</h2>
-            <div className="center">
+      <div className="center-x h-min-max">
+        <div className="message-container">
+          <div className="message box">
+            <div className="flex flex-col mb-3">
+              <h3 className="ml-2">Messaging</h3>
               <input
+                placeholder="Search connected"
                 onChange={(e: any) => {
                   setSearch(e.target.value);
                 }}
@@ -144,67 +144,70 @@ export default function Message() {
                 className="input-border ml-2"
               />
             </div>
+            {user && user.ConnectedUser !== undefined
+              ? user.ConnectedUser.map((id: any) => {
+                  if (user.BlockedUser.includes(id)) {
+                    return <></>;
+                  }
+                  return (
+                    <MessageList
+                      search={search}
+                      bind={bindChannel}
+                      setUser={setSelectedUser}
+                      key={id}
+                      id={id}
+                    ></MessageList>
+                  );
+                })
+              : ""}
           </div>
-          {user && user.ConnectedUser !== undefined
-            ? user.ConnectedUser.map((id: any) => {
-                if (user.BlockedUser.includes(id)) {
-                  return <></>;
-                }
-                return (
-                  <MessageList
-                    search={search}
-                    bind={bindChannel}
-                    setUser={setSelectedUser}
-                    key={id}
-                    id={id}
-                  ></MessageList>
-                );
-              })
-            : ""}
-        </div>
-        <div className="chat shadow">
-          <div className="hide-scroll chat-container">
-            <div className="flex space-between">
-              <h2>{selectedUser.name}</h2>
-              <div className="center">
-                <FaPhone onClick={handlePhone} className="phone-icon"></FaPhone>
-                <FaCalendar
-                  className="phone-icon"
-                  onClick={() => {
-                    if (selectedUser.id !== "") setHandleVideoSchedule(true);
-                  }}
-                ></FaCalendar>
+          <div className="box chat">
+            <div className="hide-scroll chat-container">
+              <div className="flex space-between">
+                <h2>{selectedUser.name}</h2>
+                <div className="center">
+                  <FaPhone
+                    onClick={handlePhone}
+                    className="phone-icon"
+                  ></FaPhone>
+                  <FaCalendar
+                    className="phone-icon"
+                    onClick={() => {
+                      if (selectedUser.id !== "") setHandleVideoSchedule(true);
+                    }}
+                  ></FaCalendar>
+                </div>
               </div>
+              <hr className="black"></hr>
+              {messages.map((msg: any, idx: any) => {
+                return <MessageUser key={idx} msg={msg}></MessageUser>;
+              })}
             </div>
-            <hr className="black"></hr>
-            {messages.map((msg: any, idx: any) => {
-              return <MessageUser key={idx} msg={msg}></MessageUser>;
-            })}
-          </div>
-          <form onSubmit={handleSubmit}>
-            <div className="flex">
-              <input
-                type="text"
-                onChange={(e) => {
-                  setMessage(e.target.value);
-                }}
-                value={message}
-              />
-              <button type="submit">Send</button>
-              <div className="center">
-                <label htmlFor="input-image">
-                  <FaImage className="image-icon"></FaImage>
-                </label>
+            <form onSubmit={handleSubmit}>
+              <div className="flex">
                 <input
-                  onChange={handleChangeImage}
-                  className="none"
-                  id="input-image"
-                  type="file"
-                  accept="image"
+                  type="text"
+                  onChange={(e) => {
+                    setMessage(e.target.value);
+                  }}
+                  value={message}
                 />
+                <button type="submit">Send</button>
+                <div className="center">
+                  <label htmlFor="input-image">
+                    <FaImage className="image-icon"></FaImage>
+                  </label>
+                  <input
+                    onChange={handleChangeImage}
+                    className="none"
+                    id="input-image"
+                    type="file"
+                    accept="image"
+                  />
+                </div>
               </div>
-            </div>
-          </form>
+            </form>
+          </div>
         </div>
       </div>
     </>

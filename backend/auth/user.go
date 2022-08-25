@@ -48,3 +48,16 @@ func UserGetByEmail(ctx context.Context, email string) (*model.User, error) {
 	}
 	return &user, nil
 }
+
+func CheckNameAlreadyExists(ctx context.Context, name string) bool {
+	db := database.GetDB()
+
+	var model *model.User
+
+	err := db.First(&model, "name = ?", name).Error
+	if err != nil {
+		return false
+	} else {
+		return true
+	}
+}

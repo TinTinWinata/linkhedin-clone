@@ -32,6 +32,12 @@ export default function Register() {
     const email = e.target.email.value;
     const name = e.target.name.value;
     const password = e.target.password.value;
+
+    const isNameSpace = name.search(" ");
+    if (isNameSpace !== -1) {
+      toastError("Name cannot have a space and must be unique!");
+      return;
+    }
     const input = {
       name: name,
       email: email,
@@ -48,7 +54,7 @@ export default function Register() {
         setLoading(false);
       })
       .catch((err) => {
-        toastError("User already exists!");
+        toastError(err.message);
       });
   }
 
