@@ -52,6 +52,7 @@ func UserRegister(ctx context.Context, newUser model.NewUser) (interface{}, erro
 
 	return map[string]interface{}{
 		"token": token,
+		"id":    createdUser.ID,
 	}, nil
 }
 

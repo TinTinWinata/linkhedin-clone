@@ -46,6 +46,7 @@ func (r *mutationResolver) Message(ctx context.Context, input model.Message) (st
 		ChatID:  event,
 		UserID:  user.ID,
 		Message: input.Message,
+		Link:    input.Link,
 	}
 
 	err = r.DB.Create(chat).Error

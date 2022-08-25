@@ -17,6 +17,23 @@ import (
 	"github.com/google/uuid"
 )
 
+// UpdateUserWithID is the resolver for the updateUserWithId field.
+func (r *mutationResolver) UpdateUserWithID(ctx context.Context, id string, input model.AllUpdateUser) (string, error) {
+	var user *model.User
+	err := r.DB.First(&user, "id = ?", id).Error
+	if err != nil {
+		return "Error", err
+	}
+
+	user.AdditionalName = input.AdditionalName
+	user.FirstName = input.FirstName
+	user.LastName = input.LastName
+	user.Headline = input.Headline
+	user.Gender = input.Gender
+
+	return "Ok", r.DB.Save(&user).Error
+}
+
 // BlockUser is the resolver for the blockUser field.
 func (r *mutationResolver) BlockUser(ctx context.Context, id string) (string, error) {
 	val := *middleware.CtxValue(ctx)

@@ -57,6 +57,7 @@ type ComplexityRoot struct {
 	Chat struct {
 		ChatID  func(childComplexity int) int
 		ID      func(childComplexity int) int
+		Link    func(childComplexity int) int
 		Message func(childComplexity int) int
 		User    func(childComplexity int) int
 	}
@@ -139,6 +140,7 @@ type ComplexityRoot struct {
 		UpdateExperience      func(childComplexity int, id string, input model.NewExperience) int
 		UpdateMyUser          func(childComplexity int, input model.AllUpdateUser) int
 		UpdateUser            func(childComplexity int, id string, input model.UpdateUser) int
+		UpdateUserWithID      func(childComplexity int, id string, input model.AllUpdateUser) int
 		ValidateUser          func(childComplexity int, id string) int
 		ValidateUserWithEmail func(childComplexity int, email string) int
 	}
@@ -154,6 +156,7 @@ type ComplexityRoot struct {
 
 	Post struct {
 		AttachmentLink func(childComplexity int) int
+		AttachmentType func(childComplexity int) int
 		Comments       func(childComplexity int) int
 		CreatedAt      func(childComplexity int) int
 		Hashtag        func(childComplexity int) int
@@ -237,6 +240,7 @@ type ExperienceResolver interface {
 	User(ctx context.Context, obj *model.Experience) (*model.User, error)
 }
 type MutationResolver interface {
+	UpdateUserWithID(ctx context.Context, id string, input model.AllUpdateUser) (string, error)
 	BlockUser(ctx context.Context, id string) (string, error)
 	ProfileSeen(ctx context.Context, id string) (string, error)
 	RequestChangePassword(ctx context.Context, email string) (string, error)
@@ -343,6 +347,13 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 		}
 
 		return e.complexity.Chat.ID(childComplexity), true
+
+	case "Chat.Link":
+		if e.complexity.Chat.Link == nil {
+			break
+		}
+
+		return e.complexity.Chat.Link(childComplexity), true
 
 	case "Chat.Message":
 		if e.complexity.Chat.Message == nil {
@@ -973,6 +984,18 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 
 		return e.complexity.Mutation.UpdateUser(childComplexity, args["id"].(string), args["input"].(model.UpdateUser)), true
 
+	case "Mutation.updateUserWithId":
+		if e.complexity.Mutation.UpdateUserWithID == nil {
+			break
+		}
+
+		args, err := ec.field_Mutation_updateUserWithId_args(context.TODO(), rawArgs)
+		if err != nil {
+			return 0, false
+		}
+
+		return e.complexity.Mutation.UpdateUserWithID(childComplexity, args["id"].(string), args["input"].(model.AllUpdateUser)), true
+
 	case "Mutation.validateUser":
 		if e.complexity.Mutation.ValidateUser == nil {
 			break
@@ -1045,6 +1068,13 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 		}
 
 		return e.complexity.Post.AttachmentLink(childComplexity), true
+
+	case "Post.AttachmentType":
+		if e.complexity.Post.AttachmentType == nil {
+			break
+		}
+
+		return e.complexity.Post.AttachmentType(childComplexity), true
 
 	case "Post.comments":
 		if e.complexity.Post.Comments == nil {
@@ -1762,12 +1792,14 @@ input NewPost {
   user_id: String!
   attachment_link: String!
   hashtag: [String!]!
+  attachment_type: String!
 }
 
 type Post {
   id: ID!
   text: String!
   AttachmentLink: String!
+  AttachmentType: String!
   User: User!
   likes: Int!
   sends: Int!
@@ -1793,6 +1825,7 @@ extend type Mutation {
 	{Name: "../pusher.graphqls", Input: `input Message {
   userId: ID!
   message: String!
+  Link: String!
 }
 
 type Chat {
@@ -1800,6 +1833,7 @@ type Chat {
   ChatID: String!
   User: User!
   Message: String!
+  Link: String!
 }
 
 extend type Query {
@@ -1879,6 +1913,7 @@ input AllUpdateUser {
 }
 
 type Mutation {
+  updateUserWithId(id: ID!, input: AllUpdateUser!): String!
   blockUser(id: ID!): String! @auth
   profileSeen(id: ID!): String!
   requestChangePassword(email: String!): String!
@@ -2420,6 +2455,30 @@ func (ec *executionContext) field_Mutation_updateMyUser_args(ctx context.Context
 	return args, nil
 }
 
+func (ec *executionContext) field_Mutation_updateUserWithId_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
+	var err error
+	args := map[string]interface{}{}
+	var arg0 string
+	if tmp, ok := rawArgs["id"]; ok {
+		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("id"))
+		arg0, err = ec.unmarshalNID2string(ctx, tmp)
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["id"] = arg0
+	var arg1 model.AllUpdateUser
+	if tmp, ok := rawArgs["input"]; ok {
+		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("input"))
+		arg1, err = ec.unmarshalNAllUpdateUser2githubᚗcomᚋTinTinWinataᚋgqlgenᚋgraphᚋmodelᚐAllUpdateUser(ctx, tmp)
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["input"] = arg1
+	return args, nil
+}
+
 func (ec *executionContext) field_Mutation_updateUser_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
 	var err error
 	args := map[string]interface{}{}
@@ -2902,6 +2961,50 @@ func (ec *executionContext) _Chat_Message(ctx context.Context, field graphql.Col
 }
 
 func (ec *executionContext) fieldContext_Chat_Message(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "Chat",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type String does not have child fields")
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _Chat_Link(ctx context.Context, field graphql.CollectedField, obj *model.Chat) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_Chat_Link(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.Link, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(string)
+	fc.Result = res
+	return ec.marshalNString2string(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_Chat_Link(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
 	fc = &graphql.FieldContext{
 		Object:     "Chat",
 		Field:      field,
@@ -4476,6 +4579,61 @@ func (ec *executionContext) fieldContext_Job_photoProfile(ctx context.Context, f
 		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
 			return nil, errors.New("field of type String does not have child fields")
 		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _Mutation_updateUserWithId(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_Mutation_updateUserWithId(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return ec.resolvers.Mutation().UpdateUserWithID(rctx, fc.Args["id"].(string), fc.Args["input"].(model.AllUpdateUser))
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(string)
+	fc.Result = res
+	return ec.marshalNString2string(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_Mutation_updateUserWithId(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "Mutation",
+		Field:      field,
+		IsMethod:   true,
+		IsResolver: true,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type String does not have child fields")
+		},
+	}
+	defer func() {
+		if r := recover(); r != nil {
+			err = ec.Recover(ctx, r)
+			ec.Error(ctx, err)
+		}
+	}()
+	ctx = graphql.WithFieldContext(ctx, fc)
+	if fc.Args, err = ec.field_Mutation_updateUserWithId_args(ctx, field.ArgumentMap(ec.Variables)); err != nil {
+		ec.Error(ctx, err)
+		return
 	}
 	return fc, nil
 }
@@ -6942,6 +7100,50 @@ func (ec *executionContext) fieldContext_Post_AttachmentLink(ctx context.Context
 	return fc, nil
 }
 
+func (ec *executionContext) _Post_AttachmentType(ctx context.Context, field graphql.CollectedField, obj *model.Post) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_Post_AttachmentType(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.AttachmentType, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(string)
+	fc.Result = res
+	return ec.marshalNString2string(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_Post_AttachmentType(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "Post",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type String does not have child fields")
+		},
+	}
+	return fc, nil
+}
+
 func (ec *executionContext) _Post_User(ctx context.Context, field graphql.CollectedField, obj *model.Post) (ret graphql.Marshaler) {
 	fc, err := ec.fieldContext_Post_User(ctx, field)
 	if err != nil {
@@ -8399,6 +8601,8 @@ func (ec *executionContext) fieldContext_Query_post(ctx context.Context, field g
 				return ec.fieldContext_Post_text(ctx, field)
 			case "AttachmentLink":
 				return ec.fieldContext_Post_AttachmentLink(ctx, field)
+			case "AttachmentType":
+				return ec.fieldContext_Post_AttachmentType(ctx, field)
 			case "User":
 				return ec.fieldContext_Post_User(ctx, field)
 			case "likes":
@@ -8474,6 +8678,8 @@ func (ec *executionContext) fieldContext_Query_posts(ctx context.Context, field 
 				return ec.fieldContext_Post_text(ctx, field)
 			case "AttachmentLink":
 				return ec.fieldContext_Post_AttachmentLink(ctx, field)
+			case "AttachmentType":
+				return ec.fieldContext_Post_AttachmentType(ctx, field)
 			case "User":
 				return ec.fieldContext_Post_User(ctx, field)
 			case "likes":
@@ -8538,6 +8744,8 @@ func (ec *executionContext) fieldContext_Query_postInfinity(ctx context.Context,
 				return ec.fieldContext_Post_text(ctx, field)
 			case "AttachmentLink":
 				return ec.fieldContext_Post_AttachmentLink(ctx, field)
+			case "AttachmentType":
+				return ec.fieldContext_Post_AttachmentType(ctx, field)
 			case "User":
 				return ec.fieldContext_Post_User(ctx, field)
 			case "likes":
@@ -8659,6 +8867,8 @@ func (ec *executionContext) fieldContext_Query_getAllMessage(ctx context.Context
 				return ec.fieldContext_Chat_User(ctx, field)
 			case "Message":
 				return ec.fieldContext_Chat_Message(ctx, field)
+			case "Link":
+				return ec.fieldContext_Chat_Link(ctx, field)
 			}
 			return nil, fmt.Errorf("no field named %q was found under type Chat", field.Name)
 		},
@@ -8811,6 +9021,8 @@ func (ec *executionContext) fieldContext_Query_searchPost(ctx context.Context, f
 				return ec.fieldContext_Post_text(ctx, field)
 			case "AttachmentLink":
 				return ec.fieldContext_Post_AttachmentLink(ctx, field)
+			case "AttachmentType":
+				return ec.fieldContext_Post_AttachmentType(ctx, field)
 			case "User":
 				return ec.fieldContext_Post_User(ctx, field)
 			case "likes":
@@ -9330,6 +9542,8 @@ func (ec *executionContext) fieldContext_Search_post(ctx context.Context, field 
 				return ec.fieldContext_Post_text(ctx, field)
 			case "AttachmentLink":
 				return ec.fieldContext_Post_AttachmentLink(ctx, field)
+			case "AttachmentType":
+				return ec.fieldContext_Post_AttachmentType(ctx, field)
 			case "User":
 				return ec.fieldContext_Post_User(ctx, field)
 			case "likes":
@@ -12135,7 +12349,7 @@ func (ec *executionContext) unmarshalInputMessage(ctx context.Context, obj inter
 		asMap[k] = v
 	}
 
-	fieldsInOrder := [...]string{"userId", "message"}
+	fieldsInOrder := [...]string{"userId", "message", "Link"}
 	for _, k := range fieldsInOrder {
 		v, ok := asMap[k]
 		if !ok {
@@ -12155,6 +12369,14 @@ func (ec *executionContext) unmarshalInputMessage(ctx context.Context, obj inter
 
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("message"))
 			it.Message, err = ec.unmarshalNString2string(ctx, v)
+			if err != nil {
+				return it, err
+			}
+		case "Link":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("Link"))
+			it.Link, err = ec.unmarshalNString2string(ctx, v)
 			if err != nil {
 				return it, err
 			}
@@ -12399,7 +12621,7 @@ func (ec *executionContext) unmarshalInputNewPost(ctx context.Context, obj inter
 		asMap[k] = v
 	}
 
-	fieldsInOrder := [...]string{"text", "user_id", "attachment_link", "hashtag"}
+	fieldsInOrder := [...]string{"text", "user_id", "attachment_link", "hashtag", "attachment_type"}
 	for _, k := range fieldsInOrder {
 		v, ok := asMap[k]
 		if !ok {
@@ -12435,6 +12657,14 @@ func (ec *executionContext) unmarshalInputNewPost(ctx context.Context, obj inter
 
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("hashtag"))
 			it.Hashtag, err = ec.unmarshalNString2ᚕstringᚄ(ctx, v)
+			if err != nil {
+				return it, err
+			}
+		case "attachment_type":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("attachment_type"))
+			it.AttachmentType, err = ec.unmarshalNString2string(ctx, v)
 			if err != nil {
 				return it, err
 			}
@@ -12895,6 +13125,13 @@ func (ec *executionContext) _Chat(ctx context.Context, sel ast.SelectionSet, obj
 			if out.Values[i] == graphql.Null {
 				atomic.AddUint32(&invalids, 1)
 			}
+		case "Link":
+
+			out.Values[i] = ec._Chat_Link(ctx, field, obj)
+
+			if out.Values[i] == graphql.Null {
+				atomic.AddUint32(&invalids, 1)
+			}
 		default:
 			panic("unknown field " + strconv.Quote(field.Name))
 		}
@@ -13305,6 +13542,15 @@ func (ec *executionContext) _Mutation(ctx context.Context, sel ast.SelectionSet)
 		switch field.Name {
 		case "__typename":
 			out.Values[i] = graphql.MarshalString("Mutation")
+		case "updateUserWithId":
+
+			out.Values[i] = ec.OperationContext.RootResolverMiddleware(innerCtx, func(ctx context.Context) (res graphql.Marshaler) {
+				return ec._Mutation_updateUserWithId(ctx, field)
+			})
+
+			if out.Values[i] == graphql.Null {
+				invalids++
+			}
 		case "blockUser":
 
 			out.Values[i] = ec.OperationContext.RootResolverMiddleware(innerCtx, func(ctx context.Context) (res graphql.Marshaler) {
@@ -13725,6 +13971,13 @@ func (ec *executionContext) _Post(ctx context.Context, sel ast.SelectionSet, obj
 		case "AttachmentLink":
 
 			out.Values[i] = ec._Post_AttachmentLink(ctx, field, obj)
+
+			if out.Values[i] == graphql.Null {
+				atomic.AddUint32(&invalids, 1)
+			}
+		case "AttachmentType":
+
+			out.Values[i] = ec._Post_AttachmentType(ctx, field, obj)
 
 			if out.Values[i] == graphql.Null {
 				atomic.AddUint32(&invalids, 1)

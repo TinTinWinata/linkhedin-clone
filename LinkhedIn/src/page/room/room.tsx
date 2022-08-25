@@ -1,3 +1,4 @@
+import { useMutation } from "@apollo/client";
 import {
   addDoc,
   collection,
@@ -9,11 +10,12 @@ import {
   setDoc,
   updateDoc,
 } from "firebase/firestore";
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { FaCopy, FaEllipsisV, FaPhone } from "react-icons/fa";
 import { useNavigate, useParams } from "react-router-dom";
 import { db } from "../../config/firebase";
 import { toastSuccess } from "../../config/toast";
+import { MESSAGE_QUERY } from "../../query/message";
 
 // Initialize WebRTC
 const servers = {
@@ -25,12 +27,13 @@ const servers = {
   iceCandidatePoolSize: 10,
 };
 
-const pc = new RTCPeerConnection(servers);
-
 export function Room({ mode, callId }: { mode: any; callId: any }) {
+  const pc = new RTCPeerConnection(servers);
+  // Invite Mutation
+  const [messageFunc] = useMutation(MESSAGE_QUERY);
   const link = import.meta.env.VITE_APP_LINK;
   const [webcamActive, setWebcamActive] = useState(false);
-  const { id } = useParams<any>();
+  const { id, time } = useParams<any>();
 
   if (callId === undefined || callId === null || callId === "") {
     callId = id;
@@ -113,6 +116,15 @@ export function Room({ mode, callId }: { mode: any; callId: any }) {
           }
         });
       });
+
+      if (id)
+        messageFunc({
+          variables: {
+            userId: id,
+            message: `TinTin has been made a call please click to join the call`,
+            link: "/room/" + callDoc.id,
+          },
+        });
     } else if (mode === "join") {
       // const callDoc = firestore.collection("calls").doc(callId);
       const callDoc = doc(db, "calls", roomId);
@@ -131,7 +143,6 @@ export function Room({ mode, callId }: { mode: any; callId: any }) {
       );
 
       pc.onicecandidate = (event: any) => {
-        // event.candidate && answerCandidates.add(event.candidate.toJSON());
         event.candidate && addDoc(answerCandidates, event.candidate.toJSON());
       };
 
@@ -159,7 +170,7 @@ export function Room({ mode, callId }: { mode: any; callId: any }) {
         snapshot.docChanges().forEach((change: any) => {
           if (change.type === "added") {
             let data = change.doc.data();
-            console.log("offer : ", data);
+            // console.log("offer : ", data);
             pc.addIceCandidate(new RTCIceCandidate(data));
           }
         });
@@ -175,11 +186,9 @@ export function Room({ mode, callId }: { mode: any; callId: any }) {
 
   const hangUp = async () => {
     pc.close();
-
     if (roomId) {
       const roomRef = doc(db, "calls", roomId);
       deleteDoc(roomRef);
-
       const pathname = window.location.pathname;
       if (pathname === "/create-room") {
         window.location.reload();

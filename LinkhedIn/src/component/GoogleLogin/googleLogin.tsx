@@ -1,6 +1,5 @@
 import { useMutation } from "@apollo/client";
 import { gapi } from "gapi-script";
-import jwtDecode from "jwt-decode";
 import React, { useEffect } from "react";
 import GoogleLogin from "react-google-login";
 import { useNavigate } from "react-router-dom";

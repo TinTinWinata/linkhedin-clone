@@ -1,6 +1,7 @@
 input Message {
   userId: ID!
   message: String!
+  Link: String!
 }
 
 type Chat {
@@ -8,6 +9,7 @@ type Chat {
   ChatID: String!
   User: User!
   Message: String!
+  Link: String!
 }
 
 extend type Query {

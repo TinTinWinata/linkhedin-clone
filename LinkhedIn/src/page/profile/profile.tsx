@@ -22,6 +22,7 @@ import Experience from "./experience/experience";
 import "./profile.scss";
 import Pdf from "react-to-pdf";
 import SendMessageButton from "./sendmessage/sendMessageButton";
+import ShareProfile from "./shareProfile/shareProfile";
 
 export default function Profile() {
   const { id } = useParams();
@@ -155,7 +156,6 @@ export default function Profile() {
         <UpdateProfile
           refetch={refetch}
           setHandle={setUpdateHandle}
-          data={data}
         ></UpdateProfile>
       ) : (
         ""
@@ -191,15 +191,18 @@ export default function Profile() {
                     : ""}
                   {data ? data.user.Gender : ""}
                 </p>
+
                 {data && user.id === data.user.id ? (
                   <button onClick={handleOpenUpdate}>Update</button>
                 ) : (
-                  <SendMessageButton
-                    className="ml-2"
-                    user={data.user}
-                  ></SendMessageButton>
+                  <>
+                    <SendMessageButton
+                      className="ml-2"
+                      user={data.user}
+                    ></SendMessageButton>
+                    <button onClick={handleBlock}>Block</button>
+                  </>
                 )}
-                <button onClick={handleBlock}>Block</button>
                 <Pdf
                   targetRef={renderPdf}
                   filename={`${data ? data.user.name : "profile"}.pdf`}
@@ -268,6 +271,15 @@ export default function Profile() {
             <div className="profile-container shadow experience">
               <div className="container">
                 <Education id={id} />
+              </div>
+            </div>
+            <div className="profile-container shadow experience">
+              <div className="container">
+                <h3>Share Profile</h3>
+                <p className="analyitic-profile-view color-first">
+                  Has been seen by {data.user.ProfileViews} user
+                </p>
+                <ShareProfile id={data.user.id}></ShareProfile>
               </div>
             </div>
           </div>

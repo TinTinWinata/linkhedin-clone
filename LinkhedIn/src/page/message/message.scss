@@ -1,19 +1,22 @@
 .message-container {
   display: flex;
   justify-content: center;
-  
+
   .message {
     width: 30%;
-    h2 {
+    .flex {
       margin-left: 20px;
       padding-top: 20px;
       display: flex;
+      input {
+        background-color: transparent;
+      }
     }
   }
   display: flex;
   .message-user {
     padding: 20px;
-    border: 1px solid rgba(56, 56, 56, 0.204);
+    border-top: 1px solid rgba(56, 56, 56, 0.204);
     &:hover {
       cursor: pointer;
       background-color: rgba(211, 211, 211, 0.463);
@@ -54,6 +57,7 @@
 }
 
 .msg-container {
+  vertical-align: center;
   img {
     max-width: 500px;
     max-height: 500px;

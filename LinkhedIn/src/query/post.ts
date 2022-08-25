@@ -2,8 +2,8 @@ import { gql } from "@apollo/client";
 
 
 export const CREATE_POST_QUERY = gql`
-mutation CreatePost($hashtag:[String!]!, $text: String!, $userId: String!, $attachment:String!) {
-  createPost(input: {text: $text, user_id: $userId,attachment_link:$attachment, hashtag:$hashtag})
+mutation CreatePost($hashtag:[String!]!, $text: String!, $userId: String!, $attachment:String!, $attachment_type:String!) {
+  createPost(input: {text: $text, user_id: $userId,attachment_link:$attachment, hashtag:$hashtag, attachment_type:$attachment_type})
 }
 `;
 
@@ -26,6 +26,7 @@ query FindPost($id:String!){
     id
     text
     AttachmentLink
+    
     User{
       id
       name
@@ -39,6 +40,7 @@ query FindPost($id:String!){
       ProfileViews
       BgPhotoProfile
     }
+    AttachmentType
     likes
     sends
     comments
@@ -55,6 +57,7 @@ query Infinity($limit:Int!, $offset:Int!){
     id
     text
     AttachmentLink
+    AttachmentType
     User{
       id
       name
@@ -79,10 +82,11 @@ query Infinity($limit:Int!, $offset:Int!){
 export const SEARCH_POST_QUERY = gql`
 query GetPost{
   posts{
-    text,
-    id,
-    likes,
-    sends,
+    text
+    id
+    likes
+    sends
+    AttachmentType
     comments,
     AttachmentLink,
     User{

@@ -20,10 +20,12 @@ export default function Notification() {
     <div className="h-min-max center-x">
       <div className="notification-container shadow">
         <div className="header">
-          <h2 className="color-first">Notifications</h2>
+          <h2 className="color-first ml-2 mt-2">Notifications</h2>
         </div>
         {data.myNotification.length == 0 ? (
-          <p className="nothaveany">You don't have any notification</p>
+          <p className="nothaveany ml-2 mb-2">
+            You don't have any notification
+          </p>
         ) : (
           ""
         )}

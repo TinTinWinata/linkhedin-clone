@@ -2,8 +2,8 @@ import { gql } from "@apollo/client";
 
 
 export const MESSAGE_QUERY = gql`
-mutation MessageRequest($message:String! $userId:ID!){
-  message(input:{userId:$userId, message:$message})
+mutation MessageRequest($message:String! $userId:ID!, $link:String!){
+  message(input:{userId:$userId, message:$message, Link:$link})
 }
 `
 
@@ -12,6 +12,7 @@ query GetAllMessage($id:String!){
 	getAllMessage(chatId:$id) {
     ChatID
     Message
+    Link
     User{
       id
       name

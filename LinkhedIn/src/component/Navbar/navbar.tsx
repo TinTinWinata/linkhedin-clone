@@ -3,6 +3,7 @@ import {
   FaBookOpen,
   FaHome,
   FaNetworkWired,
+  FaSearch,
   FaSnapchat,
   FaTelegram,
 } from "react-icons/fa";
@@ -37,14 +38,15 @@ export default function Navbar() {
             />
           </div>
           <form onSubmit={onSearch}>
-            <input type="text" name="search" />
+            <div className="flex search-bar">
+              <div className="center ">
+                <FaSearch></FaSearch>
+              </div>
+              <input type="text" name="search" placeholder="Search" />
+            </div>
           </form>
         </div>
         <div className="right">
-          <div className="center logout">
-            <LogoutButton>Logout</LogoutButton>
-          </div>
-
           <Menu
             text="Home"
             link="/home"

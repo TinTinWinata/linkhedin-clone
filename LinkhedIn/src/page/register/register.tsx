@@ -8,12 +8,16 @@ import { useLoading } from "../../hooks/loadingContext";
 import { toastError, toastSuccess } from "../../config/toast";
 import emailjs from "emailjs-com";
 import MyGoogleLogin from "../../component/GoogleLogin/googleLogin";
+import UpdateProfile from "../../component/Popup/UpdateProfile/updateProfile";
+import Information from "./information/information";
 
 export default function Register() {
   const navigate = useNavigate();
   const [registerFunc, { loading }] = useMutation(REGISTER_QUERY);
   const { update } = useUserAuth();
   const { setLoading } = useLoading();
+  const [id, setId] = useState();
+  const [handle, setHandle] = useState<boolean>(false);
 
   useEffect(() => {
     if (loading) {
@@ -37,16 +41,14 @@ export default function Register() {
     registerFunc({ variables: { input: input } })
       .then((resp) => {
         toastSuccess("Succesfully created user");
-        const data = resp.data;
-        if (data && data.register.token !== undefined) {
-          update(null);
-          navigate("/login");
-          setLoading(false);
-        }
+        const data = resp.data.register;
+        setId(data.id);
+        setHandle(true);
+        update(null);
+        setLoading(false);
       })
       .catch((err) => {
-        console.log(err.message);
-        toastError(err);
+        toastError("User already exists!");
       });
   }
 
@@ -56,6 +58,7 @@ export default function Register() {
 
   return (
     <>
+      {handle ? <Information id={id}></Information> : ""}
       <div className="register-container">
         <div className="register-image"></div>
         <div className="register-form">

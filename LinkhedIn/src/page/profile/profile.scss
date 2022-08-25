@@ -28,7 +28,7 @@
   width: 100%;
   height: fit-content;
 
-  margin: 20px;
+  margin: 20px 0px;
   border-radius: 20px;
 
   .description {
@@ -43,6 +43,10 @@
         margin-top: 4px;
       }
     }
+  }
+  .analyitic-profile-view {
+    font-weight: 500;
+    font-size: 13px;
   }
   .profile-container-image {
     background-image: url("");
@@ -77,5 +81,11 @@
     width: 130px;
     height: 130px;
     cursor: pointer;
+  }
+}
+
+@media only screen and (max-width: 821px) {
+  .profile-center-container {
+    width: 90%;
   }
 }

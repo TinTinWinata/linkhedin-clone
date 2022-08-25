@@ -4,6 +4,7 @@ import { FIND_USER_QUERY } from "../../../query/user";
 
 export default function MessageList(props: any) {
   const { data } = useQuery(FIND_USER_QUERY, { variables: { id: props.id } });
+  const search = props.search;
 
   function handleClick() {
     if (data) {
@@ -11,10 +12,17 @@ export default function MessageList(props: any) {
       props.bind(data.user.id);
     }
   }
+  if (!data) {
+    return <></>;
+  }
 
-  return (
-    <div onClick={handleClick} className="message-user">
-      {data ? data.user.name : ""}
-    </div>
-  );
+  if (data.user.name.toLowerCase().includes(search.toLowerCase())) {
+    return (
+      <div onClick={handleClick} className="message-user">
+        {data ? data.user.name : ""}
+      </div>
+    );
+  }
+  
+  return <></>;
 }

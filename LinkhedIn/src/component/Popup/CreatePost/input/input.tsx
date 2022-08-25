@@ -2,10 +2,11 @@ import { useQuery } from "@apollo/client";
 import React, { useEffect, useState } from "react";
 
 import { MentionsInput, Mention } from "react-mentions";
-import { GET_HASHTAG_QUERY } from "../../../query/hashtag";
-import { GET_USER_QUERY } from "../../../query/user";
+import { GET_HASHTAG_QUERY } from "../../../../query/hashtag";
+import { GET_USER_QUERY } from "../../../../query/user";
 import mentionInputStyle from "./mentionInputStyle";
 import mentionStyle from "./mentionStyle";
+import ShowOnHome from "../showOnHome/showOnHome";
 
 export default function Input(props: any) {
   const { data } = useQuery(GET_USER_QUERY);

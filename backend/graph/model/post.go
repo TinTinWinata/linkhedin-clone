@@ -16,4 +16,5 @@ type Post struct {
 	Comments       int            `json:"comments"`
 	CreatedAt      time.Time      `json:"created_at"`
 	Hashtag        pq.StringArray `json:"hashtag" gorm:"type:text[]"`
+	AttachmentType string         `json:"attachment_type"`
 }

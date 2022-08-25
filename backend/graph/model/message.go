@@ -6,4 +6,5 @@ type Chat struct {
 	UserID    string `json:"user_id"`
 	ChatOrder int    `json:"chat_order" gorm:"autoIncrement"`
 	Message   string `json:"message"`
+	Link      string `json:"link"`
 }

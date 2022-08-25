@@ -1,0 +1,11 @@
+.home-right {
+  margin-left: 10px;
+  width: 20%;
+}
+
+@media only screen and (max-width: 821px) {
+  .home-right {
+    width: 90%;
+    margin-top: 30px;
+  }
+}

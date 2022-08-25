@@ -32,11 +32,7 @@ export default function UserCard(props: any) {
   return (
     <div className="user-card shadow">
       <div className="flex">
-        <img
-          onClick={handleClick}
-          src="https://picsum.photos/seed/picsum/300/300"
-          alt=""
-        />
+        <img onClick={handleClick} src={user.PhotoProfile} alt="" />
         <div className="text">
           <p>{user.name}</p>
           <form onSubmit={handleSubmit}>

@@ -50,6 +50,12 @@ query GetConnetedUser{
 }
 `
 
+export const UPDATE_PROFILE_WITH_ID = gql`
+  mutation UpdateUserWithID($id:ID!, $input:AllUpdateUser!){
+    updateUserWithId(id:$id, input:$input)
+  }
+`
+
 export const USER_SUGGESTION_QUERY = gql`
 query UserMightKnow{
   userSuggestion{

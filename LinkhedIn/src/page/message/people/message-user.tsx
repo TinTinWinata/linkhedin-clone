@@ -13,11 +13,20 @@ export default function MessageUser(props: any) {
       </div>
     );
   }
-
+  if (msg.link === undefined || msg.link === "") {
+    return (
+      <div className="msg-container">
+        <h3>{msg.username}</h3>
+        <p>{msg.message}</p>
+      </div>
+    );
+  }
   return (
     <div className="msg-container">
       <h3>{msg.username}</h3>
-      <p>{msg.message}</p>
+      <a href={msg.link}>
+        <p>{msg.message}</p>
+      </a>
     </div>
   );
 }

@@ -13,9 +13,10 @@ import { storage } from "../../../config/firebase";
 import { uuidv4 } from "@firebase/util";
 import { FaCloudUploadAlt, FaTimes } from "react-icons/fa";
 
-import Input from "./input";
+import Input from "./input/input";
 import { filteringAtMention, findHashtags } from "../../../script/helper";
 import { useNavigate } from "react-router-dom";
+import ShowOnHome from "./showOnHome/showOnHome";
 
 export default function CreatePost(props: any) {
   const setHandle = props.setHandle;
@@ -24,6 +25,7 @@ export default function CreatePost(props: any) {
   const [value, setValue] = useState<any>("");
   const [createFunc, { loading }] = useMutation(CREATE_POST_QUERY);
 
+  const [showHome, setShow] = useState<boolean>(false);
   const imgRef = createRef<HTMLInputElement>();
   const [img, setImg]: any = useState();
   const [type, setType]: any = useState();
@@ -37,6 +39,10 @@ export default function CreatePost(props: any) {
     setType("");
   }
 
+  function show() {
+    setShow((prev) => !prev);
+  }
+
   function handleSubmit(e: any) {
     e.preventDefault();
     if (value == "" || !value) {
@@ -46,7 +52,6 @@ export default function CreatePost(props: any) {
 
     // Find Hashtag
     let hashtag = findHashtags(value);
-
     // Filtering Duplicates (Select Distinct)
     hashtag = [...new Set(hashtag)];
 
@@ -68,6 +73,7 @@ export default function CreatePost(props: any) {
                 userId: user.id,
                 text: value,
                 attachment: url,
+                attachment_type: type,
                 hashtag: hashtag,
               },
             })
@@ -93,6 +99,7 @@ export default function CreatePost(props: any) {
           text: newValue,
           attachment: "",
           hashtag: hashtag,
+          attachment_type: "",
         },
       })
         .then((resp) => {
@@ -152,8 +159,11 @@ export default function CreatePost(props: any) {
         <div className="center">
           <div className="border"></div>
         </div>
+        <div className="input-post">
+          {showHome ? <ShowOnHome>{filteringAtMention(value)}</ShowOnHome> : ""}
 
-        <Input value={value} setValue={setValue}></Input>
+          <Input value={value} setValue={setValue}></Input>
+        </div>
         <div className="flex flex-col">
           {img && type === "image" ? (
             <>
@@ -184,9 +194,14 @@ export default function CreatePost(props: any) {
             ""
           )}
           <div className="hashtag">
-            <p onClick={addHashtag} className="color-first">
-              Add Hashtag
-            </p>
+            <div className="flex">
+              <p onClick={addHashtag} className="color-first">
+                Add Hashtag
+              </p>
+              <p onClick={show} className="ml-4 color-first">
+                Show
+              </p>
+            </div>
           </div>
           <div className="bottom">
             <label htmlFor="file-input" className="file-input">

@@ -15,6 +15,10 @@ import {
 } from "../../script/helper";
 import { useRefetch } from "../../hooks/refetchContext";
 import SendPost from "../../component/Popup/SendPost/sendpost";
+import Advertisement from "../../component/Advertisement/advertisement";
+import Right from "./right/right";
+import Left from "./left/left";
+import StartPostButton from "./startpost/startPostButton";
 
 export default function Home() {
   const { user } = useUserAuth();
@@ -86,10 +90,15 @@ export default function Home() {
   return (
     <>
       <div className="home h-min-max">
+        {/* Left */}
+        <Left></Left>
+
+        {/* Home */}
         <div className="home-center">
-          <button className="start-btn" onClick={handlePopup}>
-            Start a Post
-          </button>
+          <StartPostButton handle={handlePopup}></StartPostButton>
+          <div className="center">
+            <div className="mt-3 border"></div>
+          </div>
           {handleCreate ? (
             <CreatePost setHandle={setHandleCreate}></CreatePost>
           ) : (
@@ -136,6 +145,8 @@ export default function Home() {
             )}
           </div>
         </div>
+        {/* Advertisement */}
+        <Right></Right>
       </div>
     </>
   );

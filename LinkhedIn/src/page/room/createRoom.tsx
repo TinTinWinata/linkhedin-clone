@@ -37,7 +37,7 @@ export default function CreateRoom() {
           setPage={setCurrentPage}
         />
       ) : (
-        <Room mode={currentPage} callId={joinCode}/>
+        <Room mode={currentPage} callId={joinCode} />
       )}
     </div>
   );

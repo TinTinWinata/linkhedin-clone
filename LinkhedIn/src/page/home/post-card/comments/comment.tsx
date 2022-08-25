@@ -20,7 +20,7 @@ export default function Comment(props: any) {
   const { user } = useUserAuth();
   const [refresh, setRefresh] = useState<boolean>(false);
   const [hasMore, setHasmore] = useState<boolean>(true);
-  const [comments, setComments] = useState([]);
+  const [comments, setComments] = useState<any>([]);
   const { data, refetch, loading } = useQuery(SEE_COMMENT_QUERY, {
     variables: {
       postId: post.id,
@@ -32,9 +32,9 @@ export default function Comment(props: any) {
   useEffect(() => {
     if (data) {
       if (!refresh) {
-        setComments((prev: any) => {
-          const newArr = [...prev, ...data.seeCommentOnPost];
-          const filteredArr = removeDuplicatesObjectID(newArr);
+        const result = setComments((prev: any[]) => {
+          const newArr: any[] = [...prev, ...data.seeCommentOnPost];
+          const filteredArr: any[] = removeDuplicatesObjectID(newArr);
           return filteredArr;
         });
       } else {
@@ -85,9 +85,10 @@ export default function Comment(props: any) {
       <div className="comment-container">
         <p id="my-10 comment-text">Comments</p>
         {data &&
-          comments.map((comment: any) => {
+          comments.map((comment: any, idx : any) => {
             return (
               <CommentList
+                idx={idx}
                 limit={limit}
                 offset={offset}
                 postRefetch={postRefetch}

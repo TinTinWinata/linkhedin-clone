@@ -35,6 +35,7 @@ type JobInput struct {
 type Message struct {
 	UserID  string `json:"userId"`
 	Message string `json:"message"`
+	Link    string `json:"Link"`
 }
 
 type NewEducation struct {
@@ -72,6 +73,7 @@ type NewPost struct {
 	UserID         string   `json:"user_id"`
 	AttachmentLink string   `json:"attachment_link"`
 	Hashtag        []string `json:"hashtag"`
+	AttachmentType string   `json:"attachment_type"`
 }
 
 type NewUser struct {

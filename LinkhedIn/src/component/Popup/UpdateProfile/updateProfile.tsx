@@ -3,6 +3,8 @@ import React, { useState } from "react";
 import { FaTimes } from "react-icons/fa";
 import ReactSelect from "react-select";
 import { toastError, toastSuccess } from "../../../config/toast";
+import { useRefetch } from "../../../hooks/refetchContext";
+import { useUserAuth } from "../../../hooks/userContext";
 import { UPDATE_MY_PROFILE_QUERY } from "../../../query/user";
 import "./updateProfile.scss";
 
@@ -19,11 +21,12 @@ const options = [
 
 export default function UpdateProfile(props: any) {
   const setHandle = props.setHandle;
-  const data = props.data;
 
   const [gender, setGender] = useState<string>();
 
   const [updateFunc] = useMutation(UPDATE_MY_PROFILE_QUERY);
+  const { user } = useUserAuth();
+  const { refetchUser } = useRefetch();
 
   function handleSubmit(e: any) {
     e.preventDefault();
@@ -36,10 +39,16 @@ export default function UpdateProfile(props: any) {
     };
     updateFunc({ variables: { input: input } })
       .then((resp) => {
-        props.refetch().then(() => {
+        if (props.refetch) {
+          props.refetch().then(() => {
+            refetchUser();
+            toastSuccess("Succesfully update user");
+            setHandle(false);
+          });
+        } else {
           toastSuccess("Succesfully update user");
           setHandle(false);
-        });
+        }
       })
       .catch((err) => {
         toastError(err.message);
@@ -55,7 +64,7 @@ export default function UpdateProfile(props: any) {
   }
 
   return (
-    <div  className="update-profile-container">
+    <div className="update-profile-container">
       <div className="popup"></div>
       <div className="popup-container">
         <form action="" onSubmit={handleSubmit}>
@@ -69,15 +78,30 @@ export default function UpdateProfile(props: any) {
             <label htmlFor="" className="color-invic">
               First Name
             </label>
-            <input type="text" name="firstName" className="input-border" />
+            <input
+              defaultValue={user.FirstName}
+              type="text"
+              name="firstName"
+              className="input-border"
+            />
             <label htmlFor="" className="color-invic">
               Last Name
             </label>
-            <input type="text" name="lastName" className="input-border" />
+            <input
+              defaultValue={user.LastName}
+              type="text"
+              name="lastName"
+              className="input-border"
+            />
             <label htmlFor="" className="color-invic">
               Additional Name
             </label>
-            <input type="text" name="addName" className="input-border" />
+            <input
+              defaultValue={user.AdditionalName}
+              type="text"
+              name="addName"
+              className="input-border"
+            />
             <label htmlFor="" className="color-invic">
               Gender
             </label>
@@ -89,7 +113,12 @@ export default function UpdateProfile(props: any) {
             <label htmlFor="" className="color-invic">
               Headline
             </label>
-            <input type="text" name="headline" className="input-border" />
+            <input
+              defaultValue={user.Headline}
+              type="text"
+              name="headline"
+              className="input-border"
+            />
             <button>Submit</button>
           </div>
         </form>

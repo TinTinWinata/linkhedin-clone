@@ -9,8 +9,10 @@ import Job from "../page/job/job";
 import Message from "../page/message/message";
 import Network from "../page/network/network";
 import Notification from "../page/notification/notification";
+import Post from "../page/post/post";
 import Profile from "../page/profile/profile";
 import CreateRoom from "../page/room/createRoom";
+import { MyRoom } from "../page/room/myRoom";
 import { Room } from "../page/room/room";
 import Search from "../page/search/search";
 
@@ -39,6 +41,7 @@ export default function MiddlewareRoutes() {
         <div className="inside-container"> */}
       <Routes>
         <Route path="/" element={<Home />}></Route>
+        {/* <Route path="/*" element={<Home />}></Route> */}
         <Route path="/network" element={<Network />}></Route>
         <Route path="/message" element={<Message />}></Route>
         <Route path="/search" element={<Search />}></Route>
@@ -48,14 +51,20 @@ export default function MiddlewareRoutes() {
         <Route path="/home" element={<Home />}></Route>
         <Route path="/profile/:id" element={<Profile />}></Route>
         <Route path="/create-job" element={<CreateJob />}></Route>
+        <Route path="/post/:id" element={<Post />}></Route>
         <Route
-          path="/room-create"
+          path="/room-create/:id/:time"
+          element={<Room mode={"create"} callId={""} />}
+        ></Route>
+        <Route
+          path="/room-create/:id"
           element={<Room mode={"create"} callId={""} />}
         ></Route>
         <Route
           path="/room/:id"
           element={<Room mode={"join"} callId={""} />}
         ></Route>
+        <Route path="/server/:id" element={<MyRoom />}></Route>
 
         <Route path="/create-room" element={<CreateRoom />}></Route>
       </Routes>

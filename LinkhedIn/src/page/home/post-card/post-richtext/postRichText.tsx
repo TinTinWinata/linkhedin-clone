@@ -34,7 +34,6 @@ export default function PostRichText({
     let name = richTagClass[i].innerHTML;
     name = name.replace("@", "");
     richTagClass[i].addEventListener("mouseenter", () => {
-      console.log("test");
       handleMouseEnter(name);
     });
     richTagClass[i].addEventListener("mouseleave", (e) => {

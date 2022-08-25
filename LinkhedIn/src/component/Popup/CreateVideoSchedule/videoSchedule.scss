@@ -1,0 +1,22 @@
+.video-schedule {
+  background-color: white;
+  display: flex;
+  flex-direction: column;
+  padding: 10px;
+  border-radius: 10px;
+  min-width: 300px;
+  position: relative;
+  .x-icon {
+    position: absolute;
+    right: 20px;
+    top: 20px;
+    cursor: pointer;
+  }
+  input {
+    margin-top: 20px;
+  }
+  button {
+    margin-top: 20px;
+    height: 40px;
+  }
+}

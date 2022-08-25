@@ -7,6 +7,7 @@ import {
   LIKE_COMMENT_QUERY,
   REPLY_COMMENT_QUERY,
 } from "../../../../query/comment";
+import PostRichText from "../post-richtext/postRichText";
 
 export default function CommentList(props: any) {
   const comment = props.comment;
@@ -79,6 +80,7 @@ export default function CommentList(props: any) {
           <div className="center" id="comment-text">
             <div className="flex flex-col">
               <p>{comment.User.name}</p>
+              {/* <PostRichText index={props.idx}>{comment.Text}</PostRichText> */}
               <p id="comment-value">{comment.Text}</p>
             </div>
           </div>

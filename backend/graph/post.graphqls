@@ -7,12 +7,14 @@ input NewPost {
   user_id: String!
   attachment_link: String!
   hashtag: [String!]!
+  attachment_type: String!
 }
 
 type Post {
   id: ID!
   text: String!
   AttachmentLink: String!
+  AttachmentType: String!
   User: User!
   likes: Int!
   sends: Int!

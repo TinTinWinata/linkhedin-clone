@@ -48,6 +48,7 @@ func (r *mutationResolver) CreatePost(ctx context.Context, input model.NewPost) 
 		AttachmentLink: input.AttachmentLink,
 		CreatedAt:      time.Now(),
 		Hashtag:        input.Hashtag,
+		AttachmentType: input.AttachmentType,
 	}
 
 	err := r.DB.Create(model).Error
@@ -108,3 +109,13 @@ func (r *queryResolver) GetAllHashtag(ctx context.Context) ([]string, error) {
 func (r *Resolver) Post() generated.PostResolver { return &postResolver{r} }
 
 type postResolver struct{ *Resolver }
+
+// !!! WARNING !!!
+// The code below was going to be deleted when updating resolvers. It has been copied here so you have
+// one last chance to move it out of harms way if you want. There are two reasons this happens:
+//  - When renaming or deleting a resolver the old code will be put in here. You can safely delete
+//    it when you're done.
+//  - You have helper methods in this file. Move them out to keep these resolver files clean.
+func (r *postResolver) AttachmentType(ctx context.Context, obj *model.Post) (string, error) {
+	return obj.AttachmentType, nil
+}

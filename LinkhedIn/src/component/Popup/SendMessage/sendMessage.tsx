@@ -14,7 +14,7 @@ export default function SendMessage(props: any) {
     const text = e.target.text.value;
     const message = {
       userId: user.id,
-      message: text,
+      message : text,
       link: "/profile/" + user.id,
     };
 

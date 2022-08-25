@@ -33,3 +33,9 @@
     margin-left: 10px;
   }
 }
+
+@media only screen and (max-width: 821px) {
+  .network-request {
+    width: 90%;
+  }
+}

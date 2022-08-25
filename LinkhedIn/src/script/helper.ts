@@ -1,5 +1,6 @@
 import { stringLength } from "@firebase/util";
 import { isObjectType } from "graphql";
+import { toastError } from "../config/toast";
 
 
 export function addCharacterToString(str : String, newStr: String, idx: number)
@@ -105,13 +106,19 @@ export function addString(str: string, idx : number, add: string){
 export function appendDivString(str: string, idx : number,end:number, div: string, lastDiv : string){
   const len = div.length;
   str =  str.slice(0, idx) + div + str.slice(idx);
-  str = str.slice(0, len + end)  + lastDiv + str.slice(len + end);
+  str = str.slice(0, len + end)  + lastDiv + str.slice(len + end) ;
   return str;
  }
 
 export function RichTextPost(str : string, idx : any){
   const at = "@";
   for(let i=0;i<str.length;i++){
+    // console.log(i)
+    if(i >= 500)
+    {
+      toastError("There are error in loading data!")
+      return "";
+    }
     if(str.charAt(i) === '@'){
       let text = ""
       for(let j=i;j<str.length;j++){
@@ -121,7 +128,7 @@ export function RichTextPost(str : string, idx : any){
           const div = `<a href="/profile/${text}" value="${text}" id="rich-tag${"-" + idx}" class='richat ri-class-${idx}'>`
           const endDiv = '</a>'
           const lenDiv = div.length + 1;
-          str = appendDivString(str, i, j, div , endDiv)
+          str = appendDivString(str, i, j + 1, div , endDiv)
           i += lenDiv;
           break;
         }
@@ -136,13 +143,48 @@ export function RichTextPost(str : string, idx : any){
           const div = `<a href='/search/${text}' class='richhashtag'>`
           const endDiv = '</a>'
           const lenDiv = div.length + 1;
-          str = appendDivString(str, i, j, div , endDiv)
+          str = appendDivString(str, i, j + 1, div , endDiv)
           i += lenDiv;
           break;
         }
       }
     }
+
+
+    if(str.slice(i, i + 4) === 'http')
+    {
+      let text = ""
+        for(let j = i;j < str.length;j++){
+        const char = str.charAt(j);
+        text += char;
+        if(char === ' ' || j === str.length - 1)
+        {
+          const div = `<a href=${text}>`
+          const endDiv = `</a>`
+          const lenDiv = div.length + 1;
+          str = appendDivString(str, i, j + 1, div, endDiv);
+          i += lenDiv;
+          break;
+        }
+      }
+
+    }
+
+    //    if(idxHttp === -1 || str.charAt(idxHttp - 1) === '>') break;
+    //   let end :number = 0;
+    //   let text = ""
+    //   for(let i = idxHttp;i < str.length;i++){
+    //     const char = str.charAt(i);
+    //     text += char;
+    //     if(char === ' ' || i === str.length - 1)
+    //     {
+    //       end = i;
+    //       break;
+    //     }
+    //   }
+
   }
+  
   return str;
 }
 
