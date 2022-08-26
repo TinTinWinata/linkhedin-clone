@@ -12,7 +12,7 @@ export default function Game() {
 
   return (
     <div className="center h-min-max">
-      <canvas ref={canvas} width={800} height={600}></canvas>
+      <canvas ref={canvas} width={800} height={500}></canvas>
     </div>
   );
 }

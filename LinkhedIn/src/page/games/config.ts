@@ -1,9 +1,16 @@
-export const MEGAMEN_RUN_URL = "/megamen/megamen/run"
-export const BACKGROUND_URL = "/megamen/background.jpg"
+const MEGAMEN_RUN_URL = "/megamen/megamen/run"
+const BACKGROUND_URL = "/megamen/background.jpg"
+const LAND_URL = "/megamen/land.png"
 
 export const MEGAMEN_CONF = {
   run: 10,
 } 
+
+export function GET_LAND(){
+  const img = new Image();
+  img.src = LAND_URL;
+  return img;
+}
 
 export function GET_BACKGROUND(){
   const img = new Image();
