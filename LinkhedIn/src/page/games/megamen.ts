@@ -1,4 +1,4 @@
-import { GET_BACKGROUND, GET_LAND, GET_MEGAMEN_RUN, MEGAMEN_CONF } from "./config";
+import { GET_BACKGROUND, GET_LAND, MEGAMEN_GET_RUN, MEGAMEN_CONF, MEGAMEN_GET_WALK } from "./config";
 
 
 export function runGame(canvas : any){
@@ -75,14 +75,17 @@ export function runGame(canvas : any){
     w: number;
     h: number;
     jumpForce: number;
+    spriteLength: number;
+    isBackward: boolean;
 
     constructor(){
       this.x = 0
       this.y = 0
-      this.sprite = GET_MEGAMEN_RUN()
+      this.sprite = MEGAMEN_GET_WALK()
       this.spriteState = 0;
+      this.spriteLength = this.sprite.length;
       this.conf = MEGAMEN_CONF;
-      this.spriteSlow = 4;
+      this.spriteSlow = 60;
       this.tempSlow = 0;
       this.velocityX = 0;
       this.velocityY = 0;
@@ -92,6 +95,7 @@ export function runGame(canvas : any){
       this.speedY = 1;
       this.w = this.sprite[0].width;
       this.h = this.sprite[0].height;
+      this.isBackward = false;
     }
 
     isGrounded(){
@@ -102,25 +106,45 @@ export function runGame(canvas : any){
       }
     }
 
+    checkW(){
+      this.w = this.sprite[0].width
+      this.h = this.sprite[0].height
+    }
+
+    changeState(str : string){
+      switch (str){
+        case "idle":
+        this.sprite = MEGAMEN_GET_WALK()
+        this.spriteLength = this.conf.walk;
+        this.spriteSlow = 60;
+        break;
+        case "run":
+        this.sprite = MEGAMEN_GET_RUN()
+        this.spriteLength = this.conf.run;
+        this.spriteSlow = 4;
+        break;
+      }
+      this.checkW();
+    }
+
     incrementState(){
-        if(this.tempSlow >= this.spriteSlow)
-        {
-          this.tempSlow = 0;
-          this.spriteState += 1;
-          if(this.spriteState === this.conf.run){
-            this.spriteState = 0;
-          }
+       if(this.tempSlow >= this.spriteSlow)
+       {
+         this.tempSlow = 0;
+         this.spriteState += 1;
         }
         this.tempSlow += 1;
       }
 
     move(str : string, velocity: number){
-      // Kiri
       if(str === "left" && !collider.isCollide(this.x + velocity, this.y + this.h / 2))
       {
+        this.isBackward = true;
         this.velocityX = velocity;
       }else if (str === "right" && !collider.isCollide(this.x + this.w + velocity, this.y + this.h / 2))
       {
+        ctx.restore()
+        this.isBackward = false;
         this.velocityX = velocity;
       }else if(str === "up")
       {
@@ -136,7 +160,7 @@ export function runGame(canvas : any){
       this.velocityX = this.maxSpeed;
       if(this.velocityX <= -this.maxSpeed){
       this.velocityX = - this.maxSpeed
-      }
+    }
 
       
       if(collider.isCollide(this.x + this.w / 2, this.y  + this.h + this.velocityY))
@@ -150,14 +174,34 @@ export function runGame(canvas : any){
       {
         this.velocityX = 0;
       }
-      
+
+      this.checkState()
+
       this.x += this.velocityX;
       this.y += this.velocityY;
     }
 
+    checkState(){
+      if(this.velocityX === 0){
+        this.changeState("idle");
+      }else{
+        this.changeState("run")
+      }
+    }
+
     render(){
       this.logic()
-      ctx.drawImage(this.sprite[this.spriteState], this.x,this.y)
+      const state = this.spriteState % this.spriteLength;
+
+      if(this.isBackward){
+        ctx.save();
+        ctx.scale(-1, 1);
+        ctx.drawImage(this.sprite[state], -this.x, this.y, -this.w, this.h)
+      }else{
+        ctx.scale(1, 1);
+        ctx.drawImage(this.sprite[state], this.x,this.y)
+      }
+
       this.incrementState()
     }
   }

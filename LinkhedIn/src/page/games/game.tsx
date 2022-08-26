@@ -1,5 +1,5 @@
 import React, { useEffect, useRef } from "react";
-import { runGame } from "./engine";
+import { runGame } from "./megamen";
 import "./game.scss";
 
 export default function Game() {
