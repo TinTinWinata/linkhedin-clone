@@ -145,6 +145,11 @@ export function runGame(canvas : any){
       }else{
         this.velocityY += gravity;
       }
+
+      if(isExistsMap(this.x + this.velocityX, this.y + this.h / 2) || isExistsMap(this.x + this.velocityX + this.w, this.y + this.h / 2))
+      {
+        this.velocityX = 0;
+      }
       
       this.x += this.velocityX;
       this.y += this.velocityY;
@@ -172,6 +177,14 @@ export function runGame(canvas : any){
   function debug(x : number, y : number, w : number, h : number){
     ctx.fillStyle = "red"
     ctx.fillRect(x, y, w, h);
+  }
+
+  function isExistsMap(x: number, y: number){
+    if(y >= 0 && y <= canvas.height && x >= 0 && x <= canvas.width){
+      return false;
+    }else{
+      return true;
+    }
   }
 
   function getDeltaTime() {
