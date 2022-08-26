@@ -34,25 +34,33 @@ export default function StartPostButton(props: any) {
             <div className="center">
               <FaPhotoVideo className="photo-icon the-icon"></FaPhotoVideo>
             </div>
-            <p>Photo</p>
+            <div className="center">
+              <p>Photo</p>
+            </div>
           </div>
           <div className="icon flex">
             <div className="center">
               <FaVideo className="video-icon the-icon" />
             </div>
-            <p>Video</p>
+            <div className="center">
+              <p>Video</p>
+            </div>
           </div>
           <div className="icon flex">
             <div className="center">
               <FaRegCalendarAlt className="event-icon the-icon" />
             </div>
-            <p>Event</p>
+            <div className="center">
+              <p>Event</p>
+            </div>
           </div>
           <div className="icon flex">
             <div className="center">
               <FaBorderNone className="article-icon the-icon" />
             </div>
-            <p>Write Article</p>
+            <div className="center">
+              <p>Article</p>
+            </div>
           </div>
         </div>
       </div>

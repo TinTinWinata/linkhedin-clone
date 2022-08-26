@@ -184,6 +184,7 @@ func (r *mutationResolver) Login(ctx context.Context, email string, password str
 
 // Register is the resolver for the register field.
 func (r *mutationResolver) Register(ctx context.Context, input model.NewUser) (interface{}, error) {
+
 	return my_auth.UserRegister(ctx, input)
 }
 

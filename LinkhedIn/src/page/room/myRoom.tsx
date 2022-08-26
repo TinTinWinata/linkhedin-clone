@@ -20,14 +20,14 @@ import NotExists from "./notexists/notexists";
 import Waiting from "./waiting/waiting";
 
 // Initialize WebRTC
-const servers = {
-  iceServers: [
-    {
-      urls: ["stun:stun1.l.google.com:19302", "stun:stun2.l.google.com:19302"],
-    },
-  ],
-  iceCandidatePoolSize: 10,
-};
+  const servers = {
+    iceServers: [
+      {
+        urls: ["stun:stun1.l.google.com:19302", "stun:stun2.l.google.com:19302"],
+      },
+    ],
+    iceCandidatePoolSize: 10,
+  };
 
 export function MyRoom() {
   const pc = new RTCPeerConnection(servers);
@@ -85,7 +85,6 @@ export function MyRoom() {
 
     setWebcamActive(true);
     if (mode === "create") {
-      console.log("this is create");
       const callDoc = await doc(db, "calls", roomId);
       await updateDoc(callDoc, {
         created: true,
@@ -103,7 +102,7 @@ export function MyRoom() {
       setRoomId(callDoc.id);
 
       pc.onicecandidate = (event: any) => {
-        // event.candidate && offerCandidates.add(event.candidate.toJSON());
+        console.log("event : ", event);
         event.candidate && addDoc(offerCandidates, event.candidate.toJSON());
       };
 
@@ -130,29 +129,18 @@ export function MyRoom() {
         snapshot.docChanges().forEach((change: any) => {
           if (change.type === "added") {
             const data = change.doc.data();
-            console.log("answer candidaet : ", data);
+            // console.log("answer candidaet : ", data);
             if (data) {
               const candidate = new RTCIceCandidate(data);
-              console.log("candidate : ", candidate);
+              // console.log("candidate : ", candidate);
               pc.addIceCandidate(candidate);
             }
           }
         });
       });
-
-      // if (id)
-      //   messageFunc({
-      //     variables: {
-      //       userId: id,
-      //       message: `TinTin has been made a call please click to join the call`,
-      //       link: "/room/" + callDoc.id,
-      //     },
-      //   });
     } else if (mode === "join") {
-      console.log("this is a join");
-      // const callDoc = firestore.collection("calls").doc(callId);
+      // console.log("this is a join");
       const callDoc = doc(db, "calls", roomId);
-      // const offerCandidates = callDoc.collection("offerCandidates");
       const answerCandidates = collection(
         db,
         "calls",
@@ -225,7 +213,7 @@ export function MyRoom() {
   if (time) {
     const newDate: any = new Date();
     const diff = newDate.getTime() - time.toDate().getTime();
-    console.log("diff : ", diff);
+    // console.log("diff : ", diff);
     if (diff <= 0) {
       return <Waiting time={time}></Waiting>;
     }

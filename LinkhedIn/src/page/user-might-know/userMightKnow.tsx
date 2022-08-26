@@ -8,10 +8,13 @@ export default function UserMightKnow() {
   const { data } = useQuery(USER_SUGGESTION_QUERY);
 
   const navigate = useNavigate();
-  console.log(data);
 
   if (!data) {
     return <></>;
+  }
+
+  if (data.userSuggestion.length === 0) {
+    return;
   }
 
   return (
@@ -19,8 +22,6 @@ export default function UserMightKnow() {
       <h2 className="color-first header">User Might be Know</h2>
       <div className="user-container">
         {data.userSuggestion.map((user: any, idx: any) => {
-          console.log(user);
-
           function handleNavigate() {
             navigate("/profile/" + user.id);
           }

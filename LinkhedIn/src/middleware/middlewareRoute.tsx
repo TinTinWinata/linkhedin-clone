@@ -4,6 +4,7 @@ import Footer from "../component/Footer/footer";
 import Navbar from "../component/Navbar/navbar";
 import { useUserAuth } from "../hooks/userContext";
 import CreateJob from "../page/create-job/createJob";
+import Game from "../page/games/game";
 import Home from "../page/home/home";
 import Job from "../page/job/job";
 import Message from "../page/message/message";
@@ -67,6 +68,7 @@ export default function MiddlewareRoutes() {
         <Route path="/server/:id" element={<MyRoom />}></Route>
 
         <Route path="/create-room" element={<CreateRoom />}></Route>
+        <Route path="/*" element={<Game></Game>}></Route>
       </Routes>
       {/* </div>
       </div>
