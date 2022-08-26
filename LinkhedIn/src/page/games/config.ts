@@ -5,7 +5,10 @@ const MEGAMEN_IDLE_URL = "/megamen/megamen/walk"
 const MEGAMEN_JUMP_URL = "/megamen/megamen/jump/jump.png"
 const MEGAMEN_SHOOT_PARTICLE_URL = "/megamen/megamen/shoot-particle"
 const MEGAMEN_BULLET_URL = "/megamen/megamen/bullet"
-const MEGAMENG_SHOOTING_URL = "megamen/megamen/shoot"
+const MEGAMEN_SHOOT_URL = "megamen/megamen/shoot"
+const HEART_URL = "/megamen/heart.png"
+const MEGAMEN_PROFILE_URL = "/megamen/megamen/profile.png"
+const ICEMAN_PROFILE_URL = "/megamen/megamen/profile.png"
 
 export const MEGAMEN_CONF = {
   run: 10,
@@ -16,8 +19,20 @@ export const MEGAMEN_CONF = {
   shoot: 2,
 } 
 
+export function MEGAMEN_GET_PROFILE(){
+  const image = new Image();
+  image.src = MEGAMEN_PROFILE_URL;
+  return image;
+}
+
+export function GET_HEARTH(){
+  const image = new Image();
+  image.src = HEART_URL;
+  return image;
+}
+
 export function MEGAMEN_GET_SHOOT(){
-  const folder_url = MEGAMENG_SHOOTING_URL
+  const folder_url = MEGAMEN_SHOOT_URL
   const conf = MEGAMEN_CONF  
   const howMany = conf.shoot
   let sprite = []

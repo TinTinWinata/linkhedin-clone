@@ -1,4 +1,4 @@
-import { GET_BACKGROUND, GET_LAND, MEGAMEN_GET_RUN, MEGAMEN_CONF, MEGAMEN_GET_WALK, MEGAMENT_GET_JUMP, MEGAMEN_GET_BULLET, MEGAMEN_GET_SHOOT_PARTICLE, MEGAMEN_GET_SHOOT } from "./config";
+import { GET_BACKGROUND, GET_LAND, MEGAMEN_GET_RUN, MEGAMEN_CONF, MEGAMEN_GET_WALK, MEGAMENT_GET_JUMP, MEGAMEN_GET_BULLET, MEGAMEN_GET_SHOOT_PARTICLE, MEGAMEN_GET_SHOOT, GET_HEARTH, MEGAMEN_GET_PROFILE } from "./config";
 
 
 export function runGame(canvas : any){
@@ -10,15 +10,17 @@ export function runGame(canvas : any){
   const fps = 60
   const gravity = 0.2;
   let keys : any= []
-
+  const INITIAL_HEALTH = 3;
 
   // Background
   class Background{
     sprite: any
     landSprite : any
+    megamenProfile: any;
     constructor(){
       this.sprite = GET_BACKGROUND();
       this.landSprite = GET_LAND()
+      this.megamenProfile = MEGAMEN_GET_PROFILE()
     }
     render(){
       // Render Background
@@ -27,6 +29,31 @@ export function runGame(canvas : any){
       // Render Land
       const dyLand = canvas.height - this.landSprite.height;
       ctx.drawImage(this.landSprite, 0, dyLand, canvas.width, this.landSprite.height)
+
+      // Render Megamen Profile
+      ctx.drawImage(this.megamenProfile, 10,10, this.megamenProfile.width * 2, this.megamenProfile.height * 2)
+    }
+  }
+
+  class Hearth{
+    sprite: any
+    x : number;
+    y: number;
+    scale: number;
+    margin: number;
+    constructor(x: number, y: number, scale: number, margin: number){
+      this.sprite = GET_HEARTH()
+      this.x = x;
+      this.y = y;
+      this.scale = scale;
+      this.margin = margin;
+    }
+
+    render(total: number){
+      const margin = this.margin;
+      for(let i = 0;i < total;i++){
+        ctx.drawImage(this.sprite, this.x + (((this.sprite.width * this.scale) + margin) * i), this.y, this.sprite.width * this.scale, this.sprite.height * this.scale)
+      }
     }
   }
 
@@ -179,8 +206,13 @@ export function runGame(canvas : any){
     shootingDelay :number;
     tempDelay: number;
     isShooting: boolean;
+    health: number;
+    heartObj : any;
+    
 
     constructor(){
+      this.health = INITIAL_HEALTH;
+      this.heartObj = new Hearth(65, 50, 0.5, 2)
       this.x = 0
       this.y = 0
       this.sprite = MEGAMEN_GET_WALK()
@@ -225,7 +257,8 @@ export function runGame(canvas : any){
         const particle = new MegamenExplode(pos, posY, -1)
         this.particles.push(particle)
       }else{
-        pos = this.x + this.sprite[0].width - 8;
+        pos = this.x + this.w  + 5;
+
         const bullet = new Bullet(pos ,posY + 10, 1, MEGAMEN_GET_BULLET())
         this.bullets.push(bullet); 
         const particle = new MegamenExplode(pos, posY, 1)
@@ -357,6 +390,7 @@ export function runGame(canvas : any){
     }
       
     render(){
+
       this.logic()
       const state = this.spriteState % this.spriteLength;
 
@@ -382,6 +416,9 @@ export function runGame(canvas : any){
       this.particles.forEach((particle: any)=>{
         particle.render()
       })
+
+      // Render Hearth
+      this.heartObj.render(this.health)
     }
   }
 
