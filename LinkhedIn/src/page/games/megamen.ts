@@ -1,4 +1,4 @@
-import { GET_BACKGROUND, GET_LAND, MEGAMEN_GET_RUN, MEGAMEN_CONF, MEGAMEN_GET_WALK } from "./config";
+import { GET_BACKGROUND, GET_LAND, MEGAMEN_GET_RUN, MEGAMEN_CONF, MEGAMEN_GET_WALK, MEGAMENT_GET_JUMP, MEGAMEN_GET_BULLET, MEGAMEN_GET_SHOOT_PARTICLE, MEGAMEN_GET_SHOOT } from "./config";
 
 
 export function runGame(canvas : any){
@@ -59,6 +59,102 @@ export function runGame(canvas : any){
 
   }
 
+  class Bullet{
+    x: number;
+    y: number;
+    direction: number;
+    sprite: any;
+    state: number;
+    spriteLength: number;
+    bulletSpeed :number;
+
+    constructor(x: number, y: number, direction: number, sprite: any){
+      this.x = x;
+      this.y = y;
+      this.direction = direction;
+      this.sprite = sprite;
+      this.spriteLength = MEGAMEN_CONF.bullet
+      this.state = 0;
+      this.bulletSpeed = 5;
+    }
+    logic(){
+      if(this.direction === 1)
+      this.x += this.bulletSpeed;
+      else if(this.direction === -1)
+      this.x -= this.bulletSpeed;
+    }
+
+    getState(){
+      this.state += 1;
+      if(this.state >= this.spriteLength){
+        return this.spriteLength - 1
+      }else{
+        return this.state;
+      }
+    }
+
+    render(){
+      this.logic()
+      const w = this.sprite[0].width;
+      const h = this.sprite[0].height;
+      ctx.save()
+      ctx.translate(this.x + w / 2, this.y + h / w)
+      ctx.scale(this.direction , 1)
+      ctx.drawImage(this.sprite[this.getState()], - w / 2, - h / 2, w, h)
+      ctx.restore()
+    }
+  }
+
+  class MegamenExplode{
+    x : number;
+    y: number;
+    dead : boolean;
+    slow: number;
+    tempSlow: number;
+    state : number;
+    spriteLength: number;
+    sprite: any;
+    direction: number;
+
+    constructor(x: number, y: number, direction: number){
+      this.direction = direction;
+      this.x = x;
+      this.y = y;
+      this.dead = false;
+      this.slow = 10;
+      this.tempSlow = 0;
+      this.state = 0;
+      this.spriteLength = MEGAMEN_CONF.shoot_particle;
+      this.sprite = MEGAMEN_GET_SHOOT_PARTICLE();
+    }
+    getState(){
+      this.tempSlow += 1;
+      if(this.tempSlow === this.slow)
+      {
+        this.tempSlow = 0;
+        this.state += 1;
+        if(this.state === this.spriteLength - 1){
+          this.dead = true;
+          return this.spriteLength - 1;
+        }else{
+          return this.state;
+        }
+      }else{
+        return this.state
+      }
+    }
+
+    render(){
+      if(this.dead) return;
+
+      ctx.save()
+      ctx.translate(this.x + this.sprite[0].width / 2, (this.y + this.sprite[0].height / 2))
+      ctx.scale(this.direction, 1)
+      ctx.drawImage(this.sprite[this.getState()], -this.sprite[0].width / 2, - this.sprite[0].height / 2, this.sprite[0].width, this.sprite[0].height)
+      ctx.restore()
+    }
+  }
+
   class Megamen{
     sprite : any
     spriteState: number
@@ -77,6 +173,12 @@ export function runGame(canvas : any){
     jumpForce: number;
     spriteLength: number;
     isBackward: boolean;
+    state: string;
+    bullets: any;
+    particles: any;
+    shootingDelay :number;
+    tempDelay: number;
+    isShooting: boolean;
 
     constructor(){
       this.x = 0
@@ -86,6 +188,7 @@ export function runGame(canvas : any){
       this.spriteLength = this.sprite.length;
       this.conf = MEGAMEN_CONF;
       this.spriteSlow = 60;
+      this.state = "idle"
       this.tempSlow = 0;
       this.velocityX = 0;
       this.velocityY = 0;
@@ -96,6 +199,38 @@ export function runGame(canvas : any){
       this.w = this.sprite[0].width;
       this.h = this.sprite[0].height;
       this.isBackward = false;
+      this.bullets = [];
+      this.particles = [];
+      this.shootingDelay = 30;
+      this.tempDelay = 0;
+      this.isShooting = false;
+    }
+
+    shoot(){
+      if(!this.canShoot()) return;
+
+      this.velocityX = 0;
+
+      this.tempDelay = 0;
+      this.isShooting = true;
+
+      let pos : number;
+      let posY = this.y + 3;
+      this.changeState("shoot")
+      if(this.isBackward)
+      {
+        pos = this.x - 30
+        const bullet = new Bullet(this.x - 30, posY + 10 , -1, MEGAMEN_GET_BULLET())
+        this.bullets.push(bullet);
+        const particle = new MegamenExplode(pos, posY, -1)
+        this.particles.push(particle)
+      }else{
+        pos = this.x + this.sprite[0].width - 8;
+        const bullet = new Bullet(pos ,posY + 10, 1, MEGAMEN_GET_BULLET())
+        this.bullets.push(bullet); 
+        const particle = new MegamenExplode(pos, posY, 1)
+        this.particles.push(particle)
+      }
     }
 
     isGrounded(){
@@ -107,8 +242,7 @@ export function runGame(canvas : any){
     }
 
     checkW(){
-      this.w = this.sprite[0].width
-      this.h = this.sprite[0].height
+      if(this.state === "jump") return;
     }
 
     changeState(str : string){
@@ -117,11 +251,25 @@ export function runGame(canvas : any){
         this.sprite = MEGAMEN_GET_WALK()
         this.spriteLength = this.conf.walk;
         this.spriteSlow = 60;
+        this.state = "idle"
         break;
         case "run":
         this.sprite = MEGAMEN_GET_RUN()
         this.spriteLength = this.conf.run;
         this.spriteSlow = 4;
+        this.state = "run"
+        break;
+        case "jump":
+        this.sprite = MEGAMENT_GET_JUMP()
+        this.spriteLength = this.conf.jump;
+        this.spriteSlow = 1;
+        this.state = "jump";
+        break;
+        case "shoot":
+        this.sprite = MEGAMEN_GET_SHOOT()
+        this.spriteLength = this.conf.shoot;
+        this.spriteSlow = 60;
+        this.state = "shoot"
         break;
       }
       this.checkW();
@@ -139,11 +287,12 @@ export function runGame(canvas : any){
     move(str : string, velocity: number){
       if(str === "left" && !collider.isCollide(this.x + velocity, this.y + this.h / 2))
       {
+        if(this.isShooting) return;
         this.isBackward = true;
         this.velocityX = velocity;
       }else if (str === "right" && !collider.isCollide(this.x + this.w + velocity, this.y + this.h / 2))
       {
-        ctx.restore()
+        if(this.isShooting) return;
         this.isBackward = false;
         this.velocityX = velocity;
       }else if(str === "up")
@@ -160,7 +309,7 @@ export function runGame(canvas : any){
       this.velocityX = this.maxSpeed;
       if(this.velocityX <= -this.maxSpeed){
       this.velocityX = - this.maxSpeed
-    }
+      }
 
       
       if(collider.isCollide(this.x + this.w / 2, this.y  + this.h + this.velocityY))
@@ -179,33 +328,68 @@ export function runGame(canvas : any){
 
       this.x += this.velocityX;
       this.y += this.velocityY;
+
+      this.canShoot()
+    }
+
+    canShoot(){
+      if(this.tempDelay >= this.shootingDelay)
+      {
+        this.isShooting = false;
+        return true;
+      }
+      this.tempDelay += 1;
+      return false;
     }
 
     checkState(){
-      if(this.velocityX === 0){
+      if(this.isShooting){
+        this.changeState("shoot")
+      }
+      else if(!this.isGrounded()){
+        this.changeState("jump")
+      }
+      else if(this.velocityX === 0){
         this.changeState("idle");
       }else{
         this.changeState("run")
       }
     }
-
+      
     render(){
       this.logic()
       const state = this.spriteState % this.spriteLength;
 
       if(this.isBackward){
         ctx.save();
+        ctx.translate(this.x + this.sprite[state].width / 2, this.y + this.sprite[state].height / 2) 
         ctx.scale(-1, 1);
-        ctx.drawImage(this.sprite[state], -this.x, this.y, -this.w, this.h)
+        ctx.drawImage(this.sprite[state], -this.sprite[0].width / 2, -this.sprite[0].height/2, this.sprite[0].width, this.sprite[0].height)
+        ctx.restore()
       }else{
         ctx.scale(1, 1);
         ctx.drawImage(this.sprite[state], this.x,this.y)
       }
 
       this.incrementState()
+
+      // Render Bullet
+      this.bullets.forEach((bullet : any)=>{
+        bullet.render()
+      })
+
+      // Render Particles
+      this.particles.forEach((particle: any)=>{
+        particle.render()
+      })
     }
   }
 
+  document.addEventListener('keypress', (e : KeyboardEvent)=>{
+    if(e.key === 'e'){
+      megamen.shoot()
+    }
+  })
 
   document.addEventListener('keydown', (e : any)=>{
     keys[e.key] = true
@@ -256,6 +440,7 @@ export function runGame(canvas : any){
       megamen.move("left", megamen.velocityX - megamen.speedX)
     }else if(keys['d'])
     {
+      // ctx.restore();
       megamen.move("right", megamen.velocityX + megamen.speedX)
     }else{
       megamen.velocityX = 0;
