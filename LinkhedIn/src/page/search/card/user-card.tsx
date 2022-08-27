@@ -30,14 +30,14 @@ export default function UserCard(props: any) {
   }
 
   return (
-    <div className="user-card shadow">
+    <div className="user-card box">
       <div className="flex">
         <img onClick={handleClick} src={user.PhotoProfile} alt="" />
         <div className="text">
           <p>{user.name}</p>
           <form onSubmit={handleSubmit}>
             <div className="flex form-connect">
-              <input type="text" name="text" />
+              <input className="input-border" type="text" name="text" />
               <button type="submit">Connect</button>
             </div>
           </form>

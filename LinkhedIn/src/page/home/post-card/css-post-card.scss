@@ -96,6 +96,10 @@
   }
 
   .comment-container {
+    .comment-replies-load-more {
+      cursor: pointer;
+      font-size: 14px;
+    }
     .load-more {
       cursor: pointer;
       &:hover {

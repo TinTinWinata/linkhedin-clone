@@ -10,6 +10,7 @@ import emailjs from "emailjs-com";
 import MyGoogleLogin from "../../component/GoogleLogin/googleLogin";
 import UpdateProfile from "../../component/Popup/UpdateProfile/updateProfile";
 import Information from "./information/information";
+import MyGoogleRegister from "../../component/GoogleRegister/googleRegister";
 
 export default function Register() {
   const navigate = useNavigate();
@@ -44,6 +45,11 @@ export default function Register() {
       password: password,
     };
 
+    if (name === "" || email === "" || password === "") {
+      toastError("All fields cannot be empty!");
+      return;
+    }
+
     registerFunc({ variables: { input: input } })
       .then((resp) => {
         toastSuccess("Succesfully created user");
@@ -64,13 +70,13 @@ export default function Register() {
 
   return (
     <>
-      {handle ? <Information id={id}></Information> : ""}
+      {handle ? <Information id={id} mode={"not-google"}></Information> : ""}
       <div className="register-container">
         <div className="register-image"></div>
         <div className="register-form">
           <form onSubmit={handleSubmit} action="">
             <h2>Sign Up Your Account</h2>
-            <MyGoogleLogin></MyGoogleLogin>
+            <MyGoogleRegister></MyGoogleRegister>
             <div className="color-fg or-txt flex">
               <div className="my-border"></div>
               <p>or</p>

@@ -31,31 +31,34 @@ export default function Forgetpassword() {
   }
 
   return (
-    <div className="forget-password center">
-      <div className="container">
-        <form className="shadow" onSubmit={handleSubmit} action="">
-          <h1>Forget Password</h1>
-          <p>Reset password in two quick steps</p>
-          <input type="hidden" name="link" value="" />
-          <div className="flex flex-col">
-            <input
-              className="input-border"
-              placeholder="example@gmail.com"
-              type="text"
-              name="email"
-            />
-            <button type="submit">Reset Password</button>
-            <button
-              onClick={() => {
-                navigate("/login");
-              }}
-              className="backbtn"
-            >
-              Back
-            </button>
-          </div>
-        </form>
+    <>
+      <div className="h-min-max"></div>
+      <div className="forget-password center">
+        <div className="container">
+          <form className="box" onSubmit={handleSubmit} action="">
+            <h1>Forget Password</h1>
+            <p>Reset password in two quick steps</p>
+            <input type="hidden" name="link" value="" />
+            <div className="flex flex-col">
+              <input
+                className="input-border"
+                placeholder="example@gmail.com"
+                type="text"
+                name="email"
+              />
+              <button type="submit">Reset Password</button>
+              <button
+                onClick={() => {
+                  navigate("/login");
+                }}
+                className="backbtn"
+              >
+                Back
+              </button>
+            </div>
+          </form>
+        </div>
       </div>
-    </div>
+    </>
   );
 }

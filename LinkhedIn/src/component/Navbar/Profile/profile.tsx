@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
+import { useTheme } from "../../../hooks/themeContext";
 import { useUserAuth } from "../../../hooks/userContext";
 import LogoutButton from "../../LogoutButton/logout";
 
@@ -10,6 +11,8 @@ export default function Profile(props: any) {
   const { user } = useUserAuth();
   const navigate = useNavigate();
   const [isHover, setHover] = useState<boolean>(false);
+
+  const { changeTheme } = useTheme();
 
   function handleClick() {
     navigate("/profile/" + user.id);
@@ -35,7 +38,7 @@ export default function Profile(props: any) {
       </div>
 
       {isHover ? (
-        <div className="profile-hover bg-color-bg shadow">
+        <div className="profile-hover bg-color-bg box">
           <div className="flex">
             <img src={user.PhotoProfile} alt="" />
             <div className="header ml-2 mt-1">
@@ -49,6 +52,14 @@ export default function Profile(props: any) {
           <div className="nav-profile">
             <h3>Account</h3>
             <p className="color-invic">Setting</p>
+            <p
+              className="color-invic"
+              onClick={() => {
+                changeTheme();
+              }}
+            >
+              Change Theme
+            </p>
           </div>
           <div className="center">
             <div className="border mt-3 mb-2"></div>

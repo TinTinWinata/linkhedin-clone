@@ -12,6 +12,7 @@ import Network from "../page/network/network";
 import Notification from "../page/notification/notification";
 import Post from "../page/post/post";
 import Profile from "../page/profile/profile";
+import Information from "../page/register/information/information";
 import CreateRoom from "../page/room/createRoom";
 import { MyRoom } from "../page/room/myRoom";
 import { Room } from "../page/room/room";
@@ -52,6 +53,10 @@ export default function MiddlewareRoutes() {
         <Route path="/home" element={<Home />}></Route>
         <Route path="/profile/:id" element={<Profile />}></Route>
         <Route path="/create-job" element={<CreateJob />}></Route>
+        <Route
+          path="/information/:id"
+          element={<Information mode={"google"} />}
+        ></Route>
         <Route path="/post/:id" element={<Post />}></Route>
         <Route
           path="/room-create/:id/:time"

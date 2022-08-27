@@ -186,6 +186,7 @@ export default function Message() {
             <form onSubmit={handleSubmit}>
               <div className="flex">
                 <input
+                  className="input-border"
                   type="text"
                   onChange={(e) => {
                     setMessage(e.target.value);
@@ -193,7 +194,7 @@ export default function Message() {
                   value={message}
                 />
                 <button type="submit">Send</button>
-                <div className="center">
+                <div className="center mr-3">
                   <label htmlFor="input-image">
                     <FaImage className="image-icon"></FaImage>
                   </label>

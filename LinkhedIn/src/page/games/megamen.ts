@@ -1,26 +1,55 @@
-import { GET_BACKGROUND, GET_LAND, MEGAMEN_GET_RUN, MEGAMEN_CONF, MEGAMEN_GET_WALK, MEGAMENT_GET_JUMP, MEGAMEN_GET_BULLET, MEGAMEN_GET_SHOOT_PARTICLE, MEGAMEN_GET_SHOOT, GET_HEARTH, MEGAMEN_GET_PROFILE } from "./config";
+import { GET_BACKGROUND, GET_LAND, MEGAMEN_GET_RUN, MEGAMEN_CONF, MEGAMEN_GET_WALK, MEGAMENT_GET_JUMP, MEGAMEN_GET_BULLET, MEGAMEN_GET_SHOOT_PARTICLE, MEGAMEN_GET_SHOOT, GET_HEARTH, MEGAMEN_GET_PROFILE, ICEMAN_GET_IDLE, ICEMAN_CONF, ICEMAN_GET_BULLET, ICEMAN_GET_RUN, ICEMAN_GET_JUMP, ICEMAN_GET_SHOOT, ICEMAN_GET_PROFILE, GET_MUSIC } from "./config";
 
 
 export function runGame(canvas : any){
   const ctx = canvas.getContext("2d");
-  const width = canvas.width;
-  const height = canvas.width;
   let lastDate : any = new Date();
   let interval = 0;
   const fps = 60
   const gravity = 0.2;
   let keys : any= []
-  const INITIAL_HEALTH = 3;
+  const INITIAL_HEALTH = 10;
+  const music : any = document.getElementById("music")
+  const laser : any = document.getElementById("laser")
+  const kid : any = document.getElementById("kid")
+  const victory: any = document.getElementById("victory")
+  let pause = false;
+
+  const exit : any= document.getElementById("exit")
+  const winningText : any = document.getElementById("win-text")
+
+  // Disable Prevent Default Arrow
+
+  window.addEventListener("keydown", function(e) {
+    if(["Space","ArrowUp","ArrowDown","ArrowLeft","ArrowRight"].indexOf(e.code) > -1) {
+        e.preventDefault();
+    }
+  }, false);
+
+
+  // Audio
+
+  function playMusic(){
+    music?.play()
+    music.loop = true;
+  }
+
+  function stopMusic(){
+    music.pause()
+    victory.play()
+  }
 
   // Background
   class Background{
     sprite: any
     landSprite : any
     megamenProfile: any;
+    icemanProfile: any;
     constructor(){
       this.sprite = GET_BACKGROUND();
       this.landSprite = GET_LAND()
       this.megamenProfile = MEGAMEN_GET_PROFILE()
+      this.icemanProfile = ICEMAN_GET_PROFILE()
     }
     render(){
       // Render Background
@@ -32,6 +61,9 @@ export function runGame(canvas : any){
 
       // Render Megamen Profile
       ctx.drawImage(this.megamenProfile, 10,10, this.megamenProfile.width * 2, this.megamenProfile.height * 2)
+
+      // Render Iceman Profile
+      ctx.drawImage(this.icemanProfile, canvas.width- 150,20, this.icemanProfile.width * 2, this.icemanProfile.height * 2)
     }
   }
 
@@ -83,8 +115,8 @@ export function runGame(canvas : any){
       ctx.fillStyle = "red"
       ctx.fillRect(this.x, this.y, this.w, this.h)
     }
-
   }
+
 
   class Bullet{
     x: number;
@@ -94,17 +126,40 @@ export function runGame(canvas : any){
     state: number;
     spriteLength: number;
     bulletSpeed :number;
+    player:any
+    hit: boolean;
+    dead: boolean;
 
-    constructor(x: number, y: number, direction: number, sprite: any){
+    constructor(x: number, y: number, direction: number, sprite: any, spriteLength: number, player: any){
       this.x = x;
       this.y = y;
       this.direction = direction;
       this.sprite = sprite;
-      this.spriteLength = MEGAMEN_CONF.bullet
+      this.spriteLength = spriteLength
       this.state = 0;
       this.bulletSpeed = 5;
+      this.player = player;
+      this.hit = false;
+      this.dead = false;
     }
+
+    checkCollide(){
+      const w = this.sprite[0].width - 5
+      const h = 3;
+      const x = this.x + 5;
+      const y = this.y;
+
+      if(x + w >= this.player.x && x <= this.player.x + this.player.w && y + h >= this.player.y && y <= this.player.y + this.player.h)
+      {
+        this.hit = true;
+        console.log('hit')
+        this.player.minusHealth()
+      }
+    }
+
     logic(){
+      if(!this.hit)
+      this.checkCollide()
       if(this.direction === 1)
       this.x += this.bulletSpeed;
       else if(this.direction === -1)
@@ -210,11 +265,12 @@ export function runGame(canvas : any){
     heartObj : any;
     
 
+
     constructor(){
       this.health = INITIAL_HEALTH;
       this.heartObj = new Hearth(65, 50, 0.5, 2)
       this.x = 0
-      this.y = 0
+      this.y = canvas.height /2 
       this.sprite = MEGAMEN_GET_WALK()
       this.spriteState = 0;
       this.spriteLength = this.sprite.length;
@@ -228,8 +284,8 @@ export function runGame(canvas : any){
       this.speedX = 0.3; 
       this.jumpForce = 6;
       this.speedY = 1;
-      this.w = this.sprite[0].width;
-      this.h = this.sprite[0].height;
+      this.w = 50;
+      this.h = 40;
       this.isBackward = false;
       this.bullets = [];
       this.particles = [];
@@ -238,8 +294,34 @@ export function runGame(canvas : any){
       this.isShooting = false;
     }
 
+    
+    isDead(){
+      if(this.health <= 0)
+      {
+        winning("icemen")
+      }
+    }
+
+    checkDeathBullet(){
+      for(let i = 0;i < this.bullets.length; i++)
+      {
+        if(this.bullets[i].hit || this.bullets[i].dead)
+        {
+          this.bullets.splice(i, 1);
+        }
+      }
+    }
+
+    minusHealth(){
+      this.health -= 1;
+      this.isDead()
+    }
+
     shoot(){
       if(!this.canShoot()) return;
+
+      laser.currentTime = 0;
+      laser.play()
 
       this.velocityX = 0;
 
@@ -252,14 +334,14 @@ export function runGame(canvas : any){
       if(this.isBackward)
       {
         pos = this.x - 30
-        const bullet = new Bullet(this.x - 30, posY + 10 , -1, MEGAMEN_GET_BULLET())
+        const bullet = new Bullet(this.x - 30, posY + 10 , -1, MEGAMEN_GET_BULLET(), MEGAMEN_CONF.bullet, iceman)
         this.bullets.push(bullet);
         const particle = new MegamenExplode(pos, posY, -1)
         this.particles.push(particle)
       }else{
         pos = this.x + this.w  + 5;
 
-        const bullet = new Bullet(pos ,posY + 10, 1, MEGAMEN_GET_BULLET())
+        const bullet = new Bullet(pos ,posY + 10, 1, MEGAMEN_GET_BULLET(), MEGAMEN_CONF.bullet, iceman)
         this.bullets.push(bullet); 
         const particle = new MegamenExplode(pos, posY, 1)
         this.particles.push(particle)
@@ -337,7 +419,270 @@ export function runGame(canvas : any){
       }
     }
 
+
+    // Megamen Logic
     logic(){
+      this.checkDeathBullet()
+      if(this.velocityX >= this.maxSpeed)
+      this.velocityX = this.maxSpeed;
+      if(this.velocityX <= -this.maxSpeed){
+      this.velocityX = - this.maxSpeed
+      }
+      if(collider.isCollide(this.x + this.w / 2, this.y  + this.h + this.velocityY ))
+      {
+        this.velocityY = 0;
+      }else{
+        this.velocityY += gravity;
+      }
+
+      if(isExistsMap(this.x + this.velocityX, this.y + this.h / 2) || isExistsMap(this.x + this.velocityX + this.w, this.y + this.h / 2))
+      {
+        this.velocityX = 0;
+      }
+
+      this.checkState()
+
+      this.x += this.velocityX;
+      this.y += this.velocityY;
+
+      this.canShoot()
+    }
+
+    canShoot(){
+      if(this.tempDelay >= this.shootingDelay)
+      {
+        this.isShooting = false;
+        return true;
+      }
+      this.tempDelay += 1;
+      return false;
+    }
+
+    checkState(){
+      if(this.isShooting){
+        this.changeState("shoot")
+      }
+      else if(!this.isGrounded()){
+        this.changeState("jump")
+      }
+      else if(this.velocityX === 0){
+        this.changeState("idle");
+      }else{
+        this.changeState("run")
+      }
+    }
+      
+    render(){
+      this.logic()
+      const state = this.spriteState % this.spriteLength;
+
+      if(this.isBackward){
+        ctx.save();
+        ctx.translate(this.x + this.sprite[state].width / 2, this.y + this.sprite[state].height / 2) 
+        ctx.scale(-1, 1);
+        ctx.drawImage(this.sprite[state], -this.sprite[0].width / 2, -this.sprite[0].height/2, this.sprite[0].width, this.sprite[0].height)
+        ctx.restore()
+      }else{
+        ctx.scale(1, 1);
+        ctx.drawImage(this.sprite[state], this.x,this.y)
+      }
+      this.incrementState()
+
+      // Render Bullet
+      this.bullets.forEach((bullet : any)=>{
+        bullet.render()
+      })
+
+      // Render Particles
+      this.particles.forEach((particle: any)=>{
+        particle.render()
+      })
+
+      // Render Hearth
+      this.heartObj.render(this.health)
+    }
+  }
+
+  class Iceman{
+    sprite : any
+    spriteState: number
+    conf : any
+    spriteSlow : any;
+    tempSlow: number;
+    velocityX : number;
+    velocityY : number;
+    maxSpeed : number;
+    speedX : number;
+    speedY: number;
+    x : number;
+    y : number;
+    w: number;
+    h: number;
+    jumpForce: number;
+    spriteLength: number;
+    isBackward: boolean;
+    state: string;
+    bullets: any;
+    particles: any;
+    shootingDelay :number;
+    tempDelay: number;
+    isShooting: boolean;
+    health: number;
+    heartObj : any;
+    
+
+    constructor(){
+      this.health = INITIAL_HEALTH;
+      const margin=  2; 
+      this.heartObj = new Hearth(canvas.width - 200, 50, 0.5, margin)
+      this.x = canvas.width - 60
+      this.y = canvas.height /2 
+      this.sprite = ICEMAN_GET_IDLE()
+      this.spriteState = 0;
+      this.spriteLength = this.sprite.length;
+      this.conf = ICEMAN_CONF;
+      this.spriteSlow = 60;
+      this.state = "idle"
+      this.tempSlow = 0;
+      this.velocityX = 0;
+      this.velocityY = 0;
+      this.maxSpeed = 2;
+      this.speedX = 0.3; 
+      this.jumpForce = 6;
+      this.speedY = 1;
+      this.w = 50;
+      this.h = 40;
+      this.isBackward = true;
+      this.bullets = [];
+      this.particles = [];
+      this.shootingDelay = 30;
+      this.tempDelay = 0;
+      this.isShooting = false;
+    }
+
+    isDead(){
+      if(this.health <= 0)
+      {
+        winning("megamen")
+      }
+    }
+
+    checkDeathBullet(){
+      for(let i = 0;i < this.bullets.length; i++)
+      {
+        if(this.bullets[i].hit || this.bullets[i].dead)
+        {
+          this.bullets.splice(i, 1);
+        }
+      }
+    }
+
+    minusHealth(){
+      this.health -= 1;
+      this.isDead()
+    }
+
+    shoot(){
+      if(!this.canShoot()) return;
+
+
+      kid.currentTime = 0;
+      kid.play()
+
+      this.velocityX = 0;
+
+      this.tempDelay = 0;
+      this.isShooting = true;
+
+      let pos : number;
+      let posY = this.y + 3;
+      this.changeState("shoot")
+      if(this.isBackward)
+      {
+        pos = this.x - 30
+        const bullet = new Bullet(this.x - 30, posY + 10 , -1, ICEMAN_GET_BULLET(), ICEMAN_CONF.bullet, megamen)
+        this.bullets.push(bullet);
+      }else{
+        pos = this.x + this.w  + 5;
+
+        const bullet = new Bullet(pos ,posY + 10, 1, ICEMAN_GET_BULLET(), ICEMAN_CONF.bullet, megamen)
+        this.bullets.push(bullet); 
+      }
+    }
+
+    isGrounded(){
+      if(collider.isCollide(this.x + this.w / 2, this.y + this.h + gravity)){
+        return true;
+      }else{
+        return false;
+      }
+    }
+
+    checkW(){
+      if(this.state === "jump") return;
+    }
+
+    changeState(str : string){
+      switch (str){
+        case "idle":
+        this.sprite = ICEMAN_GET_IDLE()
+        this.spriteLength = this.conf.idle;
+        this.spriteSlow = 60;
+        this.state = "idle"
+        break;
+        case "run":
+        this.sprite = ICEMAN_GET_RUN()
+        this.spriteLength = this.conf.run;
+        this.spriteSlow = 4;
+        this.state = "run"
+        break;
+        case "jump":
+        this.sprite = ICEMAN_GET_JUMP()
+        this.spriteLength = this.conf.jump;
+        this.spriteSlow = 1;
+        this.state = "jump";
+        break;
+        case "shoot":
+        this.sprite = ICEMAN_GET_SHOOT()
+        this.spriteLength = this.conf.shoot;
+        this.spriteSlow = 60;
+        this.state = "shoot"
+        break;
+      }
+      this.checkW();
+    }
+
+    incrementState(){
+       if(this.tempSlow >= this.spriteSlow)
+       {
+         this.tempSlow = 0;
+         this.spriteState += 1;
+        }
+        this.tempSlow += 1;
+      }
+
+    move(str : string, velocity: number){
+      if(str === "left" && !collider.isCollide(this.x + velocity, this.y + this.h / 2))
+      {
+        if(this.isShooting) return;
+        this.isBackward = true;
+        this.velocityX = velocity;
+      }else if (str === "right" && !collider.isCollide(this.x + this.w + velocity, this.y + this.h / 2))
+      {
+        if(this.isShooting) return;
+        this.isBackward = false;
+        this.velocityX = velocity;
+      }else if(str === "up")
+      {
+        this.velocityY = velocity;
+      }else if(str === "down")
+      {
+        this.velocityY = velocity;
+      }
+    }
+
+    logic(){
+      this.checkDeathBullet()
       if(this.velocityX >= this.maxSpeed)
       this.velocityX = this.maxSpeed;
       if(this.velocityX <= -this.maxSpeed){
@@ -426,6 +771,9 @@ export function runGame(canvas : any){
     if(e.key === 'e'){
       megamen.shoot()
     }
+    if(e.key === 'Enter'){
+      iceman.shoot()
+    }
   })
 
   document.addEventListener('keydown', (e : any)=>{
@@ -433,6 +781,10 @@ export function runGame(canvas : any){
     if(e.key === 'w'){
       if(megamen.isGrounded())
       megamen.velocityY -= megamen.jumpForce;
+    }
+    if(e.key === 'ArrowUp'){
+      if(iceman.isGrounded())
+      iceman.velocityY -= iceman.jumpForce;
     }
   })
   document.addEventListener('keyup', (e : any)=>{
@@ -450,6 +802,18 @@ export function runGame(canvas : any){
     }else{
       return true;
     }
+  }
+
+  function winning(str : string){
+    pause = true;
+    stopMusic()
+    if(str === "megamen")
+    {
+      winningText.innerHTML = "Player One Win"
+    }else{
+      winningText.innerHTML = "Player Two Win"
+    }
+    exit.style.display = "block"
   }
 
   function getDeltaTime() {
@@ -482,23 +846,37 @@ export function runGame(canvas : any){
     }else{
       megamen.velocityX = 0;
     }
+    if(keys['ArrowLeft'])
+    {
+      iceman.move("left", iceman.velocityX - iceman.speedX)
+    }else if(keys['ArrowRight'])
+    {
+      // ctx.restore();
+      iceman.move("right", iceman.velocityX + iceman.speedX)
+    }else{
+      iceman.velocityX = 0;
+    }
   }
 
   // Create Instance
   const background = new Background()
   const megamen = new Megamen()
+  const iceman = new Iceman()
   const collider = new Collider()
 
-
+  playMusic()
   render();
 
   function render(){  
     requestAnimationFrame(render)
+    if(!pause)
     checkKeys()
-    if(isRun()){
+    if(isRun() && !pause){
       ctx.clearRect(0,0, canvas.width, canvas.height0)
       background.render()
       megamen.render()
+      iceman.render()
+      // collider.render()
     }
   }
     

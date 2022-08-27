@@ -1,11 +1,12 @@
 .navbar {
-  width: 100%;
   .nav-border {
     border-bottom: 2px solid black;
   }
   .container {
     display: flex;
     justify-content: space-around;
+    max-width: var(--xl-max-width);
+    width: 100%;
   }
 
   img {

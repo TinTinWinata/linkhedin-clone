@@ -7,7 +7,7 @@ export default function Advertisement() {
   return (
     <div className="advertisement">
       <a href="https://www.linkedin.com/jobs/?trk=li_FA_global_careers_jobsgtm_jsFA_v1&mcid=6899045044465016833">
-        <img className="shadow" src="/ads.png" alt="" />
+        <img className="box" src="/ads.png" alt="" />
       </a>
     </div>
   );

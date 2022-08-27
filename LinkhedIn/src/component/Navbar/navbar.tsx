@@ -8,6 +8,7 @@ import {
   FaTelegram,
 } from "react-icons/fa";
 import { Link, useNavigate } from "react-router-dom";
+import { useTheme } from "../../hooks/themeContext";
 import { useUserAuth } from "../../hooks/userContext";
 import LogoutButton from "../LogoutButton/logout";
 import Menu from "./Menu/menu";
@@ -18,6 +19,8 @@ export default function Navbar() {
   const { user } = useUserAuth();
   const navigate = useNavigate();
 
+  const { isDark } = useTheme();
+
   function onSearch(e: any) {
     e.preventDefault();
     const search = e.target.search.value;
@@ -25,7 +28,7 @@ export default function Navbar() {
   }
 
   return (
-    <div className="navbar shadow center-x">
+    <div className="navbar box center-x">
       <div className="container">
         <div className="left">
           <div className="center">
@@ -33,7 +36,7 @@ export default function Navbar() {
               onClick={() => {
                 navigate("/home");
               }}
-              src="/logo.png"
+              src={isDark() ? "/logo_secondary.png" : "/logo.png"}
               alt="Logo"
             />
           </div>

@@ -42,6 +42,7 @@ export default function PostRichText({
   }
 
   function handleMouseEnter(name: string) {
+    console.log("handling");
     refetch({ id: name }).then((resp) => {
       const data = resp.data.user;
       setUser(data);
@@ -52,7 +53,7 @@ export default function PostRichText({
   return (
     <>
       {open ? (
-        <div className="rich-hover-tag shadow">
+        <div className="rich-hover-tag box">
           {loading ? (
             <ReactLoading
               className="loading-react-loading"
@@ -64,7 +65,7 @@ export default function PostRichText({
           ) : (
             <>
               <div className="flex">
-                <img src={queriedUser.PhotoProfile} alt="" />
+                <img id="image" src={queriedUser.PhotoProfile} alt="" />
                 <p className="ml-2 color-fg">{queriedUser.name}</p>
               </div>
               <p className="color-invic">{queriedUser.email}</p>

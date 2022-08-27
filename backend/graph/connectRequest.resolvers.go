@@ -53,6 +53,7 @@ func (r *mutationResolver) AcceptRequest(ctx context.Context, id string) (string
 		if val == getUser.ID {
 			user.RequestConnect = helper.RemoveArrayByIndex(user.RequestConnect, i)
 			user.RequestConnectTxt = helper.RemoveArrayByIndex(user.RequestConnectTxt, i)
+			break
 		}
 	}
 

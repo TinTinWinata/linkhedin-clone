@@ -14,11 +14,11 @@ export default function UserMightKnow() {
   }
 
   if (data.userSuggestion.length === 0) {
-    return;
+    return <></>;
   }
 
   return (
-    <div className="shadow container user-might-know">
+    <div className="box container user-might-know">
       <h2 className="color-first header">User Might be Know</h2>
       <div className="user-container">
         {data.userSuggestion.map((user: any, idx: any) => {

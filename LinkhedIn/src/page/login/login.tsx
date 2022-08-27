@@ -65,7 +65,7 @@ export default function Login() {
   return (
     <>
       <div className="flex flex-col login-container">
-        <form onSubmit={handleSubmit} action="" className="shadow">
+        <form onSubmit={handleSubmit} action="" className="box">
           <h1>Sign In</h1>
           <p>Stay updated on your professional world</p>
           <input name="email" placeholder="Email" type="email" />

@@ -85,7 +85,7 @@ export default function Comment(props: any) {
       <div className="comment-container">
         <p id="my-10 comment-text">Comments</p>
         {data &&
-          comments.map((comment: any, idx : any) => {
+          comments.map((comment: any, idx: any) => {
             return (
               <CommentList
                 idx={idx}

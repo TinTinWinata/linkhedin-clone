@@ -39,7 +39,7 @@ export default function CreateJob() {
     <div className="center">
       <div className="create-job-container">
         <div className="flex flex-col">
-          <form onSubmit={handleSubmit} className="shadow" action="">
+          <form onSubmit={handleSubmit} className="box" action="">
             <div className="flex flex-col">
               <h3>Create Job</h3>
               <label htmlFor="">Title</label>

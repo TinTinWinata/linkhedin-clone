@@ -26,19 +26,6 @@ func (r *mutationResolver) SendPost(ctx context.Context, id string) (string, err
 	return "Ok", r.DB.Save(post).Error
 }
 
-// LikePost is the resolver for the likePost field.
-func (r *mutationResolver) LikePost(ctx context.Context, id string) (string, error) {
-	var post *model.Post
-	err := r.DB.First(&post, "id = ?", id).Error
-
-	if err != nil {
-		return "Error", err
-	}
-
-	post.Likes = post.Likes + 1
-	return "Ok", r.DB.Save(post).Error
-}
-
 // CreatePost is the resolver for the createPost field.
 func (r *mutationResolver) CreatePost(ctx context.Context, input model.NewPost) (string, error) {
 	model := &model.Post{
@@ -59,6 +46,14 @@ func (r *mutationResolver) CreatePost(ctx context.Context, input model.NewPost) 
 func (r *postResolver) User(ctx context.Context, obj *model.Post) (*model.User, error) {
 	var user *model.User
 	return user, r.DB.First(&user, "id = ?", obj.UserID).Error
+}
+
+// Likes is the resolver for the likes field.
+func (r *postResolver) Likes(ctx context.Context, obj *model.Post) (int, error) {
+	var model *model.PostLike
+	var count int64
+	r.DB.First(&model, "post_id = ? AND is_like = true", obj.ID).Count(&count)
+	return int(count), nil
 }
 
 // Hashtag is the resolver for the Hashtag field.
@@ -90,7 +85,7 @@ func (r *queryResolver) PostInfinity(ctx context.Context, limit int, offset int)
 
 	var models []*model.Post
 
-	err = r.DB.Raw("select p.hashtag, p.id, p.text, p.user_id, p.attachment_link, p.likes, p.sends, p.comments, p.created_at from posts p inner join users u on p.user_id = cast(u.id as text) where p.user_id = any (select unnest(followed_user)  from users where users.id = ? union select unnest(connected_user)  from users where users.id = ? union select cast(? as text)) ORDER BY p.created_at ASC LIMIT ? OFFSET ?", val.ID, val.ID, val.ID, limit, offset).Scan(&models).Error
+	err = r.DB.Raw("select p.hashtag, p.id, p.text, p.user_id, p.attachment_link, p.likes, p.sends, p.comments, p.created_at from posts p inner join users u on p.user_id = cast(u.id as text) where p.user_id = any (select unnest(followed_user)  from users where users.id = ? union select unnest(connected_user)  from users where users.id = ? union select cast(? as text)) ORDER BY p.created_at DESC LIMIT ? OFFSET ?", val.ID, val.ID, val.ID, limit, offset).Scan(&models).Error
 
 	if err != nil {
 		return nil, err
@@ -109,13 +104,3 @@ func (r *queryResolver) GetAllHashtag(ctx context.Context) ([]string, error) {
 func (r *Resolver) Post() generated.PostResolver { return &postResolver{r} }
 
 type postResolver struct{ *Resolver }
-
-// !!! WARNING !!!
-// The code below was going to be deleted when updating resolvers. It has been copied here so you have
-// one last chance to move it out of harms way if you want. There are two reasons this happens:
-//  - When renaming or deleting a resolver the old code will be put in here. You can safely delete
-//    it when you're done.
-//  - You have helper methods in this file. Move them out to keep these resolver files clean.
-func (r *postResolver) AttachmentType(ctx context.Context, obj *model.Post) (string, error) {
-	return obj.AttachmentType, nil
-}

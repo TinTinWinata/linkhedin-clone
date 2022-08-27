@@ -1,26 +1,29 @@
-.footer{
+.footer {
   padding-top: 50px;
   padding-bottom: 100px;
-  img{
+  img {
     width: 200px;
   }
-  .center{
+  .center {
     width: 100%;
   }
 
-  .footer-border{
+  .footer-border {
   }
 
-  .border{
-    
+  .border {
   }
-  .link{
+  .link {
+    .color-first + .color-first {
+      margin-left: 20px;
+    }
+
     width: 50%;
     margin-top: 30px;
     display: flex;
     justify-content: space-around;
   }
-  .copyright{
+  .copyright {
     font-size: 13px;
   }
 }

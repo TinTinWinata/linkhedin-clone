@@ -14,6 +14,8 @@ export default function CommentList(props: any) {
   const [showInput, setShowInput] = useState<boolean>(false);
   const [repliesFunc] = useMutation(REPLY_COMMENT_QUERY);
   const { user } = useUserAuth();
+  const [replyLimit, setReplyLimit] = useState<number>(3);
+  const [hasMore, setHashMore] = useState<boolean>();
 
   const [likeFunc] = useMutation(LIKE_COMMENT_QUERY);
 
@@ -53,6 +55,16 @@ export default function CommentList(props: any) {
       });
   }
 
+  function loadReplyMore() {
+    const now = replyLimit + 3;
+    if (comment.Replies.length < now) {
+      setHashMore(false);
+    }
+    setReplyLimit((prev) => {
+      return prev + 3;
+    });
+  }
+
   function handleLikeComment() {
     likeFunc({ variables: { commentId: comment.ID } })
       .then(() => {
@@ -80,8 +92,8 @@ export default function CommentList(props: any) {
           <div className="center" id="comment-text">
             <div className="flex flex-col">
               <p>{comment.User.name}</p>
-              {/* <PostRichText index={props.idx}>{comment.Text}</PostRichText> */}
-              <p id="comment-value">{comment.Text}</p>
+              <PostRichText index={props.idx}>{comment.Text}</PostRichText>
+              {/* <p id="comment-value">{comment.Text}</p> */}
             </div>
           </div>
         </div>
@@ -91,7 +103,7 @@ export default function CommentList(props: any) {
             <form
               onSubmit={handleOnSubmit}
               action=""
-              className="flex submit-reply shadow"
+              className="flex submit-reply box"
             >
               <input type="text" className="ml-3 " name="replies" />
               <button className="ml-2" type="submit">
@@ -104,10 +116,14 @@ export default function CommentList(props: any) {
         </div>
       </div>
       <div className="comment-replies">
-        {comment.Replies.map((reply: any) => {
+        {comment.Replies.map((reply: any, idx: number) => {
+          if (idx >= replyLimit) {
+            if (!hasMore) setHashMore(true);
+            return;
+          }
           return (
             <div key={reply.ID} className="bg-color-bd the-comment-reply flex">
-              <p>{reply.Text}</p>
+              <PostRichText index={idx}>{reply.Text}</PostRichText>
               <p className="color-invic ml-1">{"@" + reply.User.name}</p>
               <div className="center">
                 <img className="ml-1" src={reply.User.PhotoProfile} alt="" />
@@ -115,6 +131,16 @@ export default function CommentList(props: any) {
             </div>
           );
         })}
+        {hasMore ? (
+          <p
+            className="color-first comment-replies-load-more"
+            onClick={loadReplyMore}
+          >
+            Load More
+          </p>
+        ) : (
+          ""
+        )}
       </div>
     </div>
   );

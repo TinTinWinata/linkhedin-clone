@@ -4,6 +4,7 @@ import React, { useEffect } from "react";
 import GoogleLogin from "react-google-login";
 import { useNavigate } from "react-router-dom";
 import { toastError } from "../../config/toast";
+import { useLoading } from "../../hooks/loadingContext";
 import { useUserAuth } from "../../hooks/userContext";
 import { GOOGLE_QUERY } from "../../query/google";
 import "./googleLogin.scss";
@@ -13,6 +14,7 @@ export default function MyGoogleLogin() {
   const googleKey = import.meta.env.VITE_GOOGLE_API_KEY;
   const myGoogleKey = import.meta.env.VITE_MY_GOOGLE_KEY;
   const navigate = useNavigate();
+  const { setLoading } = useLoading();
 
   const { update } = useUserAuth();
   const [googleFunc] = useMutation(GOOGLE_QUERY);
@@ -45,21 +47,29 @@ export default function MyGoogleLogin() {
       },
     })
       .then((resp) => {
+        setLoading(false);
         const user = resp.data.google;
         update(user);
         navigate("/home");
       })
       .catch((err) => {
+        setLoading(false);
         toastError(err.message);
       });
   }
 
   function onFailure(resp: any) {
+    setLoading(false);
     toastError("Failed to login with google");
   }
 
   return (
-    <div className="google-sign-in">
+    <div
+      onClick={() => {
+        setLoading(true);
+      }}
+      className="google-sign-in"
+    >
       <GoogleLogin
         className="google"
         clientId={googleClientID}

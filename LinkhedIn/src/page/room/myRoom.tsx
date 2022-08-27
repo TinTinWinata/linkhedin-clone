@@ -20,14 +20,14 @@ import NotExists from "./notexists/notexists";
 import Waiting from "./waiting/waiting";
 
 // Initialize WebRTC
-  const servers = {
-    iceServers: [
-      {
-        urls: ["stun:stun1.l.google.com:19302", "stun:stun2.l.google.com:19302"],
-      },
-    ],
-    iceCandidatePoolSize: 10,
-  };
+const servers = {
+  iceServers: [
+    {
+      urls: ["stun:stun1.l.google.com:19302", "stun:stun2.l.google.com:19302"],
+    },
+  ],
+  iceCandidatePoolSize: 10,
+};
 
 export function MyRoom() {
   const pc = new RTCPeerConnection(servers);
@@ -205,7 +205,7 @@ export function MyRoom() {
       if (pathname === "/create-room") {
         window.location.reload();
       } else {
-        navigate("/home");
+        window.location.replace("/home");
       }
     }
   };

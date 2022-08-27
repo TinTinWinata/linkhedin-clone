@@ -1,11 +1,16 @@
 import { useQuery } from "@apollo/client";
-import React from "react";
+import React, { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { FIND_JOB_QUERY } from "../../query/job";
 import "./job.scss";
 
 export default function Job() {
-  const { data } = useQuery(FIND_JOB_QUERY);
+  const { data, refetch } = useQuery(FIND_JOB_QUERY);
+
+  useEffect(() => {
+    refetch();
+  }, []);
+
   const navigate = useNavigate();
 
   function handleCreate() {
@@ -18,7 +23,7 @@ export default function Job() {
 
   return (
     <div className="center-x h-min-max">
-      <div className="job-container shadow">
+      <div className="job-container box">
         <div className="flex job-header-text">
           <h2 className="mb-3 color-first jobs-offer">Jobs Offer</h2>
           <button onClick={handleCreate} id="create-job-btn">

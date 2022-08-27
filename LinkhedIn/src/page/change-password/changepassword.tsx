@@ -36,31 +36,34 @@ export default function ChangePassword() {
   }
 
   return (
-    <div className="forget-password center">
-      <div className="container">
-        <form className="shadow" onSubmit={handleSubmit} action="">
-          <h1>Change Password</h1>
-          <p>Please remember your password!</p>
-          <input type="hidden" name="link" value="" />
-          <div className="flex flex-col">
-            <label htmlFor="">Password</label>
-            <input
-              className="input-border"
-              placeholder="*******************"
-              type="password"
-              name="password"
-            />
-            <label htmlFor="">Confirm Password</label>
-            <input
-              className="input-border"
-              placeholder="*******************"
-              type="password"
-              name="confirmpassword"
-            />
-            <button type="submit">Change Password</button>
-          </div>
-        </form>
+    <>
+      <div className="h-min-max"></div>
+      <div className="forget-password center">
+        <div className="container">
+          <form className="box" onSubmit={handleSubmit} action="">
+            <h1>Change Password</h1>
+            <p>Please remember your password!</p>
+            <input type="hidden" name="link" value="" />
+            <div className="flex flex-col">
+              <label htmlFor="">Password</label>
+              <input
+                className="input-border"
+                placeholder="*******************"
+                type="password"
+                name="password"
+              />
+              <label htmlFor="">Confirm Password</label>
+              <input
+                className="input-border"
+                placeholder="*******************"
+                type="password"
+                name="confirmpassword"
+              />
+              <button type="submit">Change Password</button>
+            </div>
+          </form>
+        </div>
       </div>
-    </div>
+    </>
   );
 }

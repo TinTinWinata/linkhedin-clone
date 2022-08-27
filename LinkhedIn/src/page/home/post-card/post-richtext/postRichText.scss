@@ -2,10 +2,12 @@ a {
   margin: 0px;
   width: fit-content;
   color: rgb(0, 136, 255);
+  margin-right: 5px;
 }
 .richat {
   color: rgb(0, 136, 255);
   display: inline-block;
+  margin-right: 5px;
   cursor: pointer;
 }
 
@@ -16,7 +18,7 @@ a {
   background-color: white;
   right: -30px;
   border-radius: 10px;
-  img {
+  #image {
     width: 20px;
     height: 20px;
     border-radius: 20px;
@@ -24,6 +26,7 @@ a {
 }
 
 .richhashtag {
+  margin-right: 5px;
   color: rgb(52, 52, 52);
   background-color: rgb(202, 202, 202);
   display: inline-block;

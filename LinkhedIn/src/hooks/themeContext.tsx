@@ -2,11 +2,13 @@ import { createContext, useContext, useEffect, useState } from "react";
 
 const ThemeContext = createContext({} as any);
 
-export default function ThemeProvider({ children } : {children: any}) {
-  const [currTheme, setTheme] = useState('light');
+export default function ThemeProvider({ children }: { children: any }) {
+  const [currTheme, setTheme] = useState("light");
 
   const changeTheme = () => {
-    setTheme((prev)=>{return prev === "light" ? "dark" : "light"})
+    setTheme((prev) => {
+      return prev === "light" ? "dark" : "light";
+    });
   };
 
   const isDark = () => {
@@ -17,10 +19,9 @@ export default function ThemeProvider({ children } : {children: any}) {
     }
   };
 
-
   return (
     <ThemeContext.Provider value={{ currTheme, changeTheme, isDark }}>
-        {children}
+      {children}
     </ThemeContext.Provider>
   );
 }

@@ -30,7 +30,10 @@ export default function SendMessageButton(props: any) {
         ""
       )}
       {isValid() ? (
-        <div className="send-message-button" onClick={handleClick}>
+        <div
+          className="second-button send-message-button mr-5"
+          onClick={handleClick}
+        >
           Send Message
         </div>
       ) : (

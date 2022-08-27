@@ -6,7 +6,6 @@ package graph
 import (
 	"context"
 	"errors"
-	"fmt"
 
 	my_auth "github.com/TinTinWinata/gqlgen/auth"
 	"github.com/TinTinWinata/gqlgen/graph/generated"
@@ -184,7 +183,6 @@ func (r *mutationResolver) Login(ctx context.Context, email string, password str
 
 // Register is the resolver for the register field.
 func (r *mutationResolver) Register(ctx context.Context, input model.NewUser) (interface{}, error) {
-
 	return my_auth.UserRegister(ctx, input)
 }
 
@@ -379,16 +377,3 @@ func (r *Resolver) User() generated.UserResolver { return &userResolver{r} }
 type mutationResolver struct{ *Resolver }
 type queryResolver struct{ *Resolver }
 type userResolver struct{ *Resolver }
-
-// !!! WARNING !!!
-// The code below was going to be deleted when updating resolvers. It has been copied here so you have
-// one last chance to move it out of harms way if you want. There are two reasons this happens:
-//  - When renaming or deleting a resolver the old code will be put in here. You can safely delete
-//    it when you're done.
-//  - You have helper methods in this file. Move them out to keep these resolver files clean.
-func (r *queryResolver) UserButValidatedBlocked(ctx context.Context, id string) (*model.User, error) {
-	panic(fmt.Errorf("not	 implemented: UserButValidatedBlocked - userButValidatedBlocked"))
-}
-func (r *mutationResolver) UnblockUser(ctx context.Context, id string) (string, error) {
-	panic(fmt.Errorf("not implemented: UnblockUser - unblockUser"))
-}

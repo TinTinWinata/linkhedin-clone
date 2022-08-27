@@ -75,7 +75,6 @@ export function findAtTags(searchText : string) {
 }
 
 export function isAFirebaseImage(url: string){
-  console.log('url : ', url)
   if(url.includes("https://firebasestorage"))
   return true;
   else return false;
@@ -106,14 +105,12 @@ export function addString(str: string, idx : number, add: string){
 export function appendDivString(str: string, idx : number,end:number, div: string, lastDiv : string){
   const len = div.length;
   str =  str.slice(0, idx) + div + str.slice(idx);
-  str = str.slice(0, len + end)  + lastDiv + str.slice(len + end) ;
+  str = str.slice(0, len + end - 1)  + lastDiv + str.slice(len + end ) ;
   return str;
  }
 
 export function RichTextPost(str : string, idx : any){
-  const at = "@";
   for(let i=0;i<str.length;i++){
-    // console.log(i)
     if(i >= 500)
     {
       toastError("There are error in loading data!")
@@ -124,6 +121,7 @@ export function RichTextPost(str : string, idx : any){
       for(let j=i;j<str.length;j++){
         if(j != i)
         text += str.charAt(j)
+        text = text.trim()
         if(str.charAt(j) == ' ' || j == str.length - 1){
           const div = `<a href="/profile/${text}" value="${text}" id="rich-tag${"-" + idx}" class='richat ri-class-${idx}'>`
           const endDiv = '</a>'

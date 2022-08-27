@@ -17,7 +17,7 @@ export default function Request() {
 
   return (
     <div className="network-request">
-      <div className="shadow container">
+      <div className="box container">
         <h2 className="color-first header">Request List</h2>
         {user.RequestConnect && user.RequestConnect.length == 0 ? (
           <p className="no-have-request">You don't have any request yet</p>
@@ -28,7 +28,7 @@ export default function Request() {
           ? user.RequestConnect.map((req: any, idx: any) => {
               return (
                 <RequestPeople
-                  key={req}
+                  key={idx}
                   id={req}
                   text={user.RequestConnectTxt[idx]}
                 ></RequestPeople>

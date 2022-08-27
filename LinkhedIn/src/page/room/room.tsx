@@ -187,6 +187,7 @@ export function Room({ mode, callId }: { mode: any; callId: any }) {
   const hangUp = async () => {
     pc.close();
     if (roomId) {
+      console.log("keluar");
       const roomRef = doc(db, "calls", roomId);
       deleteDoc(roomRef);
       const pathname = window.location.pathname;

@@ -52,6 +52,7 @@ export default function CreatePost(props: any) {
 
     // Find Hashtag
     let hashtag = findHashtags(value);
+
     // Filtering Duplicates (Select Distinct)
     hashtag = [...new Set(hashtag)];
 
@@ -162,7 +163,7 @@ export default function CreatePost(props: any) {
         <div className="input-post">
           {showHome ? <ShowOnHome>{filteringAtMention(value)}</ShowOnHome> : ""}
 
-          <Input value={value} setValue={setValue}></Input>
+          <Input setShow={setShow} value={value} setValue={setValue}></Input>
         </div>
         <div className="flex flex-col">
           {img && type === "image" ? (

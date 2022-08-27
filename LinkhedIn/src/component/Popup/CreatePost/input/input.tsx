@@ -10,6 +10,7 @@ import ShowOnHome from "../showOnHome/showOnHome";
 
 export default function Input(props: any) {
   const { data } = useQuery(GET_USER_QUERY);
+  const setShow = props.setShow;
   const [users, setUsers] = useState([]);
   const [hashtag, setHashtag] = useState([]);
   const hashtagData = useQuery(GET_HASHTAG_QUERY);
@@ -43,6 +44,7 @@ export default function Input(props: any) {
       className="mention-input"
       value={value}
       onChange={(e: any) => {
+        setShow(false);
         setValue(e.target.value);
       }}
     >

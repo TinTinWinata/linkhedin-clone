@@ -29,6 +29,7 @@ export default function Profile() {
   const { user } = useUserAuth();
   const { setLoading } = useLoading();
   const { refetchUser } = useRefetch();
+  const navigate = useNavigate();
 
   const { data, error, refetch } = useQuery(FIND_USER_QUERY, {
     variables: { id: id },
@@ -43,19 +44,35 @@ export default function Profile() {
   const renderPdf = useRef<any>();
 
   if (!data) {
-    return <></>;
+    return (
+      <>
+        <div className="profile-notfound center h-min-max">
+          <div className="flex flex-col">
+            <h1>Profile not found!</h1>
+            <button
+              onClick={() => {
+                navigate("/home");
+              }}
+            >
+              Back to Menu
+            </button>
+          </div>
+        </div>
+      </>
+    );
   }
 
   function handleBlock() {
     blockFunc({ variables: { id: id } }).then((resp) => {
       toastSuccess(resp.data.blockUser);
+      refetchUser();
     });
   }
 
   function handleFollow() {
     followFunc({ variables: { id: id } })
       .then((resp) => {
-        toastSuccess("Succesfully follow " + data.user.name);
+        refetchUser();
       })
       .catch((err) => {
         toastError(err.message);
@@ -69,6 +86,7 @@ export default function Profile() {
   function handleConnect() {
     connectFunc({ variables: { id: id, text: "" } })
       .then((resp) => {
+        refetchUser();
         toastSuccess("Succesfully send request to " + data.user.name);
       })
       .catch((err) => {
@@ -148,8 +166,6 @@ export default function Profile() {
 
   function handlePDF() {}
 
-  if (data) console.log(data.user);
-
   return (
     <>
       {updateHandle ? (
@@ -163,7 +179,7 @@ export default function Profile() {
       <div className="h-min-max">
         <div id="pdf-here" className="center flex-col">
           <div ref={renderPdf} className="profile-center-container">
-            <div className="profile-container shadow">
+            <div className="profile-container box">
               <div className="description">
                 <label htmlFor="input-file">
                   <img
@@ -200,7 +216,9 @@ export default function Profile() {
                       className="ml-2"
                       user={data.user}
                     ></SendMessageButton>
-                    <button onClick={handleBlock}>Block</button>
+                    <button onClick={handleBlock}>{user.BlockedUser.includes(data.user.id)
+                        ? "Unblock"
+                        : "Block"}</button>
                   </>
                 )}
                 <Pdf
@@ -216,7 +234,13 @@ export default function Profile() {
 
                 {data && user.id !== data.user.id ? (
                   <>
-                    <button onClick={handleFollow}>Follow</button>
+                    {console.log(user.FollowedUser)}
+                    <button onClick={handleFollow}>
+                      {user.FollowedUser.includes(data.user.id)
+                        ? "Unfollow"
+                        : "Follow"}
+                    </button>
+
                     <button onClick={handleConnect}>Connect</button>
                   </>
                 ) : (
@@ -263,17 +287,17 @@ export default function Profile() {
               </div>
             </div>
 
-            <div className="profile-container shadow experience">
+            <div className="profile-container box experience">
               <div className="container">
                 <Experience id={id}></Experience>
               </div>
             </div>
-            <div className="profile-container shadow experience">
+            <div className="profile-container box experience">
               <div className="container">
                 <Education id={id} />
               </div>
             </div>
-            <div className="profile-container shadow experience">
+            <div className="profile-container box experience">
               <div className="container">
                 <h3>Share Profile</h3>
                 <p className="analyitic-profile-view color-first">

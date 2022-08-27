@@ -1,23 +1,25 @@
 :root {
   --light-fg: #4e4e4e;
   --light-more-fg: #252525;
+  --light-trans: rgba(47, 47, 47, 0.339);
   --light-bg: #f7f7f7;
   --light-base: #ffffff;
+  --light-tp: rgba(215, 215, 215, 0.596);
+  --light-unique: rgb(204, 204, 204);
   --light-bd: #e1e1e1;
   --light-first: #0056ab;
   --light-second: #004283;
-  --light-tp: rgba(215, 215, 215, 0.596);
-  --light-trans: rgba(47, 47, 47, 0.339);
 
   --dark-fg: #ffffff;
-  --dark-base: #000000;
-  --dark-tp: rgba(38, 38, 38, 0.429);
   --dark-more-fg: #e2e2e2;
+  --dark-trans: rgba(238, 238, 238, 0.424);
+  --dark-base: #000000;
+  --dark-unique: rgb(34, 34, 34);
   --dark-bg: #141414;
   --dark-bd: #0f0f0f;
-  --dark-trans: rgba(238, 238, 238, 0.424);
-  --dark-first: #640000;
-  --dark-second: #520000;
+  --dark-tp: rgba(38, 38, 38, 0.429);
+  --dark-first: #ff8400;
+  --dark-second: #d86f00;
 
   --tab: 821px;
   --mobile: 400px;
@@ -119,6 +121,11 @@ pre {
     "Ubuntu", "Cantarell", "Fira Sans", "Droid Sans", "Helvetica Neue",
     sans-serif;
 }
+
+.silkscreen {
+  font-family: "Silkscreen", cursive;
+}
+
 body {
   -ms-overflow-style: none; /* IE and Edge */
   scrollbar-width: none; /* Firefox */
@@ -180,6 +187,16 @@ code {
   border-radius: 10px;
 }
 .dark {
+  .contain {
+    &:hover {
+      .svg {
+        color: var(--dark-more-fg);
+      }
+      .text {
+        color: var(--dark-more-fg);
+      }
+    }
+  }
   .box {
     border: 1px solid rgb(48, 48, 48);
     background-color: var(--dark-base);
@@ -208,9 +225,6 @@ code {
   .menu {
     .text {
       color: var(--dark-fg);
-      &:hover {
-        color: var(--dark-bd);
-      }
     }
   }
 
@@ -279,9 +293,6 @@ code {
   }
   .svg {
     color: var(--dark-fg);
-    &:hover {
-      color: var(--dark-bd);
-    }
   }
   .register {
     background-color: var(--dark-fg);
@@ -306,6 +317,7 @@ code {
   }
 
   button {
+    transition: all 0.3s ease;
     cursor: pointer;
     border-radius: 5px;
     padding: 5px 10px;
@@ -316,6 +328,17 @@ code {
 }
 
 .light {
+  .contain {
+    &:hover {
+      .svg {
+        color: var(--light-more-fg);
+      }
+      .text {
+        color: var(--light-more-fg);
+      }
+    }
+  }
+
   .box {
     border: 1px solid rgb(222, 222, 222);
     background-color: var(--light-base);
@@ -348,9 +371,6 @@ code {
   .menu {
     .text {
       color: var(--light-fg);
-      &:hover {
-        color: var(--light-more-fg);
-      }
     }
   }
   ::placeholder {
@@ -420,9 +440,6 @@ code {
 
   .svg {
     color: var(--light-fg);
-    &:hover {
-      color: var(--light-more-fg);
-    }
   }
   .register {
     background-color: var(--light-fg);
@@ -447,6 +464,7 @@ code {
   }
 
   button {
+    transition: all 0.3s ease;
     cursor: pointer;
     border-radius: 5px;
     padding: 5px 10px;
