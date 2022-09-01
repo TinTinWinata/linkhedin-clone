@@ -1,4 +1,9 @@
 .about-container {
+  .scroll-indicator-about {
+    top: 0;
+    z-index: 1;
+  }
+
   overflow: hidden;
   .title {
     h2:hover {

@@ -120,6 +120,15 @@
       margin-left: 10px;
     }
     .comment-replies {
+      .reply-like {
+        width: 10px;
+        height: 10px;
+        font-size: 3px;
+      }
+      .reply-like-number {
+        font-size: 10px;
+        margin-left: 1px;
+      }
       margin-top: 3px;
       margin-left: 60px;
       .the-comment-reply {

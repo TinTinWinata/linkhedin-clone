@@ -38,6 +38,9 @@
 .relative {
   position: relative;
 }
+.cursor-pointer {
+  cursor: pointer;
+}
 .absolute {
   position: absolute;
 }
@@ -122,11 +125,29 @@ pre {
     sans-serif;
 }
 
+.left {
+  left: 0;
+}
+.right {
+  right: 0;
+}
+.bottom {
+  bottom: 0;
+}
+.top {
+  top: 0;
+}
+
+.fixed {
+  position: fixed;
+}
+
 .silkscreen {
   font-family: "Silkscreen", cursive;
 }
 
 body {
+  // transition: all 3s ease;
   -ms-overflow-style: none; /* IE and Edge */
   scrollbar-width: none; /* Firefox */
   margin: 0;
@@ -187,6 +208,9 @@ code {
   border-radius: 10px;
 }
 .dark {
+  .progress-bar {
+    background-color: var(--dark-more-fg);
+  }
   .contain {
     &:hover {
       .svg {
@@ -328,6 +352,10 @@ code {
 }
 
 .light {
+  .progress-bar {
+    background-color: var(--light-fg);
+  }
+
   .contain {
     &:hover {
       .svg {

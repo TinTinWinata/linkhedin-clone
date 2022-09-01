@@ -122,11 +122,21 @@ export default function CommentList(props: any) {
             return;
           }
           return (
-            <div key={reply.ID} className="bg-color-bd the-comment-reply flex">
-              <PostRichText index={idx}>{reply.Text}</PostRichText>
-              <p className="color-invic ml-1">{"@" + reply.User.name}</p>
-              <div className="center">
-                <img className="ml-1" src={reply.User.PhotoProfile} alt="" />
+            <div key={reply.ID} className="flex">
+              <div className="bg-color-bd the-comment-reply flex">
+                <PostRichText index={idx}>{reply.Text}</PostRichText>
+                <p className="color-invic ml-1">{"@" + reply.User.name}</p>
+                <div className="center">
+                  <img className="ml-1" src={reply.User.PhotoProfile} alt="" />
+                </div>
+              </div>
+              <div className="like center mt-2 ml-1">
+                <div className="flex cursor-pointer">
+                  <div className="center">
+                    <FaHeart className="reply-like"></FaHeart>{" "}
+                  </div>
+                  <div className="reply-like-number">0</div>
+                </div>
               </div>
             </div>
           );

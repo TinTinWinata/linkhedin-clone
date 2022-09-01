@@ -19,6 +19,7 @@ import Advertisement from "../../component/Advertisement/advertisement";
 import Right from "./right/right";
 import Left from "./left/left";
 import StartPostButton from "./startpost/startPostButton";
+import ScrollIndicator from "../../component/ScrollIndicator/scrollIndicator";
 
 export default function Home() {
   const { user } = useUserAuth();
@@ -89,6 +90,7 @@ export default function Home() {
 
   return (
     <>
+      <ScrollIndicator side={"bottom"}></ScrollIndicator>
       <div className="home h-min-max">
         {/* Left */}
         <Left></Left>
