@@ -30,3 +30,23 @@ func (r *mutationResolver) NewLikeComment(ctx context.Context, commentID string)
 		return "Ok", r.DB.Create(&model).Error
 	}
 }
+
+// LikeReplyComment is the resolver for the likeReplyComment field.
+func (r *mutationResolver) LikeReplyComment(ctx context.Context, replycommentID string) (string, error) {
+	val := *middleware.CtxValue(ctx)
+	var model *model.CommentLikeReply
+	err := r.DB.Where("comment_reply_id = ? AND user_id = ?", replycommentID, val.ID).Take(&model).Error
+
+	if err == nil {
+		// Already Exists
+		model.IsLike = !model.IsLike
+		return "Ok", r.DB.Save(&model).Error
+	} else {
+		// Not Exists
+		model.ID = uuid.NewString()
+		model.CommentReplyID = replycommentID
+		model.UserID = val.ID
+		model.IsLike = true
+		return "Ok", r.DB.Create(&model).Error
+	}
+}

@@ -3,14 +3,17 @@ import React, { createRef, useEffect } from "react";
 import { FaTimes } from "react-icons/fa";
 import ReactSelect from "react-select";
 import { toastSuccess } from "../../../config/toast";
+import { useUserAuth } from "../../../hooks/userContext";
 import { MESSAGE_QUERY } from "../../../query/message";
 import { SEND_POST_QUERY } from "../../../query/post";
 import { GET_CONNECTED_USER_QUERY } from "../../../query/user";
+import { getChannel, sendMessageFirebase } from "../../../script/helper";
 import "./sendpost.scss";
 
 export default function SendPost(props: any) {
   const post = props.post;
   const refetch = props.refetch;
+  const { user } = useUserAuth();
   const { data } = useQuery(GET_CONNECTED_USER_QUERY);
   const [messageFunc] = useMutation(MESSAGE_QUERY);
   const [sendFunc] = useMutation(SEND_POST_QUERY);
@@ -36,8 +39,15 @@ export default function SendPost(props: any) {
     }).then(() => {
       sendFunc({ variables: { postId: post.id } }).then((resp) => {
         refetch().then(() => {
-          toastSuccess("Succesfully send post!");
-          handleClose();
+          sendMessageFirebase(
+            getChannel(user.id, userId),
+            `I Shared you a Post (${post.text})`,
+            user.name,
+            "/post/" + post.id
+          ).then(() => {
+            toastSuccess("Succesfully send post!");
+            handleClose();
+          });
         });
       });
     });

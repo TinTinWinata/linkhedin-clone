@@ -32,7 +32,6 @@ const servers = {
 export function MyRoom() {
   const pc = new RTCPeerConnection(servers);
   // Invite Mutation
-  const [messageFunc] = useMutation(MESSAGE_QUERY);
   const link = import.meta.env.VITE_APP_LINK;
   const [webcamActive, setWebcamActive] = useState(false);
   const { id } = useParams<any>();

@@ -5,6 +5,7 @@ import { toastError } from "../../../../config/toast";
 import { useUserAuth } from "../../../../hooks/userContext";
 import {
   LIKE_COMMENT_QUERY,
+  LIKE_COMMENT_REPLY,
   REPLY_COMMENT_QUERY,
 } from "../../../../query/comment";
 import PostRichText from "../post-richtext/postRichText";
@@ -16,6 +17,7 @@ export default function CommentList(props: any) {
   const { user } = useUserAuth();
   const [replyLimit, setReplyLimit] = useState<number>(3);
   const [hasMore, setHashMore] = useState<boolean>();
+  const [likeReplyComment] = useMutation(LIKE_COMMENT_REPLY);
 
   const [likeFunc] = useMutation(LIKE_COMMENT_QUERY);
 
@@ -117,6 +119,15 @@ export default function CommentList(props: any) {
       </div>
       <div className="comment-replies">
         {comment.Replies.map((reply: any, idx: number) => {
+          function handleClick() {
+            likeReplyComment({
+              variables: {
+                commentId: reply.ID,
+              },
+            }).then(() => {
+              refetch();
+            });
+          }
           if (idx >= replyLimit) {
             if (!hasMore) setHashMore(true);
             return;
@@ -131,11 +142,11 @@ export default function CommentList(props: any) {
                 </div>
               </div>
               <div className="like center mt-2 ml-1">
-                <div className="flex cursor-pointer">
+                <div onClick={handleClick} className="flex cursor-pointer">
                   <div className="center">
                     <FaHeart className="reply-like"></FaHeart>{" "}
                   </div>
-                  <div className="reply-like-number">0</div>
+                  <div className="reply-like-number">{reply.Likes}</div>
                 </div>
               </div>
             </div>

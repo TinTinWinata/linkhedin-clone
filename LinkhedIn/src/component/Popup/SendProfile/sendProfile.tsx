@@ -3,9 +3,11 @@ import React, { createRef, useEffect } from "react";
 import { FaTimes } from "react-icons/fa";
 import ReactSelect from "react-select";
 import { toastSuccess } from "../../../config/toast";
+import { useUserAuth } from "../../../hooks/userContext";
 import { MESSAGE_QUERY } from "../../../query/message";
 import { SEND_POST_QUERY } from "../../../query/post";
 import { GET_CONNECTED_USER_QUERY } from "../../../query/user";
+import { getChannel, sendMessageFirebase } from "../../../script/helper";
 import "./sendProfile.scss";
 
 export default function SendProfile(props: any) {
@@ -13,6 +15,7 @@ export default function SendProfile(props: any) {
   const { data } = useQuery(GET_CONNECTED_USER_QUERY);
   const [messageFunc] = useMutation(MESSAGE_QUERY);
   const valueRef = createRef<any>();
+  const { user } = useUserAuth();
   function handleClose() {
     props.setHandle(false);
   }
@@ -33,8 +36,15 @@ export default function SendProfile(props: any) {
         link: "/profile/" + id,
       },
     }).then(() => {
-      toastSuccess("Succesfully send user profile!");
-      handleClose();
+      sendMessageFirebase(
+        getChannel(userId, user.id),
+        "I Shared you a User Profile",
+        user.name,
+        "/profile/" + id
+      ).then(() => {
+        toastSuccess("Succesfully send user profile!");
+        handleClose();
+      });
     });
   }
 

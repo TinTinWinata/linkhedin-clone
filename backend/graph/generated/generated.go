@@ -128,6 +128,7 @@ type ComplexityRoot struct {
 		Follow                func(childComplexity int, id string) int
 		Google                func(childComplexity int, input model.GoogleInput) int
 		LikePost              func(childComplexity int, id string) int
+		LikeReplyComment      func(childComplexity int, replycommentID string) int
 		Login                 func(childComplexity int, email string, password string) int
 		Message               func(childComplexity int, input model.Message) int
 		NewLikeComment        func(childComplexity int, commentID string) int
@@ -257,6 +258,7 @@ type MutationResolver interface {
 	CreateComment(ctx context.Context, input model.NewComment) (string, error)
 	RepliesComment(ctx context.Context, input model.NewRepliesComment) (string, error)
 	NewLikeComment(ctx context.Context, commentID string) (string, error)
+	LikeReplyComment(ctx context.Context, replycommentID string) (string, error)
 	CreateRequest(ctx context.Context, userID string, text string) (string, error)
 	AcceptRequest(ctx context.Context, id string) (string, error)
 	DeclineRequest(ctx context.Context, id string) (string, error)
@@ -310,6 +312,8 @@ type QueryResolver interface {
 }
 type ReplyCommentResolver interface {
 	User(ctx context.Context, obj *model.ReplyComment) (*model.User, error)
+
+	Likes(ctx context.Context, obj *model.ReplyComment) (int, error)
 }
 type UserResolver interface {
 	FollowedUser(ctx context.Context, obj *model.User) ([]string, error)
@@ -840,6 +844,18 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 		}
 
 		return e.complexity.Mutation.LikePost(childComplexity, args["id"].(string)), true
+
+	case "Mutation.likeReplyComment":
+		if e.complexity.Mutation.LikeReplyComment == nil {
+			break
+		}
+
+		args, err := ec.field_Mutation_likeReplyComment_args(context.TODO(), rawArgs)
+		if err != nil {
+			return 0, false
+		}
+
+		return e.complexity.Mutation.LikeReplyComment(childComplexity, args["replycommentId"].(string)), true
 
 	case "Mutation.login":
 		if e.complexity.Mutation.Login == nil {
@@ -1607,7 +1623,6 @@ extend type Mutation {
   createComment(input: newComment!): String!
   repliesComment(input: newRepliesComment!): String!
 }
-
 extend type Query {
   seeCommentOnPost(postId: String!, limit: Int!, offset: Int!): [Comment!]!
   comments: [Comment!]!
@@ -1615,6 +1630,7 @@ extend type Query {
 `, BuiltIn: false},
 	{Name: "../commentLike.graphqls", Input: `extend type Mutation {
   newLikeComment(commentId: String!): String!
+  likeReplyComment(replycommentId: String!): String!
 }
 `, BuiltIn: false},
 	{Name: "../connectRequest.graphqls", Input: `extend type Mutation {
@@ -2264,6 +2280,21 @@ func (ec *executionContext) field_Mutation_likePost_args(ctx context.Context, ra
 		}
 	}
 	args["id"] = arg0
+	return args, nil
+}
+
+func (ec *executionContext) field_Mutation_likeReplyComment_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
+	var err error
+	args := map[string]interface{}{}
+	var arg0 string
+	if tmp, ok := rawArgs["replycommentId"]; ok {
+		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("replycommentId"))
+		arg0, err = ec.unmarshalNString2string(ctx, tmp)
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["replycommentId"] = arg0
 	return args, nil
 }
 
@@ -5678,6 +5709,61 @@ func (ec *executionContext) fieldContext_Mutation_newLikeComment(ctx context.Con
 	}()
 	ctx = graphql.WithFieldContext(ctx, fc)
 	if fc.Args, err = ec.field_Mutation_newLikeComment_args(ctx, field.ArgumentMap(ec.Variables)); err != nil {
+		ec.Error(ctx, err)
+		return
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _Mutation_likeReplyComment(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_Mutation_likeReplyComment(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return ec.resolvers.Mutation().LikeReplyComment(rctx, fc.Args["replycommentId"].(string))
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(string)
+	fc.Result = res
+	return ec.marshalNString2string(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_Mutation_likeReplyComment(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "Mutation",
+		Field:      field,
+		IsMethod:   true,
+		IsResolver: true,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type String does not have child fields")
+		},
+	}
+	defer func() {
+		if r := recover(); r != nil {
+			err = ec.Recover(ctx, r)
+			ec.Error(ctx, err)
+		}
+	}()
+	ctx = graphql.WithFieldContext(ctx, fc)
+	if fc.Args, err = ec.field_Mutation_likeReplyComment_args(ctx, field.ArgumentMap(ec.Variables)); err != nil {
 		ec.Error(ctx, err)
 		return
 	}
@@ -9427,7 +9513,7 @@ func (ec *executionContext) _ReplyComment_Likes(ctx context.Context, field graph
 	}()
 	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
 		ctx = rctx // use context from middleware stack in children
-		return obj.Likes, nil
+		return ec.resolvers.ReplyComment().Likes(rctx, obj)
 	})
 	if err != nil {
 		ec.Error(ctx, err)
@@ -9448,8 +9534,8 @@ func (ec *executionContext) fieldContext_ReplyComment_Likes(ctx context.Context,
 	fc = &graphql.FieldContext{
 		Object:     "ReplyComment",
 		Field:      field,
-		IsMethod:   false,
-		IsResolver: false,
+		IsMethod:   true,
+		IsResolver: true,
 		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
 			return nil, errors.New("field of type Int does not have child fields")
 		},
@@ -13699,6 +13785,15 @@ func (ec *executionContext) _Mutation(ctx context.Context, sel ast.SelectionSet)
 			if out.Values[i] == graphql.Null {
 				invalids++
 			}
+		case "likeReplyComment":
+
+			out.Values[i] = ec.OperationContext.RootResolverMiddleware(innerCtx, func(ctx context.Context) (res graphql.Marshaler) {
+				return ec._Mutation_likeReplyComment(ctx, field)
+			})
+
+			if out.Values[i] == graphql.Null {
+				invalids++
+			}
 		case "createRequest":
 
 			out.Values[i] = ec.OperationContext.RootResolverMiddleware(innerCtx, func(ctx context.Context) (res graphql.Marshaler) {
@@ -14648,12 +14743,25 @@ func (ec *executionContext) _ReplyComment(ctx context.Context, sel ast.Selection
 				atomic.AddUint32(&invalids, 1)
 			}
 		case "Likes":
+			field := field
 
-			out.Values[i] = ec._ReplyComment_Likes(ctx, field, obj)
-
-			if out.Values[i] == graphql.Null {
-				atomic.AddUint32(&invalids, 1)
+			innerFunc := func(ctx context.Context) (res graphql.Marshaler) {
+				defer func() {
+					if r := recover(); r != nil {
+						ec.Error(ctx, ec.Recover(ctx, r))
+					}
+				}()
+				res = ec._ReplyComment_Likes(ctx, field, obj)
+				if res == graphql.Null {
+					atomic.AddUint32(&invalids, 1)
+				}
+				return res
 			}
+
+			out.Concurrently(i, func() graphql.Marshaler {
+				return innerFunc(ctx)
+
+			})
 		case "CommentId":
 
 			out.Values[i] = ec._ReplyComment_CommentId(ctx, field, obj)

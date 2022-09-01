@@ -23,6 +23,6 @@ export default function MessageList(props: any) {
       </div>
     );
   }
-  
+
   return <></>;
 }

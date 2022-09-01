@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useUserAuth } from "../../hooks/userContext";
 import MessageList from "./message-list/message-list";
 import "./message.scss";
@@ -10,14 +10,20 @@ import { toastError } from "../../config/toast";
 import { FaBackspace, FaCalendar, FaImage, FaPhone } from "react-icons/fa";
 import { useNavigate } from "react-router-dom";
 import { sendImage } from "../../script/image";
-import { collection, doc, setDoc } from "firebase/firestore";
+import {
+  collection,
+  doc,
+  getDoc,
+  getDocs,
+  onSnapshot,
+  setDoc,
+} from "firebase/firestore";
 import { db } from "../../config/firebase";
 import VideoSchedule from "../../component/Popup/CreateVideoSchedule/videoSchedule";
 
 export default function Message() {
   const { user } = useUserAuth();
   const navigate = useNavigate();
-
   const [messageFunc] = useMutation(MESSAGE_QUERY);
 
   const [selectedUser, setSelectedUser] = useState({
@@ -26,6 +32,23 @@ export default function Message() {
   });
   const [messages, setMessages] = useState<any>([]);
   const [message, setMessage] = useState("");
+  const [currRef, setCurrRef] = useState<any>();
+
+  useEffect(() => {
+    let unsub: any;
+    if (selectedUser.id !== "") {
+      const ref = doc(db, "messages", getChannel(selectedUser.id));
+      unsub = onSnapshot(ref, (doc: any) => {
+        const data = doc.data();
+        const messages = data.messages;
+        setMessages((prev: any) => [...prev, ...messages]);
+      });
+    }
+    return () => {
+      console.log("unsub!");
+      if (unsub) unsub();
+    };
+  }, [selectedUser]);
 
   const pusher = new Pusher("9e320ff2624435fef743", {
     cluster: "ap1",
@@ -49,10 +72,13 @@ export default function Message() {
       .catch((err) => {
         toastError(err.message);
       });
-    channel.bind(getChannel(id), function (data: any) {
-      // allMessages.push(data);
-      setMessages((prev: any) => [...prev, data]);
+
+    // Bind Channel Firebase
+    const ref = doc(db, "messages", getChannel(id));
+    setDoc(ref, {
+      messages: [],
     });
+    setCurrRef(ref);
   }
 
   function handleSubmit(e: any) {
@@ -65,6 +91,20 @@ export default function Message() {
   }
 
   function sendMessage(msg: any) {
+    if (currRef) {
+      getDoc(currRef).then((doc) => {
+        const data: any = doc.data();
+        const messages = data.messages;
+        const newMessage = {
+          username: selectedUser.name,
+          message: msg,
+          link: "",
+        };
+        setDoc(currRef, {
+          messages: [...messages, newMessage],
+        });
+      });
+    }
     messageFunc({
       variables: {
         userId: selectedUser.id,
@@ -76,7 +116,6 @@ export default function Message() {
         setMessage("");
       })
       .catch((err) => {
-        console.log(err);
         toastError(err.messages);
       });
   }
@@ -200,6 +239,7 @@ export default function Message() {
                 </>
               ) : (
                 messages.map((msg: any, idx: any) => {
+                  // console.log("msg : ", msg);
                   return <MessageUser key={idx} msg={msg}></MessageUser>;
                 })
               )}

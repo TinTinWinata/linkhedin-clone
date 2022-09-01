@@ -11,14 +11,10 @@ export default function RefetchProvider({ children }: { children: any }) {
   const { refetch } = useQuery(USER_FETCH_QUERY);
 
   function refetchUser() {
-    refetch()
-      .then((resp) => {
-        const newUser = { ...resp.data.whoisme, token: user.token };
-        update(newUser);
-      })
-      .catch((err) => {
-        toastError(err.message);
-      });
+    refetch().then((resp) => {
+      const newUser = { ...resp.data.whoisme, token: user.token };
+      update(newUser);
+    });
   }
 
   const value = { refetchUser };

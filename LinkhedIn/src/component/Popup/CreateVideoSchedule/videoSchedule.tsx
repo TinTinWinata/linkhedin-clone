@@ -4,7 +4,9 @@ import React from "react";
 import { FaTimes } from "react-icons/fa";
 import { useNavigate } from "react-router-dom";
 import { db } from "../../../config/firebase";
+import { useUserAuth } from "../../../hooks/userContext";
 import { MESSAGE_QUERY } from "../../../query/message";
+import { getChannel, sendMessageFirebase } from "../../../script/helper";
 
 import "./videoSchedule.scss";
 export default function VideoSchedule({
@@ -16,9 +18,11 @@ export default function VideoSchedule({
 }) {
   const [messageFunc] = useMutation(MESSAGE_QUERY);
   const navigate = useNavigate();
+  const { user } = useUserAuth();
 
   async function handleSubmit(e: any) {
     e.preventDefault();
+
     const time = e.target.time.value;
     const date = e.target.date.value;
 
@@ -42,7 +46,14 @@ export default function VideoSchedule({
           link: "/server/" + callDoc.id,
         },
       });
-      navigate("/server/" + callDoc.id);
+      sendMessageFirebase(
+        getChannel(selectedUser.id, user.id),
+        `TinTin has been scheduled call with you at ${date + " " + time}`,
+        user.name,
+        "/server/" + callDoc.id
+      ).then(() => {
+        navigate("/server/" + callDoc.id);
+      });
     }
   }
 

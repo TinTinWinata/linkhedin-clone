@@ -6,10 +6,6 @@ import "./scrollIndicator.scss";
 export default function ScrollIndicator({ side }: { side: any }) {
   const { scrollYProgress } = useScroll();
 
-  useEffect(() => {
-    console.log("y progress : ", scrollYProgress);
-  }, [scrollYProgress]);
-
   return (
     <>
       <motion.div

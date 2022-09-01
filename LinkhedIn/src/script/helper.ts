@@ -1,5 +1,7 @@
 import { stringLength } from "@firebase/util";
+import { doc, getDoc, setDoc } from "firebase/firestore";
 import { isObjectType } from "graphql";
+import { db } from "../config/firebase";
 import { toastError } from "../config/toast";
 
 
@@ -208,4 +210,30 @@ export function filteringAtMention(str : string){
     }
   }
   return str;
+}
+
+export function sendMessageFirebase(channelId: any, message: any, username: string, link = ""){
+  const currRef = doc(db, "messages", channelId);
+  return getDoc(currRef).then((doc) => {
+    const data: any = doc.data();
+    const messages = data.messages;
+    const newMessage = {
+      username: username,
+      message: message,
+      link: link,
+    };
+    return setDoc(currRef, {
+      messages: [...messages, newMessage],
+    });
+  });
+}
+
+
+
+export function getChannel(userId: string, id: string) {
+  if (userId < id) {
+    return userId + id;
+  } else {
+    return id + userId;
+  }
 }

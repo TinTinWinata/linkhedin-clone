@@ -31,7 +31,6 @@ extend type Mutation {
   createComment(input: newComment!): String!
   repliesComment(input: newRepliesComment!): String!
 }
-
 extend type Query {
   seeCommentOnPost(postId: String!, limit: Int!, offset: Int!): [Comment!]!
   comments: [Comment!]!

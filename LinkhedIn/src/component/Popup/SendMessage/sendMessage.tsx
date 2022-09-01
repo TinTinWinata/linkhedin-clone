@@ -2,10 +2,13 @@ import { useMutation } from "@apollo/client";
 import React from "react";
 import { FaTimes } from "react-icons/fa";
 import { toastSuccess } from "../../../config/toast";
+import { useUserAuth } from "../../../hooks/userContext";
 import { MESSAGE_QUERY } from "../../../query/message";
+import { getChannel, sendMessageFirebase } from "../../../script/helper";
 import "./sendMessage.scss";
 
 export default function SendMessage(props: any) {
+  const userContext = useUserAuth();
   const user = props.user;
   const setHandle = props.setHandle;
   const [messageFunc] = useMutation(MESSAGE_QUERY);
@@ -17,10 +20,16 @@ export default function SendMessage(props: any) {
       message: "Hi, i send you a message: " + text,
       link: "/profile/" + user.id,
     };
-
     messageFunc({ variables: message }).then((resp) => {
-      setHandle(false);
-      toastSuccess("Succesfully send message!");
+      sendMessageFirebase(
+        getChannel(user.id, userContext.user.id),
+        "Hi, i send you a message: " + text,
+        userContext.user.name,
+        "/profile/" + user.id
+      ).then(() => {
+        setHandle(false);
+        toastSuccess("Succesfully send message!");
+      });
     });
   }
 

@@ -16,11 +16,18 @@ mutation LikeComment($commentId:String!){
 }
 `
 
+export const LIKE_COMMENT_REPLY = gql`
+mutation LikeReplyComment($commentId:String!){
+  likeReplyComment(replycommentId:$commentId)
+}
+`
+
 export const REPLY_COMMENT_QUERY = gql`
 mutation RepliesComment($input:newRepliesComment!){
   	repliesComment(input:$input)
 }
 `
+
 
 export const SEE_COMMENT_QUERY = gql`
 query SeeComment($postId:String!, $limit:Int!, $offset:Int!){
@@ -48,10 +55,12 @@ query SeeComment($postId:String!, $limit:Int!, $offset:Int!){
       PhotoProfile
       FollowedUser
       ConnectedUser
+  
       RequestConnect
       Headline
       }
       Text
+      Likes
       CommentId
       ID
     }

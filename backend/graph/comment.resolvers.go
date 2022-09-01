@@ -61,7 +61,6 @@ func (r *mutationResolver) RepliesComment(ctx context.Context, input model.NewRe
 		ID:        uuid.NewString(),
 		CommentID: input.CommendID,
 		Text:      input.Text,
-		Likes:     0,
 		UserID:    input.UserID,
 	}
 	return "Ok", r.DB.Create(model).Error
@@ -83,6 +82,14 @@ func (r *queryResolver) Comments(ctx context.Context) ([]*model.Comment, error) 
 func (r *replyCommentResolver) User(ctx context.Context, obj *model.ReplyComment) (*model.User, error) {
 	var model *model.User
 	return model, r.DB.First(&model, "id = ?", obj.UserID).Error
+}
+
+// Likes is the resolver for the Likes field.
+func (r *replyCommentResolver) Likes(ctx context.Context, obj *model.ReplyComment) (int, error) {
+	var model *model.CommentLikeReply
+	var count int64
+	r.DB.First(&model, "comment_reply_id = ? AND is_like = true", obj.ID).Count(&count)
+	return int(count), nil
 }
 
 // Comment returns generated.CommentResolver implementation.
