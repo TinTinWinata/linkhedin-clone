@@ -128,6 +128,7 @@
 @media only screen and (max-width: 420px) {
   .right {
     margin-top: 5px;
+    margin-bottom: 5px;
     .menu + .menu {
       margin-left: 10px;
     }
@@ -138,5 +139,8 @@
   .navbar .container {
     display: flex;
     justify-content: center;
+  }
+  .menu .profile-hover {
+    left: -80px;
   }
 }

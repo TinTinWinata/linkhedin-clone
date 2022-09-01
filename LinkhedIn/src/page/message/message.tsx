@@ -7,7 +7,7 @@ import Pusher from "pusher-js";
 import { useMutation, useQuery } from "@apollo/client";
 import { GET_MESSAGE_QUERY, MESSAGE_QUERY } from "../../query/message";
 import { toastError } from "../../config/toast";
-import { FaCalendar, FaImage, FaPhone } from "react-icons/fa";
+import { FaBackspace, FaCalendar, FaImage, FaPhone } from "react-icons/fa";
 import { useNavigate } from "react-router-dom";
 import { sendImage } from "../../script/image";
 import { collection, doc, setDoc } from "firebase/firestore";
@@ -96,6 +96,13 @@ export default function Message() {
     });
   }
 
+  function handleBack() {
+    setSelectedUser({
+      name: "Contact Person",
+      id: "",
+    });
+  }
+
   async function handlePhone() {
     if (selectedUser.id !== "") {
       const callDoc = await doc(collection(db, "calls"));
@@ -112,8 +119,6 @@ export default function Message() {
       navigate("/server/" + callDoc.id);
     }
   }
-
-  function videoSchedule() {}
 
   const [search, setSearch] = useState<string>("");
   const [handleVideoSchedule, setHandleVideoSchedule] =
@@ -164,7 +169,15 @@ export default function Message() {
           <div className="box chat">
             <div className="hide-scroll chat-container">
               <div className="flex space-between">
-                <h2>{selectedUser.name}</h2>
+                <div className="flex">
+                  <div className="back-icon center">
+                    <FaBackspace
+                      onClick={handleBack}
+                      className="the-icon"
+                    ></FaBackspace>
+                  </div>
+                  <h2>{selectedUser.name}</h2>
+                </div>
                 <div className="center">
                   <FaPhone
                     onClick={handlePhone}
@@ -179,9 +192,17 @@ export default function Message() {
                 </div>
               </div>
               <hr className="black"></hr>
-              {messages.map((msg: any, idx: any) => {
-                return <MessageUser key={idx} msg={msg}></MessageUser>;
-              })}
+              {selectedUser.id === "" ? (
+                <>
+                  <div className="if-no-select center">
+                    <h2>Select a Person</h2>
+                  </div>
+                </>
+              ) : (
+                messages.map((msg: any, idx: any) => {
+                  return <MessageUser key={idx} msg={msg}></MessageUser>;
+                })
+              )}
             </div>
             <form onSubmit={handleSubmit}>
               <div className="flex">

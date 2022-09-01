@@ -1,4 +1,5 @@
-import { GET_BACKGROUND, GET_LAND, MEGAMEN_GET_RUN, MEGAMEN_CONF, MEGAMEN_GET_WALK, MEGAMENT_GET_JUMP, MEGAMEN_GET_BULLET, MEGAMEN_GET_SHOOT_PARTICLE, MEGAMEN_GET_SHOOT, GET_HEARTH, MEGAMEN_GET_PROFILE, ICEMAN_GET_IDLE, ICEMAN_CONF, ICEMAN_GET_BULLET, ICEMAN_GET_RUN, ICEMAN_GET_JUMP, ICEMAN_GET_SHOOT, ICEMAN_GET_PROFILE, GET_MUSIC } from "./config";
+import { getBoundingClientObj } from "react-select/dist/declarations/src/utils";
+import { GET_BACKGROUND, GET_LAND, MEGAMEN_GET_RUN, MEGAMEN_CONF, MEGAMEN_GET_WALK, MEGAMENT_GET_JUMP, MEGAMEN_GET_BULLET, MEGAMEN_GET_SHOOT_PARTICLE, MEGAMEN_GET_SHOOT, GET_HEARTH, MEGAMEN_GET_PROFILE, ICEMAN_GET_IDLE, ICEMAN_CONF, ICEMAN_GET_BULLET, ICEMAN_GET_RUN, ICEMAN_GET_JUMP, ICEMAN_GET_SHOOT, ICEMAN_GET_PROFILE, GET_MUSIC, GET_CANNON, SHOOTER_CONF, GET_BULLET } from "./config";
 
 
 export function runGame(canvas : any){
@@ -14,6 +15,7 @@ export function runGame(canvas : any){
   const kid : any = document.getElementById("kid")
   const victory: any = document.getElementById("victory")
   let pause = false;
+  let shoot = false;
 
   const exit : any= document.getElementById("exit")
   const winningText : any = document.getElementById("win-text")
@@ -41,10 +43,12 @@ export function runGame(canvas : any){
 
   // Background
   class Background{
+    
     sprite: any
     landSprite : any
     megamenProfile: any;
     icemanProfile: any;
+
     constructor(){
       this.sprite = GET_BACKGROUND();
       this.landSprite = GET_LAND()
@@ -89,7 +93,9 @@ export function runGame(canvas : any){
     }
   }
 
+  function checkCollide(x1: number, y1: number, x2: number, y2: number){ 
 
+  }
 
   class Collider{
     x : number;
@@ -113,6 +119,7 @@ export function runGame(canvas : any){
 
     render(){
       ctx.fillStyle = "red"
+
       ctx.fillRect(this.x, this.y, this.w, this.h)
     }
   }
@@ -152,7 +159,6 @@ export function runGame(canvas : any){
       if(x + w >= this.player.x && x <= this.player.x + this.player.w && y + h >= this.player.y && y <= this.player.y + this.player.h)
       {
         this.hit = true;
-        console.log('hit')
         this.player.minusHealth()
       }
     }
@@ -475,6 +481,12 @@ export function runGame(canvas : any){
     render(){
       this.logic()
       const state = this.spriteState % this.spriteLength;
+      // console.log('state : ', state)
+      // console.log('length : ', this.spriteLength)
+      if(this.spriteLength <= state)
+      {
+        console.log('salah')
+      }
 
       if(this.isBackward){
         ctx.save();
@@ -767,6 +779,148 @@ export function runGame(canvas : any){
     }
   }
 
+  class ShooterBullet{
+    x:number;
+    y: number;
+    vx: number;
+    vy: number;
+    death: boolean;
+    sprite: any;
+    scale: number;
+    w: number;
+    h: number;
+    angle: number;
+    interval: number;
+    rotateSpeed: number;
+
+    constructor(x : number, y: number, angle: number){
+      this.x = x;
+      this.y = y;
+      this.vx = Math.cos(angle) * 3;
+      this.vy =Math.sin(angle) * 3;
+      this.death = false;
+      this.sprite = GET_BULLET()
+      this.scale = 0.02;
+      this.w = this.sprite.width * this.scale;
+      this.h = this.sprite.height * this.scale;
+      this.angle  = 0;
+      this.interval =0;
+      this.rotateSpeed = 2;
+    }
+    logic(){
+      this.interval += 1;
+      if(this.interval >= this.rotateSpeed)
+      {
+        this.interval = 0;  
+        this.angle += 1;
+      }
+      this.x += this.vx;
+      this.y += this.vy;
+
+      if(isExistsMap(this.x, this.y))
+      {
+        this.death = true;
+      }
+
+      if(megamen && iceman)
+      {
+      }
+    }
+    render(){
+      const angle = this.angle % 360;
+      ctx.save()
+      ctx.translate(this.x + (this.w  / 2) , this.y + (this.h / 2));
+      ctx.rotate(angle);
+      ctx.translate(- this.x - (this.w / 2) , -this.y -(this.h / 2));
+      ctx.drawImage(this.sprite, this.x , this.y , this.w, this.h)
+      ctx.restore()
+      // ctx.fillStyle = "black";
+      // ctx.beginPath()
+      // ctx.arc(this.x, this.y,3,0, 2 * Math.PI)
+      // ctx.fill()
+      // ctx.closePath()
+      this.logic()
+    }
+  }
+
+  class Shooter{
+    x: number;
+    y: number;
+    lookX: number;
+    lookY: number;
+    angle: number;
+    bullets: any;
+    sprite: any;
+    scale: number; 
+    w : number;
+    h: number;
+    conf : any;
+    fireRate: number;
+    fireRateInterval: number;
+
+    constructor(x : number, y : number, angle: number){
+      this.x = x;
+      this.y = y;
+      this.lookX = 0;
+      this.lookY = 0;
+      this.angle = angle;
+      this.bullets = [];
+      this.conf = SHOOTER_CONF;
+      this.sprite = GET_CANNON();
+      this.scale = 0.05;
+      this.w = this.conf.w * this.scale;
+      this.h = this.conf.h * this.scale;
+      this.fireRate = 10;
+      this.fireRateInterval = 0;
+    }
+
+    updateAngle(num: number){
+      this.angle= num;
+    }
+    logic(){
+      this.fireRateInterval += 1;
+
+      this.bullets.forEach((bullet : any, idx : any)=>{
+          if(bullet.death){
+            this.bullets.splice(idx, 1);
+          }
+      })
+
+    }
+    shoot(){
+      if(this.fireRateInterval >= this.fireRate)
+      {
+        this.fireRateInterval = 0;
+        const bullet = new ShooterBullet(this.x , this.y , this.angle);
+        this.bullets.push(bullet);
+      }
+    }
+    render(){
+      this.logic()
+      this.bullets.forEach((bullet : any)=>{
+        bullet.render();
+      })
+      ctx.drawImage(this.sprite, this.x - (this.w / 2), this.y- (this.h / 2), this.w, this.h);
+    }
+  }
+
+  window.onmousemove = (e : any) => {
+    if(shooter)
+    {   
+      const rect = canvas.getBoundingClientRect()
+      const x  = e.clientX - rect.left ;
+      const y = e.clientY - rect.top ;
+      const angle = Math.atan2(y - shooter.y, x - shooter.x)
+      shooter.updateAngle(angle);
+    }  
+  }
+
+
+
+  // window.addEventListener("click", ()=>{
+  //   shooter.shoot()
+  // })
+
   document.addEventListener('keypress', (e : KeyboardEvent)=>{
     if(e.key === 'e'){
       megamen.shoot()
@@ -790,6 +944,24 @@ export function runGame(canvas : any){
   document.addEventListener('keyup', (e : any)=>{
     keys[e.key] = false
   })
+
+  document.addEventListener('mousedown' , (e: any)=>{
+    shoot = true;
+  })  
+
+  document.addEventListener('mouseup' , (e: any)=>{
+    shoot = false;
+  })  
+
+
+  function checkShoot()
+  {
+    if(shoot)
+    {
+      shooter.shoot()
+    }
+  }
+
 
   function debug(x : number, y : number, w : number, h : number){
     ctx.fillStyle = "red"
@@ -861,6 +1033,7 @@ export function runGame(canvas : any){
   // Create Instance
   const background = new Background()
   const megamen = new Megamen()
+  const shooter = new Shooter(canvas.width / 2, 0 + 10 , 0);
   const iceman = new Iceman()
   const collider = new Collider()
 
@@ -872,10 +1045,12 @@ export function runGame(canvas : any){
     if(!pause)
     checkKeys()
     if(isRun() && !pause){
+      checkShoot()
       ctx.clearRect(0,0, canvas.width, canvas.height0)
       background.render()
       megamen.render()
       iceman.render()
+      shooter.render()
       // collider.render()
     }
   }

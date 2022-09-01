@@ -29,6 +29,7 @@ import Forgetpassword from "./page/forget-password/forgetpassword";
 import ChangePassword from "./page/change-password/changepassword";
 import Footer from "./component/Footer/footer";
 import CreateJob from "./page/create-job/createJob";
+import About from "./component/About/about";
 
 function App() {
   const { loading } = useLoading();
@@ -79,6 +80,7 @@ function App() {
                       element={<Forgetpassword />}
                     ></Route>
                     <Route path="/login" element={<Login />}></Route>
+                    <Route path="/about" element={<About />}></Route>
                     <Route path="/register" element={<Register />}></Route>
                     <Route
                       path="/change-password/:id"

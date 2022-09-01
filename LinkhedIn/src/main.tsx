@@ -6,6 +6,7 @@ import LoadingContextProvider from "./hooks/loadingContext";
 import ThemeProvider from "./hooks/themeContext";
 import UserAuthProvider from "./hooks/userContext";
 import "./style.scss";
+import "aos/dist/aos.css";
 
 ReactDOM.createRoot(document.getElementById("root") as HTMLElement).render(
   <LoadingContextProvider>

@@ -1,0 +1,59 @@
+.about-container {
+  overflow: hidden;
+  .title {
+    h2:hover {
+      font-size: 110px;
+    }
+  }
+  h2 {
+    transition: all 0.3s ease;
+    font-size: 100px;
+    cursor: pointer;
+  }
+  img {
+    width: 10%;
+  }
+  #book {
+    width: 500px;
+    height: fit-content;
+  }
+
+  #desk {
+    width: 500px;
+    height: fit-content;
+  }
+  .book-or-desk {
+    img {
+      transition: all 0.3s ease;
+      margin: 0px 200px;
+    }
+  }
+  .text-1 {
+    width: 50%;
+  }
+  .text-2 {
+    width: 50%;
+  }
+  .text {
+    h2 {
+      font-size: 40px;
+      margin-bottom: 20px;
+    }
+    text-align: center;
+    font-size: 30px;
+    font-weight: 400;
+    padding: 0px 200px;
+  }
+  .register-text-about {
+    transition: all 0.3s ease;
+
+    cursor: pointer;
+    font-size: 60px;
+    &:hover {
+      font-size: 63px;
+    }
+  }
+  .color-this {
+    color: rgb(217, 217, 217);
+  }
+}

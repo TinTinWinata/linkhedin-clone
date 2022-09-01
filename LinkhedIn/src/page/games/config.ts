@@ -15,6 +15,13 @@ const ICEMAN_IDLE_URL = "/megamen/icemen/idle"
 const ICEMAN_SHOOT_URL = "/megamen/icemen/shoot"
 const ICEMAN_BULLET_URL = "/megamen/icemen/bullet.png"
 const MUSIC_URL = "/megamen/music.mp3"
+const CANNON_URL = "/megamen/shoot.png"
+const BULLET_URL = "/megamen/bullet.png"
+
+export const SHOOTER_CONF = {
+  w: 1031,
+  h: 1008,
+}
 
 export const MEGAMEN_CONF = {
   run: 10,
@@ -32,6 +39,18 @@ export const ICEMAN_CONF = {
   shoot_particle: 0,
   bullet: 1,
   shoot: 3,
+}
+
+export function GET_BULLET(){
+  const img = new Image()
+  img.src = BULLET_URL;
+  return img;
+}
+
+export function GET_CANNON(){
+  const img = new Image()
+  img.src = CANNON_URL;
+  return img;
 }
 
 export function GET_MUSIC(){

@@ -1,8 +1,10 @@
 import React from "react";
 import { Link } from "react-router-dom";
+import { useTheme } from "../../hooks/themeContext";
 import "./footer.scss";
 
 export default function Footer() {
+  const { isDark } = useTheme();
   return (
     <div className="bg-color-bg footer">
       {/* Logo */}
@@ -10,7 +12,7 @@ export default function Footer() {
         <div className="center">
           <div className="border"></div>
         </div>
-        <img src="/logo.png" alt="" />
+        <img src={isDark() ? "/logo_secondary.png" : "/logo.png"} alt="" />
         <div className="center">
           <div className="border"></div>
         </div>
