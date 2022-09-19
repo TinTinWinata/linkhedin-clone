@@ -44,7 +44,7 @@ func UserRegister(ctx context.Context, newUser model.NewUser) (interface{}, erro
 
 	verification := &model.UserValidation{
 		ID:     newId,
-		Link:   "http://localhost:5173/verification/" + newId,
+		Link:   "http://localhost:3030/verification/" + newId,
 		UserID: createdUser.ID,
 	}
 
@@ -104,6 +104,7 @@ func UserLogin(ctx context.Context, email string, password string) (interface{},
 }
 
 func UserLoginWithoutPassword(ctx context.Context, email string) (interface{}, error) {
+	fmt.Println("disini login!")
 	user, err := UserGetByEmail(ctx, email)
 	if err != nil {
 		if err == gorm.ErrRecordNotFound {

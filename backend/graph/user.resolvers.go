@@ -82,10 +82,10 @@ func (r *mutationResolver) RequestChangePassword(ctx context.Context, email stri
 	if err != nil {
 		return "Error", err
 	}
-	link := "http://localhost:5173/change-password/" + passwordRequest.ID
+	link := "http://localhost:3030/change-password/" + passwordRequest.ID
 	mail.SendPasswordRequest(link, passwordRequest.Email)
 	return "Ok", nil
-}
+}	
 
 // ChangePassword is the resolver for the changePassword field.
 func (r *mutationResolver) ChangePassword(ctx context.Context, password string, id string) (string, error) {

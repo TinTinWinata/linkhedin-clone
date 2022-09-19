@@ -154,7 +154,7 @@ export default function CommentList(props: any) {
         })}
         {hasMore ? (
           <p
-            className="color-first comment-replies-load-more"
+            className="color-invic comment-replies-load-more"
             onClick={loadReplyMore}
           >
             Load More

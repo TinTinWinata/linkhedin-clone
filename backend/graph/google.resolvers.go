@@ -22,7 +22,7 @@ func (r *mutationResolver) Google(ctx context.Context, input model.GoogleInput) 
 
 	// Checking on Google Database
 	var google *model.Google
-	err := r.DB.First(&google, "id = ?", input.GoogleID).Error
+	err := r.DB.First(&google, "google_id = ?", input.GoogleID).Error
 
 	if err == nil {
 		return my_auth.UserLoginWithoutPassword(ctx, input.Email)

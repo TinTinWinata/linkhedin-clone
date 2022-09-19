@@ -40,7 +40,6 @@ func (r *queryResolver) Search(ctx context.Context, query string) (*model.Search
 	err = r.DB.Where("text like ?", query).Find(&posts).Error
 
 	search.Post = posts
-
 	return search, err
 	// return models, err
 }

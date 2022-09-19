@@ -14,6 +14,7 @@ type Post struct {
 	Sends          int            `json:"sends"`
 	Comments       int            `json:"comments"`
 	CreatedAt      time.Time      `json:"created_at"`
+	Likes          int            `json:"likes"`
 	Hashtag        pq.StringArray `json:"hashtag" gorm:"type:text[]"`
 	AttachmentType string         `json:"attachment_type"`
 }

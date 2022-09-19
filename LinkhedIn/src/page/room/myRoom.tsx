@@ -123,15 +123,12 @@ export function MyRoom() {
           pc.setRemoteDescription(answerDescription);
         }
       });
-
       onSnapshot(answerCandidates, (snapshot: any) => {
         snapshot.docChanges().forEach((change: any) => {
           if (change.type === "added") {
             const data = change.doc.data();
-            // console.log("answer candidaet : ", data);
             if (data) {
               const candidate = new RTCIceCandidate(data);
-              // console.log("candidate : ", candidate);
               pc.addIceCandidate(candidate);
             }
           }
